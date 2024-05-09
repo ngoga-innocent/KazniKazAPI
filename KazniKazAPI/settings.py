@@ -2,6 +2,8 @@
 
 from pathlib import Path
 import os
+import dj_database_url
+import cloudinary_storage
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,9 +31,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Account',
     'Product',
+    
 
     'rest_framework',
     'rest_framework.authtoken',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -80,9 +85,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        
     }
 }
-
+DATABASES['default']=dj_database_url.parse("postgres://kaznikaz_ynia_user:tCaJhodMTcIfj5eGFghaId7iddrN2HWI@dpg-cou9b2gl5elc73c7scag-a.oregon-postgres.render.com/kaznikaz_ynia")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -139,3 +145,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ngogainnocent1@gmail.com'
 EMAIL_HOST_PASSWORD = 'uxhd zxfo ujrj jvta'
+
+CLOUDINARY_STORAGE={
+    'CLOUD_NAME':'dlbdsv95f',
+    'API_KEY':'226668397868968',
+    "API_SECRET":'lTcafDxVVVnGLSpDcxqDJRt8S2E'
+}
+
+DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
