@@ -44,10 +44,10 @@ class Login(APIView):
 
                     return Response({"user":serializer.data,"token":token.key})
                 else:
-                    return Response({"detail":"incorrect password"})
+                    return Response({"detail":"incorrect password"},status=401)
 
             except User.DoesNotExist:
-                return Response({"detail":'User with this username not found'})
+                return Response({"detail":'User with this username not found'},status=401)
 class LogoutView(APIView):
     def post(self, request):
         request.user.auth_token.delete()
