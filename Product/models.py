@@ -33,7 +33,7 @@ class ProductModel(models.Model):
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     name=models.CharField(max_length=255)
     description=models.TextField()
-
+    shop=models.ForeignKey(ShopModel,on_delete=models.CASCADE,null=True)
     price=models.IntegerField(default=0)
     thumbnail=models.ImageField(upload_to='product_thumbnail')
     uploader=models.ForeignKey(User,on_delete=models.CASCADE,related_name='uploader')
