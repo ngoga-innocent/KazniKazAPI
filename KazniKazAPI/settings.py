@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Account',
     'Product',
-    
+    'Wallet',
 
     'rest_framework',
     'rest_framework.authtoken',
