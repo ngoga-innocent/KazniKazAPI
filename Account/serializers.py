@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     class Meta:
         model=User
-        fields = ['id','username', 'email', 'password', 'profile', 'coverphoto', 'id_card', 'selfie', 'seller', 'verified']
+        fields = ['id','username', 'email','phone_number', 'password', 'profile', 'coverphoto', 'id_card', 'selfie', 'seller', 'verified']
         extra_kwargs = {
             'profile': {'required': False},
             'coverphoto': {'required': False},
