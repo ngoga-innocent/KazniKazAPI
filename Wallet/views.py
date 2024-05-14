@@ -45,7 +45,9 @@ class WalletView(APIView):
         try:
             wallet=MyWallet.objects.get(user=request.user)
             if action=='Deposit':
-                wallet.amount=+ amount
+                previous=wallet.amount
+                wallet.amount= previous+ amount
+                wallet.save()
                 history=WalletHistory.objects.create(
                     wallet=wallet,
                     action='Deposit',
