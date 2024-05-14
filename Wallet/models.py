@@ -1,6 +1,7 @@
 from django.db import models
 from Account.models import User
 import uuid
+from django.utils import timezone
 # Create your models here.
 class MyWallet(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
@@ -17,6 +18,7 @@ class WalletHistory(models.Model):
     action=models.CharField(choices=action,max_length=50)
     amount=models.IntegerField()
     reciever=models.ForeignKey(MyWallet,on_delete=models.CASCADE,null=True,blank=True,related_name='receiver')
+    created_at=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.action
