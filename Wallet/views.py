@@ -13,12 +13,14 @@ class WalletView(APIView):
         try:
             wallet=MyWallet.objects.get(user=user)
             history=WalletHistory.objects.filter(wallet=wallet)
+            serializer=MyWalletSerializer(wallet)
+            historySerializer=WalletHistorySerializer(history,many=True)
             if len(history)>0:
-                serializer=WalletHistorySerializer(history,many=True)
-                return Response({"data":serializer.data},status=200)
+               
+                return Response({"wallet":serializer.data,"history":historySerializer.data},status=200)
             else:
-                serializer=MyWalletSerializer(wallet)
-                return Response({"data":serializer.data},status=200)
+                
+                return Response({"wallet":serializer.data,"history":None},status=200)
         except MyWallet.DoesNotExist:
             return Response({'detail':'Wallet Does\'t exist'},status=404)
     def post(self,request):
