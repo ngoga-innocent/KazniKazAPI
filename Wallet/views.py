@@ -12,7 +12,7 @@ class WalletView(APIView):
         user=request.user
         try:
             wallet=MyWallet.objects.get(user=user)
-            history=WalletHistory.objects.filter(wallet=wallet)
+            history=WalletHistory.objects.filter(wallet=wallet).order_by('-created_at')
             serializer=MyWalletSerializer(wallet)
             historySerializer=WalletHistorySerializer(history,many=True)
             if len(history)>0:

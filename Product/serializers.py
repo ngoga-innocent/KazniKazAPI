@@ -26,7 +26,7 @@ class ProductSerializer(serializers.ModelSerializer):
         queryset=Colors.objects.all(),
         required=False  # Optional, depending on whether you require colors to be specified
     )
-    colors_details=ColorsSerializer(source='colors',many=True)
+    colors_details=ColorsSerializer(source='colors',many=True,read_only=True)
     shop_details=ShopSerializer(source='shop',read_only=True)
     uploader=UserSerializer(read_only=True)
     class Meta:
