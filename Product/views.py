@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .models import ProductImage,ProductModel,Colors,Category,Like,Comment
 from .serializers import ProductImageSerializer,ProductSerializer,ColorsSerializer,CategorySerializer
+from Wallet.models import MyWallet,WalletHistory
+from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
 # Product  views here.
 class ProductView(APIView):
     def get_permissions(self):
@@ -22,15 +24,33 @@ class ProductView(APIView):
         serializer=ProductSerializer(data=request.data,context={'user':request.user})
         product_images = request.FILES.getlist('product_images')
         if serializer.is_valid():
-            product=serializer.save()
-            for product_image in product_images:
-                image_serializer=ProductImageSerializer(data={"product":product.id,"image":product_image})
-                if image_serializer.is_valid():
-                    image_serializer.save()
-                    
+            try:
+                wallet=MyWallet.objects.get(user=request.user.id)
+                print(wallet)
+                price=int(request.data['price'])
+                print(type(price))
+                if price * 0.06 > wallet.amount:
+                    return Response({"detail":"You don't have enough money in your wallet"},status=401)
                 else:
-                    return Response({"detail":image_serializer.errors},status=401)
-            return Response({"product":serializer.data},status=201)
+                   
+                    
+                    wallet.amount =wallet.amount-(price * 0.06)
+                    wallet.save()
+                    wallet_history=WalletHistory.objects.create(wallet=wallet,amount=price*0.06)
+                    wallet_history.save()
+                    product=serializer.save()
+                    for product_image in product_images:
+                        image_serializer=ProductImageSerializer(data={"product":product.id,"image":product_image})
+                        if image_serializer.is_valid():
+                            image_serializer.save()
+                    
+                        else:
+                            return Response({"detail":image_serializer.errors},status=401)
+                    return Response({"product":serializer.data},status=201)
+            except MyWallet.DoesNotExist:
+                return Response({"detail":"A user has no Wallet please contact the Administrator for the wallet"},status=401)        
+
+            
         else :
             return Response({"detail":serializer.errors},status=401)
     def put(self,request):
