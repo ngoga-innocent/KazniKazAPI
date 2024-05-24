@@ -12,5 +12,6 @@ class User(AbstractUser):
     id_card=models.ImageField(upload_to='ids',null=True)
     selfie=models.ImageField(upload_to='selfie',null=True)
     verified=models.BooleanField(default=False)
+    
 
     REQUIRED_FIELDS=['email']

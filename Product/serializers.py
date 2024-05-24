@@ -14,9 +14,13 @@ class ColorsSerializer(serializers.ModelSerializer):
         model=Colors
         fields='__all__'
 class ShopSerializer(serializers.ModelSerializer):
+    owner=UserSerializer(read_only=True)
     class Meta:
         model=ShopModel
         fields='__all__'
+    def create(self, validated_data):
+        validated_data['owner'] =self.context['user']
+        return ShopModel.objects.create(**validated_data)  
 class ProductSerializer(serializers.ModelSerializer):
     uploaded_images=ProductImageSerializer(read_only=True,many=True,source='product_images')
     

@@ -11,8 +11,8 @@ class ShopModel(models.Model):
     thumbnail=models.ImageField(upload_to='Shop_thumbnail')
     location=models.CharField(max_length=255)
     contact=models.CharField(max_length=255,null=True)
-    like=models.IntegerField()
-    followers=models.IntegerField()
+    like=models.IntegerField(default=0)
+    followers=models.IntegerField(default=0)
     
     def __str__(self):
         return self.name

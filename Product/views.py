@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
-from .models import ProductImage,ProductModel,Colors,Category,Like,Comment
-from .serializers import ProductImageSerializer,ProductSerializer,ColorsSerializer,CategorySerializer
+from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel
+from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer
 from Wallet.models import MyWallet,WalletHistory
 from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
 # Product  views here.
@@ -12,6 +12,8 @@ class ProductView(APIView):
         
         if self.request.method == 'POST':
             self.permission_classes = [IsAuthenticated,]  # Require authentication for POST
+        elif self.request.method == 'PUT': 
+            self.permission_classes = [IsAuthenticated,]    
         else:
             self.permission_classes = [AllowAny,]  # Allow any access for other methods
         return [permission() for permission in self.permission_classes]
@@ -87,5 +89,41 @@ class ColorViews(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"color":serializer.data},status=201)
+        else:
+            return Response({"detail":serializer.errors},status=401)
+class ShopView(APIView):
+    def get_permissions(self):
+        
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAuthenticated,]  # Require authentication for POST
+        elif self.request.method == 'PUT':
+            self.permission_classes = [IsAuthenticated,]  # Require authentication for POST    
+        else:
+            self.permission_classes = [AllowAny,]  # Allow any access for other methods
+        return [permission() for permission in self.permission_classes]
+    def get(self,request,shop_id=None): 
+        if shop_id is None:
+            shop=ShopModel.objects.all()
+            serializer=ShopSerializer(shop,many=True,context={"request":request})
+            return Response({"shops":serializer.data},status=200)
+        else:
+           try:
+               shop=ShopModel.objects.get(id=shop_id)
+               serializer=ShopSerializer(shop,context={"request":request})
+               return Response({"shop":serializer.data},status=200)
+           except ShopModel.DoesNotExist:
+               return Response({"detail":"Shop Does not exist"},status=401)
+    def post(self, request):
+        serializer=ShopSerializer(data=request.data,context={'user':request.user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"shop":serializer.data},status=201)
+        else:
+            return Response({"detail":serializer.errors},status=401)
+    def put(self,request):
+        serializer=ShopSerializer(data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"shop":serializer.data},status=200)
         else:
             return Response({"detail":serializer.errors},status=401)
