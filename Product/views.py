@@ -127,3 +127,12 @@ class ShopView(APIView):
             return Response({"shop":serializer.data},status=200)
         else:
             return Response({"detail":serializer.errors},status=401)
+
+# Special Functions for Shops
+
+class UserShops(APIView):
+    permission_classes=[IsAuthenticated]           
+    def get(self, request):
+        shops=ShopModel.objects.filter(owner=request.user.id)
+        serializer=ShopSerializer(shops,many=True,context={"request":request})
+        return Response({"shops":serializer.data},status=200)
