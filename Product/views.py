@@ -109,8 +109,10 @@ class ShopView(APIView):
         else:
            try:
                shop=ShopModel.objects.get(id=shop_id)
+               shop_products=ProductModel.objects.filter(shop=shop)
+               product_serializer=ProductSerializer(shop_products,many=True,context={"request":request})
                serializer=ShopSerializer(shop,context={"request":request})
-               return Response({"shop":serializer.data},status=200)
+               return Response({"shop":serializer.data,"shop_products":product_serializer.data},status=200)
            except ShopModel.DoesNotExist:
                return Response({"detail":"Shop Does not exist"},status=401)
     def post(self, request):
