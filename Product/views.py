@@ -122,13 +122,25 @@ class ShopView(APIView):
             return Response({"shop":serializer.data},status=201)
         else:
             return Response({"detail":serializer.errors},status=401)
-    def put(self,request):
-        serializer=ShopSerializer(data=request.data,partial=True)
+    def put(self,request,shop_id):
+        try:
+            shop=ShopModel.objects.get(id=shop_id)
+        except ShopModel.DoesNot:
+            return Response({"detail":"Shop Does not exist"},status=401)    
+        serializer=ShopSerializer(shop,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"shop":serializer.data},status=200)
         else:
             return Response({"detail":serializer.errors},status=401)
+    def delete(self,request,shop_id):
+        try:
+            shops=ShopModel.objects.get(id=shop_id)
+        except ShopModel.DoesNotExist:
+            return Response({"detail":"Shop Does not exist"},status=401)    
+        
+        shops.delete()
+        return Response({"detail":"Shops Deleted Successfully"},status=200)    
 
 # Special Functions for Shops
 
@@ -138,3 +150,21 @@ class UserShops(APIView):
         shops=ShopModel.objects.filter(owner=request.user.id)
         serializer=ShopSerializer(shops,many=True,context={"request":request})
         return Response({"shops":serializer.data},status=200)
+    # def post(self,request):
+    #     serializer=ShopSerializer(data=request.data,context={'user':request.user})
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({"shop":serializer.data},status=201)
+    #     else:
+    #         return Response({"detail":serializer.errors},status=401)
+    # def delete(self, request):
+    #     shops=ShopModel.objects.filter(owner=request.user.id)
+    #     shops.delete()
+    #     return Response({"detail":"Shops Deleted Successfully"},status=200)
+    # def put(self,request):
+    #     serializer=ShopSerializer(data=request.data,partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({"shop":serializer.data},status=200)
+    #     else:
+    #         return Response({"detail":serializer.errors},status=401)
