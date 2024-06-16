@@ -12,7 +12,7 @@ class MessageSerializer(serializers.ModelSerializer):
     room=RoomSerializer(read_only=True)
     class Meta:
         model=Message
-        fields=['id','room','sender','receiver','message','timestamp']
+        fields=['id','room','sender','receiver','message_type','message','image','video','audio','timestamp']
 
     def create(self,validated_data):
         validated_data['sender'] = self.context['sender']

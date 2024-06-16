@@ -63,5 +63,14 @@ class MessageView(APIView):
                 return Response({"detail": serializer.errors}, status=400)
         
         except User.DoesNotExist:
-            return Response({"detail": "User does not exist"}, status=400)   
+            return Response({"detail": "User does not exist"}, status=400) 
+    def delete(self, request,message_id):
+        try:
+            message=Message.objects.get(id=message_id)
+            message.delete()
+            return Response({"detail":"Message Deleted Successfully"},status=200)
+        except Message.DoesNotExist:
+            return Response({"detail":"Message Does not exist"},status=401)    
+        
+              
 
