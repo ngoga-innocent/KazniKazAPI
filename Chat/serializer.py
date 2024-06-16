@@ -1,0 +1,22 @@
+from rest_framework import serializers
+from .models import Room,Message
+from Account.serializers import UserSerializer
+class RoomSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=Room
+        fields='__all__'
+class MessageSerializer(serializers.ModelSerializer):
+    sender=UserSerializer(read_only=True)
+    receiver=UserSerializer(read_only=True)
+    room=RoomSerializer(read_only=True)
+    class Meta:
+        model=Message
+        fields=['id','room','sender','receiver','message','timestamp']
+
+    def create(self,validated_data):
+        validated_data['sender'] = self.context['sender']
+        validated_data['receiver'] = self.context['receiver']
+        validated_data['room'] = self.context['room']
+        return Message.objects.create(**validated_data)          
+

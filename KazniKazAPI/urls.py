@@ -10,5 +10,6 @@ urlpatterns = [
     path('wallet/',include('Wallet.urls')),
     path('jobs/',include('Jobs.urls')),
     path('news/',include('News.urls')),
+    path('chat/',include('Chat.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
