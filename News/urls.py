@@ -4,6 +4,7 @@ from .views import NewsView
 
 
 urlpatterns = [
-    path('news',NewsView.as_view())
+    path('',NewsView.as_view()),
+      path('<uuid:news_id>',NewsView.as_view())
     
 ]

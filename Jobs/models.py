@@ -9,7 +9,7 @@ class JobCategoryChoice(models.Model):
     def __str__(self):
         return self.category
 class Job(models.Model):
-   
+    
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     job_title=models.CharField(max_length=100)
     job_slug=models.CharField(max_length=255)

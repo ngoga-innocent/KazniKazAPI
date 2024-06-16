@@ -39,6 +39,14 @@ class JobView(APIView):
             return Response({"detail": serializer.errors}, status=400)
         except Job.DoesNotExist:
             return Response({"detail": "Job not found"}, status=404)
+    def delete(self,request,job_id):
+        try:
+            job=Job.objects.get(id=job_id)
+            job.delete()
+            return Response({"detail":"Job Deleted Successfully"},status=200)
+        except Job.DoesNotExist:
+            return Response({"detail":"Job Does not exist"},status=401)    
+           
 
 class JobCategoryViews(APIView):
     permission_classes = [AllowAny]
