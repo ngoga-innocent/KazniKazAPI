@@ -8,15 +8,17 @@ from Account.models import User
 from django.db.models import Q
 # Create your views here.
 class RoomView(APIView):
-    def get(self,request, room_id=None):
-        if room_id is not None:
-            room=Room.objects.get(id=room_id)
-            messages=Message.objects.filter(room=room)
-            serializer=MessageSerializer(messages,many=True,context={"request":request})
-            return Response({"messages":serializer.data},status=200)
-        rooms=Room.objects.all()
+    def get(self,request):
+        rooms=Room.objects.filter(user2=request.user).order_by('-timestamp')
         serializer=RoomSerializer(rooms,many=True,context={"request":request})
         return Response({"rooms":serializer.data},status=200)
+    def delete(self,request,room_id):
+        try:
+            room=Room.objects.get(id=room_id)
+            room.delete()
+            return Response({"detail":"Room Deleted Successfully"},status=200)
+        except Room.DoesNotExist:
+            return Response({"detail":"Room Does not exist"},status=401)
     
 class MessageView(APIView):
     def get_permissions(self):

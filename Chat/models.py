@@ -1,12 +1,13 @@
 from django.db import models
 from Account.models import User
 import uuid
+from django.utils import timezone
 # Create your models here.
 class Room(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     user1=models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_1')
     user2=models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_2')
-
+    timestamp=models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.user1.username) + " and " + str(self.user2.username)
 class Message(models.Model):
@@ -30,4 +31,4 @@ class Message(models.Model):
     timestamp=models.DateTimeField(auto_now_add=True)    
 
     def __str__(self):
-        return str(self.message) + " and " + self.id
+        return str(self.message) + " and " + str(self.id)
