@@ -2,6 +2,7 @@ from django.db import models
 from Account.models import User
 import uuid
 from django.utils import timezone
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 # Create your models here.
 class Room(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
@@ -26,7 +27,7 @@ class Message(models.Model):
     message_type=models.CharField(max_length=500,default='text')
     message=models.CharField(max_length=100000,null=True,blank=True)
     image=models.ImageField(upload_to='Chat/Image',null=True,blank=True)
-    video=models.FileField(upload_to='Chat/Video',null=True,blank=True)
+    video=models.FileField(upload_to='Chat/Video',storage=RawMediaCloudinaryStorage(resource_type='video'),null=True,blank=True)
     audio=models.FileField(upload_to='Chat/Audio',null=True,blank=True)
     timestamp=models.DateTimeField(auto_now_add=True)    
 

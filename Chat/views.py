@@ -6,6 +6,7 @@ from .models import Room,Message
 from .serializer import RoomSerializer,MessageSerializer
 from Account.models import User
 from django.db.models import Q
+import cloudinary.uploader
 # Create your views here.
 class RoomView(APIView):
     def get(self,request):
@@ -52,14 +53,15 @@ class MessageView(APIView):
             if not room:
                 room = Room.objects.create(user1=request.user,user2=user2)
             
-            
             serializer = MessageSerializer(
                 data=request.data, 
                 context={'sender': request.user, 'receiver': user2, "room": room}
             )
             
             if serializer.is_valid():
-                serializer.save()
+                chat=serializer.save()
+                if chat.message_type == 'video':
+                    pass
                 return Response({"message": serializer.data}, status=201)
             else:
                 return Response({"detail": serializer.errors}, status=400)
