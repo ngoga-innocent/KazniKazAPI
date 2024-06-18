@@ -9,8 +9,13 @@ from django.db.models import Q
 import cloudinary.uploader
 # Create your views here.
 class RoomView(APIView):
+    def get_permissions(self):
+        self.permission_classes = [IsAuthenticated,]  # Require authentication for POST
+         # Allow any access for other methods
+        return [permission() for permission in self.permission_classes]
     def get(self,request):
-        rooms=Room.objects.filter(user2=request.user).order_by('-timestamp')
+        
+        rooms=Room.objects.filter(Q(user2=request.user)|Q(user1=request.user)).order_by('-timestamp')
         serializer=RoomSerializer(rooms,many=True,context={"request":request})
         return Response({"rooms":serializer.data},status=200)
     def delete(self,request,room_id):

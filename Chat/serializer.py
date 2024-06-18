@@ -2,10 +2,11 @@ from rest_framework import serializers
 from .models import Room,Message
 from Account.serializers import UserSerializer
 class RoomSerializer(serializers.ModelSerializer):
-    
+    user1=UserSerializer(read_only=True)
+    user2=UserSerializer(read_only=True)
     class Meta:
         model=Room
-        fields='__all__'
+        fields=['id','user1','user2']
 class MessageSerializer(serializers.ModelSerializer):
     sender=UserSerializer(read_only=True)
     receiver=UserSerializer(read_only=True)

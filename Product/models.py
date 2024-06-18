@@ -59,3 +59,5 @@ class Comment(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)  
     commenter=models.ForeignKey(User,on_delete=models.CASCADE)
     shop=models.ForeignKey(ShopModel,on_delete=models.CASCADE)
+
+        
