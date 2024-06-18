@@ -12,5 +12,10 @@ def update_last_message(sender,instance,created,**kwargs):
             room.last_message="Image Message"    
         elif instance.message_type=="video":
             room.last_message="Video Message"
-            
+
         room.save()
+
+        user_unread_message=Message.objects.filter(room=instance.room,receiver=instance.sender,is_read=False)
+        for message in user_unread_message:
+            message.is_read=True
+            message.save()
