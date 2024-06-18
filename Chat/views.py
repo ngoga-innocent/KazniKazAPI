@@ -7,6 +7,8 @@ from .serializer import RoomSerializer,MessageSerializer
 from Account.models import User
 from django.db.models import Q
 import cloudinary.uploader
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 class RoomView(APIView):
     def get_permissions(self):
@@ -37,7 +39,7 @@ class MessageView(APIView):
            room=Room.objects.filter(Q(user1=request.user.id,user2=user2.id)| Q(user2=request.user.id,user1=user2.id)).first()
            if room is None:
                room=Room.objects.create(user1=request.user,user2=user2)
-           messages=Message.objects.filter(room=room)
+           messages=Message.objects.filter(room=room).order_by('timestamp')
            serializer=MessageSerializer(messages,many=True,context={"request":request})
            return Response({"messages":serializer.data},status=200)
 
@@ -89,5 +91,7 @@ class MessageView(APIView):
             return Response({"detail":"Message Saved Successfully"},status=200)  
         except Message.DoesNotExist:
             return Response({"detail":"Message Does not exist"},status=401)
+
+
               
 
