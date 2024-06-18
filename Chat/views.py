@@ -80,6 +80,14 @@ class MessageView(APIView):
             return Response({"detail":"Message Deleted Successfully"},status=200)
         except Message.DoesNotExist:
             return Response({"detail":"Message Does not exist"},status=401)    
-        
+    def put(self,request,receiver_id):
+        try:
+           
+            message=Message.objects.get(id=receiver_id)
+            message.is_read=True
+            message.save()
+            return Response({"detail":"Message Saved Successfully"},status=200)  
+        except Message.DoesNotExist:
+            return Response({"detail":"Message Does not exist"},status=401)
               
 
