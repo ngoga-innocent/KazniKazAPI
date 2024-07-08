@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'Jobs',
     'News',
     'Chat',
-
+    'HomeApp',
     'rest_framework',
     'rest_framework.authtoken',
     'cloudinary',

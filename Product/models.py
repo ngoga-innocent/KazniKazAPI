@@ -3,10 +3,16 @@ import uuid
 from Account.models import User
 from django.utils import timezone
 # Create your models here.
-
+class ShopCategory(models.Model):
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4)
+    name=models.CharField(max_length=255,unique=True)
+    def __str__(self):
+        return self.name
 class ShopModel(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4)
     name=models.CharField(max_length=255,null=False)
+    shop_category=models.ForeignKey(ShopCategory,on_delete=models.CASCADE,null=True,blank=True)
+    slug=models.CharField(max_length=255,null=True,blank=True)
     owner=models.ForeignKey(User,on_delete=models.CASCADE,related_name='shop_owner')
     thumbnail=models.ImageField(upload_to='Shop_thumbnail')
     location=models.CharField(max_length=255)
@@ -16,6 +22,8 @@ class ShopModel(models.Model):
     
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name_plural='Shops'
 class Colors(models.Model):
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     color=models.CharField(max_length=255)
@@ -27,6 +35,15 @@ class Category(models.Model):
     name=models.CharField(max_length=255)
     thumbnail=models.ImageField(upload_to='Category_thumbnails')
     parent=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name_plural='Categories'
+    def getCategoryChildren(self):
+        return Category.objects.filter(parent=self)   
+    def getProductCategory(self):
+        return self.productmodel_set.all() 
 class ProductModel(models.Model):
 
     choice=(("Normal","Normal"),("Vip","Vip"))
@@ -45,6 +62,8 @@ class ProductModel(models.Model):
 
     def __str__(self):
         return self.name
+    class Meta: 
+        verbose_name_plural='Products'
 class ProductImage(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     product=models.ForeignKey(ProductModel,on_delete=models.CASCADE,related_name='product_images')
@@ -59,5 +78,14 @@ class Comment(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)  
     commenter=models.ForeignKey(User,on_delete=models.CASCADE)
     shop=models.ForeignKey(ShopModel,on_delete=models.CASCADE)
+class OurAds(models.Model):
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    thumbnail=models.ImageField(upload_to='OurAds/',null=False)
+    name=models.CharField(max_length=255,null=False)
+
+    def __str__(self):
+        return f"{{self.name}}- {{self.id}}" 
+    class Meta:
+        verbose_name_plural='Our Ads'   
 
         

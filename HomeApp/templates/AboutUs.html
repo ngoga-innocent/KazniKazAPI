@@ -1,0 +1,170 @@
+{% extends 'base.html' %} {% block in_page_styles %}
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  .container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  header {
+    background-color: #da9f21;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+  }
+  h1,
+  h2,
+  h3 {
+    color: #da9f21;
+  }
+  .section {
+    margin-bottom: 40px;
+  }
+  .section h2 {
+    border-bottom: 2px solid #da9f21;
+    padding-bottom: 10px;
+  }
+  .section p {
+    margin: 20px 0;
+  }
+  .section ul {
+    list-style: none;
+    padding: 0;
+  }
+  .section ul li {
+    background: #f4f4f4;
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 4px solid #da9f21;
+  }
+  footer {
+    background-color: #da9f21;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+</style>
+{% endblock in_page_styles %} {% block Content %}
+<header>
+  <h1 class="text-white font-bold">About Us</h1>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>Welcome to Kaznikaz!</h2>
+    <p>
+      We are a dedicated commission app designed to facilitate the buying,
+      selling, and advertising of goods, products, land, and services. At
+      Kaznikaz, our mission is to empower individuals and businesses by
+      providing an intuitive and efficient platform for showcasing their
+      offerings and reaching a wider audience.
+    </p>
+  </div>
+  <div class="section">
+    <h2>Our Vision</h2>
+    <p>
+      Kaznikaz aims to become the leading marketplace where people can
+      effortlessly connect to trade goods, find services, and explore
+      opportunities. We strive to create a seamless experience that brings value
+      to both sellers and buyers, enhancing their ability to achieve their
+      goals.
+    </p>
+  </div>
+  <div class="section">
+    <h2>Our Services</h2>
+    <ul>
+      <li>
+        <h3>Marketplace</h3>
+        <ul>
+          <li>
+            Sell Goods and Products: List a variety of items for sale, from
+            electronics and clothing to handmade crafts and more.
+          </li>
+          <li>
+            Advertise Land and Properties: Showcase real estate listings,
+            including residential, commercial, and agricultural properties.
+          </li>
+          <li>
+            Rent Services: Provide and discover rental services for equipment,
+            vehicles, properties, and more.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <h3>Job Listings</h3>
+        <p>
+          We understand the importance of employment opportunities in our
+          community. Kaznikaz provides a platform for job postings, enabling
+          employers to inform potential candidates about available positions for
+          free. This feature helps bridge the gap between job seekers and
+          employers, fostering a thriving job market.
+        </p>
+      </li>
+      <li>
+        <h3>News and Updates</h3>
+        <p>
+          Kaznikaz also keeps users informed with the latest service news,
+          industry trends, and updates, ensuring they stay up-to-date with
+          relevant information.
+        </p>
+      </li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>Why Choose Kaznikaz?</h2>
+    <ul>
+      <li>
+        User-Friendly Interface: Our app is designed to be easy to navigate,
+        allowing users to quickly list items, search for products, and connect
+        with others.
+      </li>
+      <li>
+        Free Job Postings: We support local communities by offering free job
+        postings, helping employers find the right talent without additional
+        costs.
+      </li>
+      <li>
+        Secure Transactions: We prioritize the security of our users'
+        information and transactions, implementing robust measures to protect
+        data.
+      </li>
+      <li>
+        Customer Support: Our dedicated support team is always ready to assist
+        with any inquiries or issues, ensuring a smooth and satisfying
+        experience for all users.
+      </li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>Our Commitment</h2>
+    <p>
+      At Kaznikaz, we are committed to continuous improvement and innovation. We
+      listen to our users' feedback and adapt our services to meet their
+      evolving needs. Our goal is to build a trusted platform that serves as a
+      valuable resource for individuals and businesses alike.
+    </p>
+  </div>
+  <div class="section">
+    <h2>Contact Us</h2>
+    <p>
+      We value your feedback and are here to help with any questions or
+      concerns. Please feel free to reach out to us at:
+    </p>
+    <p>Email: <a href="mailto:kaznikaz@gmail.com">kaznikaz@gmail.com</a></p>
+  </div>
+</div>
+<footer>
+  <p>
+    Thank you for choosing Kaznikaz. Together, we are building a community where
+    possibilities are endless and opportunities are abundant.
+  </p>
+</footer>
+{% endblock Content %}

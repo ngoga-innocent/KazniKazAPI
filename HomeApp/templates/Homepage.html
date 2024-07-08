@@ -1,0 +1,220 @@
+{% extends 'base.html' %} {% load static %} <br />
+{% block title %} Kaz ni Kaz {% endblock title %}
+<br />
+{% block Content %}
+
+<div class="md:px-32 flex md:flex-row gap-x-2 flex-col">
+  <div
+    class="w-[20%] h-fit pb-2 max-h-screen overflow-y-scroll scrollbar-hidden bg-white"
+  >
+    <div
+      class="bg-primary py-3 w-[100%] items-center justify-center rounded-md"
+    >
+      <h2 class="font-bold text-white text-center">Products By Category</h2>
+    </div>
+    {% if categories %}
+    <div class="gap-y-2">
+      {% for category in categories %}
+      <div class="py-1 category hover:bg-slate-200">
+        <a href="#" class="">{{ category.name }}</a>
+        {% if category.getCategoryChildren %}
+        <div>
+          {% for children in category.getCategoryChildren %}
+          <div class="children ml-5 gap-y-1 my-1 px-2 rounded-md py-2">
+            <h3 class="text-black font-bold">{{children.name}}</h3>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No categories found.</p>
+    {% endif %}
+  </div>
+
+  <div
+    class="carousel relative max-h-[50%] w-[60%] overflow-y-hidden scrollbar-hidden"
+  >
+    <div class="carousel-inner w-[100%] relative">
+      {% for ads in our_ads %}
+      <div
+        class="carousel-item {% if forloop.first %}active{% endif %} min-w-[100%] max-h-[50%]"
+        style="height: 60vh;"
+      >
+        <img
+          src="{{ ads.thumbnail.url }}"
+          alt="Image {{ forloop.counter }}"
+          class="object-cover h-[100%] w-[100%] object-center"
+        />
+      </div>
+
+      {% endfor %}
+    </div>
+    <button class="carousel-control prev" onclick="prevSlide()">
+      &#10094;
+    </button>
+    <button class="carousel-control next" onclick="nextSlide()">
+      &#10095;
+    </button>
+  </div>
+  <div class="flex-1 flex flex-col items-center gap-y-2">
+    <img
+      src="{% static 'images/icon.png' %}"
+      class="bg-slate-100 rounded-full w-20 h-20 border-2"
+      alt=""
+    />
+    <div class="flex flex-col items-center">
+      {% if user.is_authenticated %}
+      <div>
+        Welcome, {{user.username}} to Kaz ni Kaz
+      </div>
+      {% else %}
+      <div class="flex flex-row item-row gap-x-4">
+        <button class="py-2 px-4 rounded-md bg-primary text-white font-bold">
+          Login
+        </button>
+        <button class="py-2 px-4 rounded-md bg-primary text-white font-bold">
+          Register
+        </button>
+      </div>
+      {% endif %}
+      <div class="my-2 flex flex-col gap-y-2 items-center mx-auto">
+        <div class="flex flex-row gap-x-2 items-center">
+          <i class="fa-solid fa-credit-card" style="font-size: xx-large;"></i>
+          <div>
+            <h1 class="font-bold">Safe Payment</h1>
+            <p class="text-sm">Popular and secure payment methods.</p>
+          </div>
+        </div>
+        <div class="flex flex-row gap-x-2 items-center">
+          <i class="fa-solid fa-certificate" style="font-size: xx-large;"></i>
+
+          <div>
+            <h1 class="font-bold">Trusted and Verified Shops</h1>
+            <p class="text-sm">We works with trusted and verified shops.</p>
+          </div>
+        </div>
+        <div class="flex flex-row gap-x-2 items-center">
+          <i class="fa-solid fa-lock" style="font-size: xx-large;"></i>
+
+          <div>
+            <h1 class="font-bold">Secured Privacy</h1>
+            <p class="text-sm">
+              Your Client and shop Privacy are Secured with Us.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="md:px-32">
+  {% if categories %} {% for category in categories %} <br />
+  {% if category.getCategoryChildren %} <br />
+  {% for child in category.getCategoryChildren %} <br />
+  {% if child.getProductCategory %}
+  <h1 class="font-bold text-primary text-xl mx-20">{{child.name}}</h1>
+  <div
+    class="flex flex-row max-w-[100%] overflow-x-scroll gap-x-2 w-[100%] mx-auto"
+    style="height: 24vh;"
+  >
+    {% for product in child.getProductCategory %}
+    <a
+      href="#"
+      class="relative w-[25%] h-[100%]"
+      style="background-color: rgba(0, 0, 0, 0.3);"
+    >
+      <img
+        src="{{product.thumbnail.url}}"
+        class="h-[85%] w-[100%] object-cover"
+        alt=""
+      />
+      <p class="font-bold my-1 px-2 text-xs">{{product.name}}</p>
+      <div class="absolute top-2 left-2 py-2 bg-primary px-4 rounded-md">
+        <h3 class="font-bold text-white text-center">{{product.price}} $</h3>
+      </div>
+      {% if product.discount %}
+      <div
+        class="absolute bottom-2 right-2 py-2 bg-primary px-4 rounded-tr-xl rounded-bl-xl hover:bg-red-500 transition-all ease-in-out"
+      >
+        <h3 class="font-bold text-white text-center">-{{product.discount}}%</h3>
+      </div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %} {% endfor %} {% else %}
+  <!-- When A category does't have a child -->
+  {% if category.getProductCategory %}
+  <h2 class="font-bold text-primary text-xl mx-20">{{category.name}}</h2>
+  <div
+    class="flex flex-row max-w-[100%] overflow-x-scroll gap-x-2 w-[100%] mx-auto"
+    style="height: 24vh;"
+  >
+    {% for product in category.getProductCategory %}
+    <a
+      href="#"
+      class="relative w-[25%] h-[100%]"
+      style="background-color: rgba(0, 0, 0, 0.3);"
+    >
+      <img
+        src="{{product.thumbnail.url}}"
+        class="h-[85%] w-[100%] object-contain"
+        alt=""
+      />
+      <p class="font-bold my-1 text-xs">{{product.name}}</p>
+      <div class="absolute top-2 left-2 py-2 bg-primary px-4 rounded-md">
+        <h3 class="font-bold text-white text-center">{{product.price}} $</h3>
+      </div>
+      {% if product.discount %}
+      <div
+        class="absolute bottom-2 right-2 py-2 bg-primary px-4 rounded-tr-xl rounded-bl-xl hover:bg-red-500 transition-all ease-in-out"
+      >
+        <h3 class="font-bold text-white text-center">-{{product.discount}}%</h3>
+      </div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  <br />
+  {% endif %} {% endif %} {% endfor %} {% endif %}
+</div>
+{% endblock Content %} {% block script %}
+<script>
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    const slides = document.querySelectorAll(".carousel-item");
+    if (index >= slides.length) {
+      currentIndex = 0;
+    } else if (index < 0) {
+      currentIndex = slides.length - 1;
+    } else {
+      currentIndex = index;
+    }
+    const offset = -currentIndex * 100;
+    document.querySelector(
+      ".carousel-inner"
+    ).style.transform = `translateX(${offset}%)`;
+  }
+
+  function nextSlide() {
+    showSlide(currentIndex + 1);
+  }
+
+  function prevSlide() {
+    showSlide(currentIndex - 1);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    showSlide(currentIndex);
+    setInterval(() => {
+      showSlide(currentIndex + 1);
+    }, 3000);
+    document.querySelector(".next").addEventListener("click", nextSlide);
+    document.querySelector(".prev").addEventListener("click", prevSlide);
+  });
+</script>
+{% endblock script %}

@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: '100%';
+    padding: 0;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: whitesmoke;
+}
+/* .nav{
+    padding: 0% 2% 0% 2%;
+} */
+/* .nav li{
+    padding:4px 8px;
+} */
+.nav li:hover{
+    background-color: #da9f21;
+    transition: all 0.5s ease-in-out;
+    border-radius: 10px;
+    padding: 5px 10px;
+
+    a{
+        color: white !important;
+        font-weight: bolder;
+    }
+
+}
+.children{
+    display: none ;
+}
+.category:hover .children {
+    display: block ;
+    /* background-color: #868582; */
+}
+
+.scrollbar-hidden{
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    
+    
+}
+.carousel {
+    position: relative;
+    width: 60%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+
+
+/* .carousel-item img {
+    object-fit: contain;
+    
+    
+    
+} */
+
+.carousel-item h3 {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+input{
+    outline-offset: none;
+    outline: none;
+}
