@@ -93,11 +93,14 @@ class UserProfile(APIView):
 
 class DeviceRegister(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = DeviceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"device": serializer.data}, status=201)
-        return Response({"detail": serializer.errors}, status=400)
+        token=request.data.get('token')
+        check_token=Device.objects.filter(token=token).exists()
+        if not check_token:
+            serializer = DeviceSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"device": serializer.data}, status=201)
+            return Response({"detail": serializer.errors}, status=400)
 class NotificationView(APIView):
     def get(self, request):
         five_days=timezone.now() - timedelta(days=5)
