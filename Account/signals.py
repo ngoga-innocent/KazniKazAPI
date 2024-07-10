@@ -15,11 +15,11 @@ def send_welcome_email(sender, instance, created, **kwargs):
             fail_silently=False,
         )
         notification=Notifications.objects.create(User=instance,notification_title="Registration Success", notification_body=f"Hello" +instance.username + " Your Account is Successfully Created",type="Self")
-@receiver(post_save,sender=Device)
-def send_message_notification(sender, instance,created,**kwargs):
-    if created:
-        print(instance.token)
-        send_push_notification(instance.token,f"Welcome" + instance.User.username +"  to Kaz ni Kaz!","Connect with The world Mobile!")
-        notification=Notifications.objects.create(User=instance,notification_title="Registration Success", notification_body=f"Hello" +instance.username + " Your Account is Successfully Created",type="Self")
+# @receiver(post_save,sender=Device)
+# def send_message_notification(sender, instance,created,**kwargs):
+#     if created:
+#         print(instance.token)
+#         send_push_notification(instance.token,f"Welcome" + instance.User.username +"  to Kaz ni Kaz!","Connect with The world Mobile!")
+#         notification=Notifications.objects.create(User=instance,notification_title="Registration Success", notification_body=f"Hello" +instance.username + " Your Account is Successfully Created",type="Self")
        
-    send_push_notification(instance.token,f"Welcome Back" + instance.User.username +"  to Kaz ni Kaz!","Connect with The world Mobile!")    
+#     send_push_notification(instance.token,f"Welcome Back" + instance.User.username +"  to Kaz ni Kaz!","Connect with The world Mobile!")    
