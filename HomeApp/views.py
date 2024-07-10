@@ -16,9 +16,9 @@ class HomeView(View):
             product=ProductModel.objects.get(pk=pk)
             context={'product': product}
             return render(request, 'ProductPage.html',context)
-        # token="e2cxTDGXR3KwvlixkpWQF5:APA91bEZyCaZcVGYwSUf7sQsUtjE62GV0KtdHe-fsyweoGEqJ-MZnvflRn34xLaWYWMwWumycYMb0LRf1o1swb1Ejf4mwPMThlVPtTnTFNm8tHRD4xIvGHmc4ufMfJXq3x8ZrQWMtYQw"
-        # notification=send_push_notification(token, 'Kaz ni Kaz Api checking notification', 'Description of Fcm notifications')
-        # print(notification)
+        token="e2cxTDGXR3KwvlixkpWQF5:APA91bHPUt5t8I821qDCmr9ADECz6ZWNewgNQuP4i3aHc60yPVg4gdGakEd6dGuAILQCqK_a8Ai-xU_Z7LB1U4unJLwApysvpgQ5p0lo1o1Dad7zsFWM1uy6UaH-kdDmO_08hMOL_aW9"
+        notification=send_push_notification(token, 'Kaz ni Kaz Api checking notification', 'Description of Fcm notifications')
+        print(notification)
         categories = Category.objects.filter(parent=None).order_by('name')
         new_product=ProductModel.objects.filter(Q(place='admin') | Q(discount__gte=0)).order_by('-created_at')[:12]
         our_ads=OurAds.objects.all()

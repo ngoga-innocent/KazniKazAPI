@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User,Device,Notifications
 from django.contrib.auth.password_validation import validate_password
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -28,3 +28,15 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        User=UserSerializer(read_only=True,required=False)
+        model=Device 
+        fields=['token','User']   
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        User=UserSerializer(read_only=True,required=False)
+        model=Notifications
+        fields='__all__'        

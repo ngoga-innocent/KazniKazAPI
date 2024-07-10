@@ -5,6 +5,7 @@ from django.utils import timezone
 class New(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     title=models.CharField(max_length=100)
+    
     link=models.TextField()
     thumbnail=models.ImageField(upload_to='News')
     created_at=models.DateTimeField(default=timezone.now)

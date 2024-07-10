@@ -1,15 +1,26 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User
-from .serializers import UserSerializer
+from .models import User,Device,Notifications
+from .serializers import UserSerializer,DeviceSerializer,NotificationSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
 #Registration View
 class  Register(APIView):
     def post(self,request):
+        device_token=request.data.get('device_token')
+        
         serializer=UserSerializer(data=request.data,context={"request":request})
         if serializer.is_valid():
-            serializer.save()
+            user=serializer.save()
+            try:
+                device=Device.objects.get(token=device_token)
+                device.User=user
+                device.save()
+            except Device.DoesNotExist:
+                device=Device.objects.create(token=device_token,User=user)    
             return Response({"user":serializer.data},status=201)
         else:
             return Response({"detail":serializer.errors})
@@ -63,9 +74,43 @@ class UserProfile(APIView):
         user=request.user
         serializer=UserSerializer(user,data=request.data,partial=True,context={"request":request})
         if serializer.is_valid():
+
             serializer.save()
+            notification_data={
+                "notification_title":"Your Profile has been updated",
+                "notification_body":"Your profile has been updated Successfully",
+                "User":user,
+                "type":"Self"
+            }
+            notification_serializer=NotificationSerializer(data=notification_data)
+            if notification_serializer.is_valid():
+                notification_serializer.save()
+            else:
+                print(notification_serializer.errors)    
             return Response({"user":serializer.data})
         return Response({"detail":serializer.errors})
 
 
-          
+class DeviceRegister(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = DeviceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"device": serializer.data}, status=201)
+        return Response({"detail": serializer.errors}, status=400)
+class NotificationView(APIView):
+    def get(self, request):
+        five_days=timezone.now() - timedelta(days=5)
+        print(five_days)
+        if request.user.is_authenticated:
+            notifications=Notifications.objects.filter(Q(User=request.user) | Q(type='App'), is_read=False)
+        notifications=Notifications.objects.filter(type='App', is_read=False,timestamp__gte=five_days)
+        serializer=NotificationSerializer(notifications,many=True)
+        return Response({"notifications":serializer.data})
+    def put(self, request):
+        notification_id=request.data.get('notification_id')
+        notification=Notifications.objects.get(id=notification_id)
+        notification.is_read=True
+        notification.save()
+        return Response({"detail":"Notification Marked As Read"})
+

@@ -15,3 +15,30 @@ class User(AbstractUser):
     
 
     REQUIRED_FIELDS=['email']
+
+class Device(models.Model):
+    User=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
+    token=models.CharField(max_length=1000)   
+
+    def __str__(self):
+        return str(self.User)
+    
+class Notifications(models.Model):
+    choices=(
+        ("App", "App"),
+        ("Self","Self"),
+        
+    )
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    notification_title=models.CharField(max_length=255,null=True)
+    notification_body=models.CharField(max_length=1000)
+    timestamp=models.DateTimeField(auto_now_add=True)
+    is_read=models.BooleanField(default=False)
+    type=models.CharField(max_length=50,choices=choices)
+    def __str__(self):    
+        return self.notification_title
+    class Meta:
+        
+        verbose_name = 'Notifcation'
+        verbose_name_plural = 'Notifcations'
