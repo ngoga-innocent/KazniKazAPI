@@ -20,7 +20,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
                 send_push_notification(device.token,f"" +instance.name +" Uploaded to Kaz ni Kaz!","Your Product has been Successfully Uploaded!")
             except Device.DoesNotExist:  
                 pass              
-        if instance.discount >0:
+        if instance.discount:
             alldevice =Device.objects.all()
             for device in alldevice:send_push_notification(device.token,f"New Product" +instance.name +"  to Kaz ni Kaz!","Don't Miss This New Product!")
                

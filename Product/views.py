@@ -28,9 +28,9 @@ class ProductView(APIView):
         if serializer.is_valid():
             try:
                 wallet=MyWallet.objects.get(user=request.user.id)
-                print(wallet)
+                # print(wallet)
                 price=int(request.data['price'])
-                print(type(price))
+                # print(type(price))
                 if price * 0.06 > wallet.amount:
                     return Response({"detail":"You don't have enough money in your wallet"},status=401)
                 else:

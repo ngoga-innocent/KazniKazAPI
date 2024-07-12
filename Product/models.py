@@ -15,6 +15,7 @@ class ShopModel(models.Model):
     shop_category=models.ForeignKey(ShopCategory,on_delete=models.CASCADE,null=True,blank=True)
     slug=models.CharField(max_length=255,null=True,blank=True)
     owner=models.ForeignKey(User,on_delete=models.CASCADE,related_name='shop_owner')
+    verified=models.BooleanField(default=False)
     thumbnail=models.ImageField(upload_to='Shop_thumbnail')
     location=models.CharField(max_length=255)
     contact=models.CharField(max_length=255,null=True)
