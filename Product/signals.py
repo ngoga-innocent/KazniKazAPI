@@ -10,7 +10,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
     if created:
         if instance.shop:
             try:
-                device=Device.objects.get(user=instance.shop.owner)
+                device=Device.objects.get(User=instance.shop.owner)
                 send_push_notification(device.token,f"" +instance.name +" Uploaded to Kaz ni Kaz!","Your Product has been Successfully Uploaded!")
             except Device.DoesNotExist:  
                 pass      
