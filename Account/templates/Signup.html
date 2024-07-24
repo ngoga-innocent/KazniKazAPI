@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaz ni Kaz - Login</title>
+    <link
+      rel="icon"
+      href="{% static 'images/icon.png' %}"
+      type="image/x-icon"
+    />
+    <script src="{% static 'Js/jquery.js' %}"></script>
+    <style>
+      .active {
+        color: #da9f21;
+        background-color: rgba(0, 0, 0, 0.1);
+
+        border-bottom: 3px solid #da9f21;
+        font-weight: bolder;
+      }
+      .register_view,
+      .login_view {
+        transition: all 0.5s ease-in-out;
+      }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+  </head>
+  <body>
+    <!-- Mobile View -->
+    <div id="Mobile View" class="flex flex-col">
+      <div
+        class="py-2 px-2 flex flex-row items-center justify-between bg-white shadow-sm shadow-slate-300 z-5"
+      >
+        <a href="{% url 'homepage' %}" class="text-primary text-2xl font-bold">
+          KAZ NI KAZ</a
+        >
+        <p>Icon</p>
+      </div>
+    </div>
+    <div class="flex flex-row items-center">
+      <div class="hidden md:flex flex-1"></div>
+      <div class="flex-1">
+        <div class="flex flex-row items-center">
+          <button id="login_button" class="flex-1 py-3 active">LOGIN</button>
+          <button id="signup_button" class="flex-1 py-3">SIGN UP</button>
+        </div>
+        <!-- login View -->
+        <div
+          class="login_view flex-1 px-4 py-4 my-4 gap-y-5 flex flex-col items-center"
+        >
+          <h1 class="font-bold text-xl">Welcome</h1>
+          <p class="text-gray-500 text-sm">
+            Use your credentials to access your account
+          </p>
+          <button
+            class="px-3 py-2 my-4 text-sm font-bold rounded-lg bg-red-500 text-white"
+          >
+            Login in With Google
+          </button>
+          <div class="relative items-center my-4 justify-center w-[100%]">
+            <hr class="h-1 bg-gray-100" />
+            <div
+              class="absolute right-[50%] -top-[300%] text-xs h-8 w-8 flex flex-col items-center justify-center rounded-full bg-white z-4 shadow-sm shadow-slate-200"
+            >
+              or
+            </div>
+          </div>
+          <form action="" class="my-3">
+            <input
+              type="email"
+              class="bg-white border-b-2 py-2 px-3 rounded-md w-[100%]"
+              name="email"
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              class="bg-white border-b-2 my-2 py-2 px-3 rounded-md w-[100%]"
+              name="Password"
+              placeholder="Password"
+            />
+            <div class="flex flex-row justify-between my-2">
+              <div>
+                <input type="checkbox" name="" />
+                <label for="check">Remember me?</label>
+              </div>
+              <a class="text-sm font-bold text-slate-500" href=""
+                >Forgot password</a
+              >
+            </div>
+            <button
+              type="submit"
+              class="flex flex-row items-center justify-center bg-primary py-2 w-[100%] rounded-lg text-white font-bold gap-x-2"
+            >
+              <p>icon</p>
+              <h2>Login</h2>
+            </button>
+          </form>
+        </div>
+        <!-- Register View -->
+        <div
+          class="register_view hidden flex-1 px-4 py-4 my-4 gap-y-5 flex-col items-center"
+        >
+          <h1 class="font-bold text-xl">Sign Up</h1>
+          <p class="text-gray-500 text-sm">
+            Register your new Account
+          </p>
+          <button
+            class="px-3 py-2 my-4 text-sm font-bold rounded-lg bg-red-500 text-white"
+          >
+            Login in With Google
+          </button>
+          <div class="relative items-center my-4 justify-center w-[100%]">
+            <hr class="h-1 bg-gray-100" />
+            <div
+              class="absolute right-[50%] -top-[300%] text-xs h-8 w-8 flex flex-col items-center justify-center rounded-full bg-white z-4 shadow-sm shadow-slate-200"
+            >
+              or
+            </div>
+          </div>
+          <form class="my-3"></form>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("#login_button").on("click", function () {
+          $(".login_view").show();
+          $(".register_view").hide();
+          $("#login_button").addClass("active");
+          $("#signup_button").removeClass("active");
+        });
+        $("#signup_button").on("click", function () {
+          $(".login_view").hide();
+          $(".register_view").addClass("flex");
+          $(".register_view").show();
+          $("#signup_button").addClass("active");
+          $("#login_button").removeClass("active");
+          $(".register_view").removeClass("hidden");
+          $(".login_view").addClass("hidden");
+        });
+      });
+    </script>
+  </body>
+</html>

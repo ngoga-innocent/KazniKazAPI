@@ -1,9 +1,11 @@
 
 from django.urls import path
-from .views import WalletView
+from .views import WalletView,events,Webhook
 
 
 urlpatterns = [
-    path('',WalletView.as_view(),name='wallet')
+    path('',WalletView.as_view(),name='wallet'),
+    path('events',events),
+    path('webhook', Webhook)
     
 ]

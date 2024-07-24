@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import Register,Login,LogoutView,UserProfile,DeviceRegister,NotificationView
+from .views import Register,Login,LogoutView,UserProfile,DeviceRegister,NotificationView,WebSignup
 
 
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path('logout',LogoutView.as_view()),
     path('profile',UserProfile.as_view()),
     path('notification',NotificationView.as_view()),
+    path('Login',WebSignup.as_view(),name='web_signup'),
     
 ]

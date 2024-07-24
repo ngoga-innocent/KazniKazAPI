@@ -22,3 +22,14 @@ class WalletHistory(models.Model):
 
     def __str__(self):
         return f"{self.action} order from {self.created_at}"
+class Payments(models.Model):
+    id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False) 
+    referenceKey=models.CharField(max_length=255,null=False,blank=False)
+    number=models.CharField(max_length=255,null=False)
+    amount=models.IntegerField(null=False)
+    payer=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+    status=models.CharField(max_length=255,null=False)
+    created_at=models.DateTimeField(auto_now_add=True)  
+
+    def __str__(self):
+        return f"reference key {self.referenceKey} created at {self.created_at}"

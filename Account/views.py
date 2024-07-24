@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
+from django.views import View
+from django.shortcuts import render
 #Registration View
 class  Register(APIView):
     def post(self,request):
@@ -116,4 +118,7 @@ class NotificationView(APIView):
         notification.is_read=True
         notification.save()
         return Response({"detail":"Notification Marked As Read"})
+class WebSignup(View):
+    def get(self, request):
+        return render(request, 'signup.html')    
 

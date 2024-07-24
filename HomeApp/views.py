@@ -24,6 +24,11 @@ class HomeView(View):
         our_ads=OurAds.objects.all()
         context={'categories': categories,'new_products': new_product,'our_ads': our_ads}
         return render(request, 'Homepage.html',context)
+class ProductView(View):
+    def get(self, request):
+        products=ProductModel.objects.all().order_by('-created_at')
+        context={'products': products}
+        return render(request, 'Products/products.html',context)    
 class AboutUsView(View):
     def get(self, request):
         return render(request, 'AboutUs.html')    

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'cloudinary',
     'cloudinary_storage',
+    
     #  "fcm_django"
    
 ]
@@ -98,7 +99,7 @@ DATABASES = {
         
     }
 }
-DATABASES['default']=dj_database_url.parse(os.getenv('DATABASE_URL'))
+# DATABASES['default']=dj_database_url.parse(os.getenv('DATABASE_URL'))
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -162,4 +163,4 @@ CLOUDINARY_STORAGE={
     "API_SECRET":'lTcafDxVVVnGLSpDcxqDJRt8S2E'
 }
 
-DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
