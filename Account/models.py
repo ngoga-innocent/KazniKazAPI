@@ -18,7 +18,7 @@ class User(AbstractUser):
 
 class Device(models.Model):
     User=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
-    token=models.CharField(max_length=1000)   
+    token=models.CharField(max_length=1000,null=True)   
 
     def __str__(self):
         return str(self.User)

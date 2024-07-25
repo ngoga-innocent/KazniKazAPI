@@ -35,7 +35,7 @@ class ProductSerializer(serializers.ModelSerializer):
     uploader=UserSerializer(read_only=True)
     class Meta:
         model=ProductModel
-        fields=['id','name','price','thumbnail','colors','shop','shop_details','colors_details','category','category_details','discount','place','description','uploader','uploaded_images']
+        fields=['id','name','price','currency','thumbnail','colors','shop','shop_details','colors_details','category','category_details','discount','place','description','uploader','uploaded_images']
     def create(self, validated_data):
         validated_data['uploader']=self.context['user']
         colors = validated_data.pop('colors', [])

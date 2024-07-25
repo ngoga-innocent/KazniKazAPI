@@ -60,12 +60,13 @@ class WalletView(APIView):
     def put(self,request):
         action=request.data['action']
         amount=request.data['amount']
-        phone_number=request.data['phone_number']
+       
         try:
            
             
             wallet=MyWallet.objects.get(user=request.user)
             if action=='Deposit':
+                phone_number=request.data['phone_number']
                 cashin=self.Deposit(amount,phone_number,"Deposit")
                 # print(cashin.json().get('ref'))
                 if cashin.status_code==200:
@@ -93,6 +94,7 @@ class WalletView(APIView):
             if amount > wallet.amount and action !='Deposit':
                     return Response({"detail":"insuficient Amount"},status=400)
             if action=='Withdraw':
+                phone_number=request.data['phone_number']
                 cashout=self.Withdraw(amount,phone_number,"Withdraw")
                 if cashout.status_code==200:
 
@@ -132,7 +134,7 @@ class WalletView(APIView):
                     return Response({"data":{
                         "wallet":walletSerializer.data,
                         "history":HistorySerializer.data
-                    }})
+                    }},status=200)
                 except MyWallet.DoesNotExist:
                     return Response({'details':'Selected Receiver is not Available'},status=400)
         except MyWallet.DoesNotExist:

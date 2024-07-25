@@ -49,6 +49,10 @@ class Category(models.Model):
 class ProductModel(models.Model):
 
     choice=(("Normal","Normal"),("Vip","Vip"))
+    currency=(
+        ("Rwf","Rwf"),
+        ("USD","USD")
+    )
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     name=models.CharField(max_length=255)
     description=models.TextField()
@@ -60,6 +64,7 @@ class ProductModel(models.Model):
     colors=models.ManyToManyField(Colors,related_name='product_colours')
     discount=models.IntegerField(null=True)
     place=models.CharField(choices=choice,max_length=255,default='Normal')
+    currency=models.CharField(choices=currency,max_length=100,default='Rwf')
     created_at=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
