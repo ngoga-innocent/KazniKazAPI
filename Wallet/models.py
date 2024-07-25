@@ -17,17 +17,21 @@ class WalletHistory(models.Model):
     wallet=models.ForeignKey(MyWallet,on_delete=models.CASCADE,related_name='owner')
     action=models.CharField(choices=action,max_length=50)
     amount=models.IntegerField()
+    status=models.CharField(max_length=255,default="pending")
+    payment_ref=models.CharField(max_length=500,null=True)
     reciever=models.ForeignKey(MyWallet,on_delete=models.CASCADE,null=True,blank=True,related_name='receiver')
     created_at=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.action} order from {self.created_at}"
 class Payments(models.Model):
+    action=(('Deposit','Deposit'),('Withdraw','Withdraw'),('Transfer','Transfer'),("pay","pay"))
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False) 
     referenceKey=models.CharField(max_length=255,null=False,blank=False)
     number=models.CharField(max_length=255,null=False)
     amount=models.IntegerField(null=False)
     payer=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+    action=models.CharField(choices=action,max_length=255,default='pay')
     status=models.CharField(max_length=255,null=False)
     created_at=models.DateTimeField(auto_now_add=True)  
 

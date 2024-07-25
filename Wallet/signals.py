@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import MyWallet,WalletHistory
+from .models import MyWallet,WalletHistory,Payments
 from Account.models import Notifications,Device,User
 from Account.serializers import NotificationSerializer
 from Account.firebase import send_push_notification
@@ -62,3 +62,30 @@ def AnyActionOnWallet(sender,instance,created,**kwargs):
                 print(notification.errors)    
         except Device.DoesNotExist:
             print("Device does not exist")
+@receiver(post_save,sender=Payments)
+def PaymentStatus(sender,instance,created,**kwargs):
+    # print("Signal prints",instance)
+    try:
+        wallet=MyWallet.objects.get(user=instance.payer)   
+        if instance.status=='successful':
+            try:
+                history=WalletHistory.objects.get(payment_ref=instance.referenceKey)
+                history.status=instance.status
+                if instance.action=='Deposit':
+                    wallet.amount=wallet.amount + instance.amount
+                elif instance.action=='Withdraw':
+                    wallet.amount=wallet.amount - instance.amount    
+                wallet.save()
+                history.save()
+                print("WalletHistory prints",history)
+            except WalletHistory.DoesNotExist:
+                print('no history for this payment from signals') 
+        elif instance.status=='failed':
+              try:
+                   history=WalletHistory.objects.get(payment_ref=instance.referenceKey)
+                   history.status=instance.status
+                   history.save()
+              except WalletHistory.DoesNotExist:
+                  print("wallet history for payment not found from Signals")                      
+    except MyWallet.DoesNotExist:
+        print("wallet not found",instance.payer)    
