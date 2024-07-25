@@ -14,4 +14,4 @@ class WalletHistorySerializer(serializers.ModelSerializer):
     wallet_details=MyWalletSerializer(source='wallet',read_only=True)
     class Meta:
         model=WalletHistory
-        fields=['id','action','amount','reciever','wallet','wallet_details','created_at']
+        fields=['id','action','amount','reciever','wallet','wallet_details','status','created_at']
