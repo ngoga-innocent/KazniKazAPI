@@ -11,6 +11,8 @@ class User(AbstractUser):
     id_number=models.CharField(null=True,default='No number',max_length=16)
     id_card=models.ImageField(upload_to='ids',null=True)
     selfie=models.ImageField(upload_to='selfie',null=True)
+    signup_type = models.CharField(max_length=50, null=False, blank=False,default="none")
+    account_status=models.BooleanField(default=False)
     verified=models.BooleanField(default=False)
     
 

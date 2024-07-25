@@ -23,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
             coverphoto=validated_data.get('coverphoto'),
             id_card=validated_data.get('id_card'),
             selfie=validated_data.get('selfie'),
-            seller=validated_data.get('seller', False)
+            seller=validated_data.get('seller', False),
+            
         )
         user.set_password(validated_data['password'])
         user.save()
