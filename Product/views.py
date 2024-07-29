@@ -62,6 +62,7 @@ class ProductView(APIView):
             return Response({"product":serializer.data},status=200)
         else:
             return Response({"product":serializer.errors},status=200)
+    # Delete Method    
         
 
 #Category Class

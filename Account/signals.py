@@ -4,9 +4,11 @@ from .models import User,Device,Notifications
 from django.core.mail import send_mail
 from django.conf import settings
 from .firebase import send_push_notification
+from Wallet.models import MyWallet
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
     if created:
+        MyWallet.objects.create(user=instance)
         send_mail(
             f'Dear ' + instance.username +' Welcome to Kaz ni Kaz' ,
             'Thank you for registering on Kaz ni kaz.',
@@ -14,6 +16,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
             [instance.email],
             fail_silently=False,
         )
+
         notification=Notifications.objects.create(User=instance,notification_title="Registration Success", notification_body=f"Hello" +instance.username + " Your Account is Successfully Created",type="Self")
 # @receiver(post_save,sender=Device)
 # def send_message_notification(sender, instance,created,**kwargs):

@@ -15,10 +15,10 @@ import requests
 import json
 import time
 from django.views.decorators.csrf import csrf_exempt
-# client_id="4645d206-48c1-11ef-a6a2-deade826d28d", 
-# client_secret="76ff484a244047ecbbc3ffeca5dc79a3da39a3ee5e6b4b0d3255bfef95601890afd80709"
-client_id="66d24278-48cd-11ef-82f6-deade826d28d"
-client_secret="238196c663cfa65f6c0220db4426733cda39a3ee5e6b4b0d3255bfef95601890afd80709"
+client_id="4645d206-48c1-11ef-a6a2-deade826d28d", 
+client_secret="76ff484a244047ecbbc3ffeca5dc79a3da39a3ee5e6b4b0d3255bfef95601890afd80709"
+# client_id="66d24278-48cd-11ef-82f6-deade826d28d"
+# client_secret="238196c663cfa65f6c0220db4426733cda39a3ee5e6b4b0d3255bfef95601890afd80709"
 Base_url="https://payments.paypack.rw/api"
 
 # Create your views here.
@@ -142,7 +142,7 @@ class WalletView(APIView):
     def authorization(self):
         url = "https://payments.paypack.rw/api/auth/agents/authorize"
         payload = json.dumps({
-        "client_id": "66d24278-48cd-11ef-82f6-deade826d28d",
+        "client_id": "4645d206-48c1-11ef-a6a2-deade826d28d",
         "client_secret":client_secret
         })
         headers = {
@@ -151,6 +151,7 @@ class WalletView(APIView):
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)  
+        # print(response.json())
         return response.json()
 
     def Deposit(self,amount,phone_number,action):
@@ -164,10 +165,10 @@ class WalletView(APIView):
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': f'Bearer {self.authorization()["access"]}',
-            'X-Webhook-Mode':'development'
+            'X-Webhook-Mode':'production'
             }
           response = requests.request("POST", url, headers=headers, data=payload)
-        #   print(response.json())
+          print(response.json())
           if response.status_code==200:
               ref=response.json().get('ref')
               status=response.json().get('status')
@@ -189,17 +190,21 @@ class WalletView(APIView):
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': f'Bearer {self.authorization()["access"]}',
-        'X-Webhook-Mode':'development',
+        'X-Webhook-Mode':'production',
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
-        if response.status_code==200:
+        # print(response.json())
+        if not response.status_code:
+            return response.json()
+        elif response.status_code==200:
               ref=response.json().get('ref')
               status=response.json().get('status')
               amount=response.json().get('amount')
               user=self.request.user
               Payments.objects.create(referenceKey=ref, amount=amount, payer=user,status=status,number=phone_number,action=action)
-        return response
+              return response
+        
 
     def CheckTransaction(self,referenceKey):
         url=f'{Base_url}/events/transactions?ref={referenceKey}'
