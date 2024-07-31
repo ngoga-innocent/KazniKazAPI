@@ -13,7 +13,9 @@ class ProductView(APIView):
         if self.request.method == 'POST':
             self.permission_classes = [IsAuthenticated,]  # Require authentication for POST
         elif self.request.method == 'PUT': 
-            self.permission_classes = [IsAuthenticated,]    
+            self.permission_classes = [IsAuthenticated,]
+        elif self.request.method == 'DELETE':
+            self.permission_classes = [IsAuthenticated,]  # Require authentication for DELETE        
         else:
             self.permission_classes = [AllowAny,]  # Allow any access for other methods
         return [permission() for permission in self.permission_classes]
@@ -62,7 +64,14 @@ class ProductView(APIView):
             return Response({"product":serializer.data},status=200)
         else:
             return Response({"product":serializer.errors},status=200)
-    # Delete Method    
+    # Delete Method  
+    def delete(self, request):
+        try:
+            product=ProductModel.objects.get(id=request.data['product_id'])
+            product.delete()
+            return Response({"detail":"Product deleted successfully"},status=200)   
+        except ProductModel.DoesNotExist:
+            return Response({"detail":"Product Does not exist"},status=401)
         
 
 #Category Class
