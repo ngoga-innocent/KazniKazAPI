@@ -17,13 +17,14 @@ class  Register(APIView):
         serializer=UserSerializer(data=request.data,context={"request":request})
         if serializer.is_valid():
             user=serializer.save()
-            try:
-                device=Device.objects.get(token=device_token)
-                device.User=user
-                device.save()
-            except Device.DoesNotExist:
-                device=Device.objects.create(token=device_token,User=user)    
-            return Response({"user":serializer.data},status=201)
+            if device_token is not None:
+                try:
+                    device=Device.objects.get(token=device_token)
+                    device.User=user
+                    device.save()
+                except Device.DoesNotExist:
+                    device=Device.objects.create(token=device_token,User=user)    
+                return Response({"user":serializer.data},status=201)
         else:
             return Response({"detail":serializer.errors})
 class Login(APIView):

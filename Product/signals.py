@@ -22,7 +22,8 @@ def send_welcome_email(sender, instance, created, **kwargs):
                 pass              
         if instance.discount:
             alldevice =Device.objects.all()
-            for device in alldevice:send_push_notification(device.token,f"New Product" +instance.name +"  to Kaz ni Kaz!","Don't Miss This New Product!")
+            for device in alldevice:
+                send_push_notification(device.token,f"New Product " +instance.name +"  to Kaz ni Kaz!","Don't Miss This New Product!")
                
 
 @receiver(post_save,sender=ShopModel)
@@ -39,7 +40,7 @@ def send_message_notification(sender, instance,created,**kwargs):
             notification=NotificationSerializer(data=notifiction_data)
             if notification.is_valid():
                 notification.save()
-            send_push_notification(device.token,f"New Shop" +instance.name +"  to Kaz ni Kaz!","Hurry Up to publicize your Products!")
+            send_push_notification(device.token,f"New Shop " +instance.name +"  to Kaz ni Kaz!","Hurry Up to publicize your Products!")
         except Device.DoesNotExist:
             pass    
         devices=Device.objects.all(User=instance.owner)
