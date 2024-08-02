@@ -90,7 +90,7 @@ class UserProfile(APIView):
                 notification_serializer.save()
             else:
                 print(notification_serializer.errors)    
-            return Response({"user":serializer.data})
+            return Response({"user":serializer.data},status=200)
         return Response({"detail":serializer.errors})
 
 
