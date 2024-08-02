@@ -82,7 +82,7 @@ class UserProfile(APIView):
             notification_data={
                 "notification_title":"Your Profile has been updated",
                 "notification_body":"Your profile has been updated Successfully",
-                "User":user,
+                "User":user.id,
                 "type":"Self"
             }
             notification_serializer=NotificationSerializer(data=notification_data)
