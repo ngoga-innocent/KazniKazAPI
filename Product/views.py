@@ -25,6 +25,8 @@ class ProductView(APIView):
         return Response({"products":serializer.data},status=200)
     
     def post(self,request):
+        if not request.user.verified:
+            return Response({"detail":"Not Verified"},status=401)
         serializer=ProductSerializer(data=request.data,context={'user':request.user})
         product_images = request.FILES.getlist('product_images')
         if serializer.is_valid():

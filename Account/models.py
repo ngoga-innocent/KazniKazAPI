@@ -3,6 +3,12 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 # Create your models here.
 class User(AbstractUser):
+    status_choice=(
+        ("Not_Verified","Not Verified"),
+        ("Pending","Pending"),
+        ("Verified","Verified"),
+        ("Rejected","Rejected"),
+    )
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     profile=models.ImageField(upload_to='Profile',null=True)
     phone_number=models.CharField(null=True,default='no provided number',blank=True,max_length=25)
@@ -12,7 +18,7 @@ class User(AbstractUser):
     id_card=models.ImageField(upload_to='ids',null=True)
     selfie=models.ImageField(upload_to='selfie',null=True)
     signup_type = models.CharField(max_length=50, null=False, blank=False,default="none")
-    account_status=models.BooleanField(default=False)
+    account_status=models.CharField(max_length=255,default="Not_Verified",choices=status_choice)
     verified=models.BooleanField(default=False)
     
 
