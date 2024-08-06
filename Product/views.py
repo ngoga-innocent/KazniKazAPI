@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
-from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel
+from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel,CategoryFeatures
 from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer,FeatureSerializer
 from Wallet.models import MyWallet,WalletHistory
 from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
@@ -183,7 +183,17 @@ class UserShops(APIView):
 
 class FeatureView(APIView):
     def get(self,request):
-        pass
+        category_id=request.data['category_id']
+        if category_id:
+            try:
+                category=Category.objects.get(id=category_id)
+                features=CategoryFeatures.objects.filter(category=category)
+                serializer=FeatureSerializer(features,many=True)
+                return Response({"features":serializer.data},status=200)
+            except Category.DoesNotExist:
+                return Response({"detail":"Category Does not exist"},status=401)
+        else:
+            return Response({"detail":"no category passed"},status=401)    
     def post(self,request):
         serializer=FeatureSerializer(data=request.data)
         if serializer.is_valid():
