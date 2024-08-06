@@ -36,7 +36,7 @@ class Category(models.Model):
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     name=models.CharField(max_length=255)
     thumbnail=models.ImageField(upload_to='Category_thumbnails')
-    parent=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
+    parent=models.ForeignKey('self',on_delete=models.SET_NULL,null=True)
 
     def __str__(self):
         return self.name
@@ -46,6 +46,27 @@ class Category(models.Model):
         return Category.objects.filter(parent=self)   
     def getProductCategory(self):
         return self.productmodel_set.all() 
+    def getCategoryFeatures(self):
+        return self.categoryfeatures_set.all()
+class CategoryFeatures(models.Model):
+    id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
+    name=models.CharField(max_length=255)
+    category=models.ForeignKey(Category,on_delete=models.CASCADE,related_name='category_features')
+
+    def __str__(self):
+        return self.name + " " + self.category.name
+    class Meta:
+        verbose_name = 'Features of Category'
+        verbose_name_plural = 'Features of Category'
+class FeatureOptions(models.Model):
+    id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
+    feature=models.ForeignKey(CategoryFeatures,on_delete=models.CASCADE,related_name='feature_options')
+    name=models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name + " " + self.feature.name        
+
+    
 class ProductModel(models.Model):
 
     choice=(("Normal","Normal"),("Vip","Vip"))
@@ -62,21 +83,32 @@ class ProductModel(models.Model):
     uploader=models.ForeignKey(User,on_delete=models.CASCADE,related_name='uploader')
     category=models.ForeignKey(Category,on_delete=models.CASCADE,default='Other')
     colors=models.ManyToManyField(Colors,related_name='product_colours')
+    
     discount=models.IntegerField(null=True)
     place=models.CharField(choices=choice,max_length=255,default='Normal')
     currency=models.CharField(choices=currency,max_length=100,default='Rwf')
+    
     created_at=models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
+    
     class Meta: 
         verbose_name_plural='Products'
+          
 class ProductImage(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     product=models.ForeignKey(ProductModel,on_delete=models.CASCADE,related_name='product_images')
     image=models.ImageField(upload_to='Image_pictures')
     
-    
+class ProductFeatureOptions(models.Model):
+    id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
+    product=models.ForeignKey(ProductModel,on_delete=models.CASCADE,related_name='product_feature_options')
+    feature=models.ForeignKey(CategoryFeatures,on_delete=models.CASCADE)
+    option=models.ForeignKey(FeatureOptions,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.product.name}-{self.feature.name} - {self.option.name}"    
 class Like(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     liker=models.ForeignKey(User,on_delete=models.CASCADE,related_name='liker')

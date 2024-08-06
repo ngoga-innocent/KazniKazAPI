@@ -1,14 +1,25 @@
 from rest_framework import serializers
-from .models import ProductImage,ProductModel,ShopModel,Category,Colors
+from .models import ProductImage,ProductModel,ShopModel,Category,Colors,CategoryFeatures,FeatureOptions,ProductFeatureOptions
 from Account.serializers import UserSerializer
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model=ProductImage
         fields='__all__'
+class FeatureOptionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=FeatureOptions
+        fields='__all__'        
+class FeatureSerializer(serializers.ModelSerializer):
+    feature_options=FeatureOptionsSerializer(read_only=True,many=True)
+    class Meta:
+        model=CategoryFeatures
+        fields=['id', 'name', 'category','feature_options']
+              
 class CategorySerializer(serializers.ModelSerializer):
+    category_features=FeatureSerializer(read_only=True,many=True)
     class Meta:
         model=Category
-        fields='__all__'
+        fields=['id','name','thumbnail','parent','category_features']
 class ColorsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Colors
@@ -20,10 +31,16 @@ class ShopSerializer(serializers.ModelSerializer):
         fields='__all__'
     def create(self, validated_data):
         validated_data['owner'] =self.context['user']
-        return ShopModel.objects.create(**validated_data)  
+        return ShopModel.objects.create(**validated_data) 
+class ProductFeatureOptionSerializer(serializers.ModelSerializer):
+    option_details=FeatureOptionsSerializer(read_only=True,source='option')
+    feature_options=FeatureSerializer(read_only=True,source='feature')
+    class Meta:
+        model=ProductFeatureOptions
+        fields=['id','product','feature','option','option_details','feature_options']     
 class ProductSerializer(serializers.ModelSerializer):
     uploaded_images=ProductImageSerializer(read_only=True,many=True,source='product_images')
-    
+    features=ProductFeatureOptionSerializer(read_only=True,many=True,source='product_feature_options')
     category_details=CategorySerializer(source='category',read_only=True)
     colors = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -35,10 +52,12 @@ class ProductSerializer(serializers.ModelSerializer):
     uploader=UserSerializer(read_only=True)
     class Meta:
         model=ProductModel
-        fields=['id','name','price','currency','thumbnail','colors','shop','shop_details','colors_details','category','category_details','discount','place','description','uploader','uploaded_images']
+        fields=['id','name','price','currency','thumbnail','colors','shop','shop_details','colors_details','category','category_details','discount','place','description','uploader','uploaded_images','features']
     def create(self, validated_data):
         validated_data['uploader']=self.context['user']
         colors = validated_data.pop('colors', [])
+        
         product= ProductModel.objects.create(**validated_data)
         product.colors.set(colors)
+        
         return product

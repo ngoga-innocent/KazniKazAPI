@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import ProductView,CategoryView,ColorViews,ShopView,UserShops
+from .views import ProductView,CategoryView,ColorViews,ShopView,UserShops,FeatureView
 
 
 urlpatterns = [
@@ -9,6 +9,7 @@ urlpatterns = [
     path('colors',ColorViews.as_view()),
     path('shop',ShopView.as_view()),
     path('shop/<uuid:shop_id>',ShopView.as_view()),
-    path('user_shops',UserShops.as_view())
+    path('user_shops',UserShops.as_view()),
+    path('category_features',FeatureView.as_view()),
     
 ]

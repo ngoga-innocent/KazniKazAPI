@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel
-from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer
+from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer,FeatureSerializer
 from Wallet.models import MyWallet,WalletHistory
 from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
 # Product  views here.
@@ -180,3 +180,12 @@ class UserShops(APIView):
     #         return Response({"shop":serializer.data},status=200)
     #     else:
     #         return Response({"detail":serializer.errors},status=401)
+
+class FeatureView(APIView):
+    def get(self,request):
+        pass
+    def post(self,request):
+        serializer=FeatureSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)    

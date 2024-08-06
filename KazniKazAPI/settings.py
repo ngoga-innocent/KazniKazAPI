@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'News',
     'Chat',
     'HomeApp',
+    'Staff',
     'rest_framework',
     'rest_framework.authtoken',
     'cloudinary',
