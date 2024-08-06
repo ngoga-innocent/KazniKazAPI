@@ -10,6 +10,6 @@ urlpatterns = [
     path('shop',ShopView.as_view()),
     path('shop/<uuid:shop_id>',ShopView.as_view()),
     path('user_shops',UserShops.as_view()),
-    path('category_features',FeatureView.as_view()),
+    path('category_features/<uuid:category_id>',FeatureView.as_view()),
     
 ]

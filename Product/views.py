@@ -182,8 +182,8 @@ class UserShops(APIView):
     #         return Response({"detail":serializer.errors},status=401)
 
 class FeatureView(APIView):
-    def get(self,request):
-        category_id=request.data['category_id']
+    def get(self,request,category_id):
+        
         if category_id:
             try:
                 category=Category.objects.get(id=category_id)
