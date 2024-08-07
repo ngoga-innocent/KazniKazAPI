@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ProductImage,ProductModel,ShopModel,Category,Colors,CategoryFeatures,FeatureOptions,ProductFeatureOptions
+from .models import ProductImage,ProductModel,ShopModel,Category,Colors,CategoryFeatures,FeatureOptions,ProductFeatureOptions,OurAds
 from Account.serializers import UserSerializer
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,3 +61,7 @@ class ProductSerializer(serializers.ModelSerializer):
         product.colors.set(colors)
         
         return product
+class OurdsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OurAds
+        fields='__all__'    

@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import ProductView,CategoryView,ColorViews,ShopView,UserShops,FeatureView
+from .views import ProductView,CategoryView,ColorViews,ShopView,UserShops,FeatureView,OurAdsView
 
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('user_shops',UserShops.as_view()),
     path('category_features',FeatureView.as_view()),
     path('category_features/<uuid:category_id>',FeatureView.as_view()),
+    path('our_ads',OurAdsView.as_view(),name='our_ads'),
     
     
 ]
