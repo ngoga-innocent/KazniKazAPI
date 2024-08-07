@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
-from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel,CategoryFeatures
-from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer,FeatureSerializer
+from .models import ProductImage,ProductModel,Colors,Category,Like,Comment,ShopModel,CategoryFeatures,FeatureOptions,ProductFeatureOptions
+from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer,ColorsSerializer,CategorySerializer,FeatureSerializer,ProductFeatureOptionSerializer
 from Wallet.models import MyWallet,WalletHistory
 from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
 # Product  views here.
@@ -29,6 +29,8 @@ class ProductView(APIView):
             return Response({"detail":"Not Verified"},status=401)
         serializer=ProductSerializer(data=request.data,context={'user':request.user})
         product_images = request.FILES.getlist('product_images')
+        features=request.data.getlist('features')
+        print(features)
         if serializer.is_valid():
             try:
                 wallet=MyWallet.objects.get(user=request.user.id)
@@ -52,6 +54,20 @@ class ProductView(APIView):
                     
                         else:
                             return Response({"detail":image_serializer.errors},status=401)
+                    for feature in features:
+                        # print("feature",feature)
+                        try:
+                            feature_obj=FeatureOptions.objects.get(id=feature)
+                            data={
+                                "product": product.id,
+                                "feature": feature_obj.feature.id,
+                                "option": feature_obj.id
+                            }
+                            featureserializer=ProductFeatureOptionSerializer(data=data)
+                            if featureserializer.is_valid():
+                                featureserializer.save()
+                        except FeatureOptions.DoesNotExist:
+                            pass        
                     return Response({"product":serializer.data},status=201)
             except MyWallet.DoesNotExist:
                 return Response({"detail":"A user has no Wallet please contact the Administrator for the wallet"},status=401)        
@@ -182,7 +198,7 @@ class UserShops(APIView):
     #         return Response({"detail":serializer.errors},status=401)
 
 class FeatureView(APIView):
-    def get(self,request,category_id):
+    def get(self,request,category_id=None):
         
         if category_id:
             try:
@@ -193,7 +209,9 @@ class FeatureView(APIView):
             except Category.DoesNotExist:
                 return Response({"detail":"Category Does not exist"},status=401)
         else:
-            return Response({"detail":"no category passed"},status=401)    
+            features=CategoryFeatures.objects.all()
+            serializer=FeatureSerializer(features,many=True)
+            return Response({"features":serializer.data},status=200)    
     def post(self,request):
         serializer=FeatureSerializer(data=request.data)
         if serializer.is_valid():
