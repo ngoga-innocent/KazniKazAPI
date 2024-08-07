@@ -221,4 +221,6 @@ class OurAdsView(APIView):
     def get(self, request):
         ads=OurAds.objects.all()
         serializer=OurdsSerializer(ads,many=True)
-        return Response({"oursAds":serializer.data},status=200)         
+        return Response({"oursAds":serializer.data},status=200)
+    def post(self,request):
+        pass         
