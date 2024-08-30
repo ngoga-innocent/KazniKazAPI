@@ -1,0 +1,169 @@
+{% extends 'staff_base.html' %} {% block content %}
+<div class="flex flex-col py-2">
+  <div class="flex flex-row items-center justify-between px-7">
+    <h1 class="text-[1.7rem] text-textColor font-bold">Overview</h1>
+    <div
+      class="w-[40%] bg-white flex flex-row items-center px-2 rounded-md py-2"
+    >
+      <ion-icon name="search"></ion-icon>
+      <input type="text" class="w-[80%] bg-transparent" />
+    </div>
+    <div class="flex flex-row items-center gap-x-7">
+      <button>
+        <ion-icon style="font-size: 2rem;" name="ellipsis-vertical"></ion-icon>
+      </button>
+      <button>
+        <ion-icon style="font-size: 2rem;" name="notifications"></ion-icon>
+      </button>
+      <div
+        class="w-14 h-14 rounded-full max-w-14 max-h-14 overflow-hidden border border-textColor"
+      >
+        <img src="{{request.user.profile}}" alt="" />
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-8 mx-3 mt-5 gap-x-3">
+    <div
+      class="grid col-span-5 px-3 bg-white shadow-sm shadow-black rounded-md"
+    >
+      <canvas id="salesChart" width="400" height="200"></canvas>
+    </div>
+    <div
+      class="grid col-span-3 items-center bg-white shadow-sm shadow-black rounded-md gap-x-2"
+    >
+      <div class="grid grid-cols-2 items-center gap-x-2 gap-y-2">
+        <canvas
+          id="doughnut"
+          class="doughnut-chart shadow-sm shadow-black rounded-md bg-white mx-1 my-2"
+        ></canvas>
+        <canvas
+          id="doughnut2"
+          class="doughnut-chart shadow-sm shadow-black rounded-md bg-white mx-1 my-2"
+        ></canvas>
+        <canvas
+          id="doughnut3"
+          class="doughnut-chart shadow-sm shadow-black rounded-md bg-white mx-1 my-2"
+        ></canvas>
+        <canvas
+          id="doughnut4"
+          class="doughnut-chart shadow-sm shadow-black rounded-md bg-white mx-1 my-2"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %} {% block Additional_scripts %}
+<script>
+  // Bar Chart
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("salesChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+  //Doughmta chart
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("doughnut").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("doughnut2").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("doughnut2").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("doughnut3").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+  $(document).ready(function () {
+    fetch("{% url 'product_sales' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        var ctx = document.getElementById("doughnut4").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+  });
+</script>
+{% endblock Additional_scripts %}

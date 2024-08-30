@@ -1,0 +1,46 @@
+{% extends '../staff_base.html' %} <br />
+{% block content %}
+<div class="w-[90%] mx-auto bg-white px-3 py-4 flex flex-col">
+  <h1 class="text-[2rem] text-textColor font-bold">
+    {% if is_editing %} Edit Product {% else %} Add Product {% endif %}
+  </h1>
+  {% if not is_editing %} 
+  <form action="{%  url 'products' %}" enctype="multipart/form-data"  method="post">
+  {% else %}
+  <form
+    method="post" action="{% url 'product_edit' product_id %}" enctype="multipart/form-data"
+  >
+    {% endif %} {% csrf_token %}
+    <div class="space-y-4">
+      {{ form.name.label_tag }}{{ form.name }} <br />
+      {{ form.description.label_tag }}{{ form.description }} <br />
+      {{ form.price.label_tag }}{{ form.price }} <br />
+      {{ form.shop.label_tag }}{{ form.shop }} <br />
+      {{ form.thumbnail.label_tag }}{{ form.thumbnail }} <br />
+      {{form.category.label_tag }}{{ form.category }} <br />
+      {{ form.colors.label_tag }}{{ form.colors }} <br />
+      {{form.discount.label_tag }}{{ form.discount }} <br />
+      {{form.place.label_tag }}{{ form.place }} <br />
+      {{ form.currency.label_tag }}{{ form.currency }} <br />
+      {{form.verified.label_tag }}{{ form.verified}}
+      <input type="hidden" value="{{request.user.id}}" name="uploader" />
+      <div>
+        <label for="">Add Other Images</label>
+        <input
+          name="uploaded_files"
+          class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          type="file"
+          multiple
+          accept="image/x-png,image/jpeg,image/gif,image/png"
+        />
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="mt-4 bg-primary text-white py-2 px-4 rounded-md"
+    >
+      Save Product
+    </button>
+  </form>
+</div>
+{% endblock content %}

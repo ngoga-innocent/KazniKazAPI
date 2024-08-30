@@ -1,0 +1,28 @@
+{% extends '../staff_base.html' %} {% block content %}
+<div class="w-[90%] mx-auto my-4">
+  {% if is_editing %}
+  <form
+    class="bg-white w-[90%] mx-auto flex flex-col gap-y-2 px-4 py-4 rounded-lg"
+    action="{% url 'save_edit_shop' %}"
+    method="post"
+    enctype="multipart/form-data"
+  > {% else %}
+  <form
+    class="bg-white w-[90%] mx-auto flex flex-col gap-y-2 px-4 py-4 rounded-lg"
+    action="{% url 'add_new_shop' %}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    {% endif %} {% csrf_token %} {{form}} {% if is_editing %}
+    <input type="hidden" name="shop_id" value="{{shop_id}}" />
+    {% endif %}
+
+    <button
+      type="submit"
+      class="bg-primary py-2 px-3 rounded-md text-white font-bold"
+    >
+      Save
+    </button>
+  </form>
+</div>
+{% endblock content %}

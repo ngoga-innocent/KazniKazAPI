@@ -1,0 +1,67 @@
+{% extends '../base.html' %} {% block Content %}
+<div class="flex flex-col">
+  <div class="flex flex-row">
+    <div
+      class="login_view1 w-[55%] min-h-screen bg-cover flex flex-col items-center justify-center gap-y-3"
+    >
+      <!-- Your Content here -->
+      <h2 class="text-[3rem] font-bold text-primary">Kaz ni kaz</h2>
+      <p class="text-white text-2xl font-bold">
+        Join Kaz ni Kaz now to start selling your items and finding what you
+        need!
+      </p>
+      <p class="text-white text-2xl">
+        Discover leading online classifieds marketplace.
+      </p>
+    </div>
+    <div class="flex-1 bg-slate-100 flex flex-col items-center justify-center">
+      <div class="w-[80%] mx-auto text-center flex flex-col gap-y-3 my-10">
+        <h1 class="font-bold text-textColor text-[2.2rem]">Welcome,</h1>
+        <p class="font-bold text-textColor text-[1rem]">
+          Use Your credentials To access Your account
+        </p>
+      </div>
+      <form
+        action="{% url 'login' %}"
+        method="post"
+        class="w-[80%] mx-auto flex flex-col gap-y-3 my-2"
+      >
+        {% if error %}
+        <p class="text-orange-600 font-bold">{{error}}</p>
+        {% endif %} {% csrf_token %}
+        <div class="flex flex-col gap-y-1 w-[98%] mx-auto">
+          <label for="username">Enter Username</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            class="w-[100%] py-2 rounded-md border-0 border-b-2 border-textColor outline-none px-3"
+          />
+        </div>
+        <div class="flex flex-col gap-y-1 w-[98%] mx-auto">
+          <label for="username">Enter Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            class="w-[100%] py-2 rounded-md border-0 border-b-2 border-textColor outline-none px-3"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-primary text-white font-bold text-center w-[98%] mx-auto py-2 rounded-full"
+        >
+          Login
+        </button>
+      </form>
+      <a href="" class="text-textColor underline font-bold">Forgot Password?</a>
+      <div class="flex flex-row gap-x-2 items-center my-3">
+        <p class="text-textColor font-semibold">Don't have an Account?</p>
+        <a href="{% url 'register' %}" class="text-primary font-bold"
+          >Sign Up
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock Content %}

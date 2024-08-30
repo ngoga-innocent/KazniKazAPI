@@ -1,0 +1,57 @@
+{% if shops %} {% for shop in shops %}
+<div
+  class="flex flex-row w-[100%] gap-x-10 py-2 px-4 bg-slate-200 rounded-lg items-center my-2"
+>
+  <div
+    class="w-[12vw] h-[12vh] overflow-hidden rounded-lg border border-primary"
+  >
+    {% if shop.thumbnail %}
+    <a target="_blank" href="{{shop.thumbnail.url}}">
+      <img src="{{shop.thumbnail.url}}" class="w-[100%] h-[100%]" alt="" />
+    </a>
+
+    {% endif %}
+  </div>
+  <div class="flex flex-col">
+    <a
+      href="{% url 'shop_details' shop.id %}"
+      class="text-xl text-pretty uppercase text-textColor font-bold"
+    >
+      {{ shop.name }}
+    </a>
+    <div class="flex items-center gap-x-2 mt-4">
+      <ion-icon
+        style="font-size: 23px; color: orange;"
+        name="albums"
+      ></ion-icon>
+      <p>{{shop.slug}}</p>
+    </div>
+    <div class="flex items-center gap-x-2">
+      <ion-icon
+        style="font-size: 23px; color: orange;"
+        name="contact"
+      ></ion-icon>
+      <p>{{shop.owner}}</p>
+    </div>
+    <div class="flex items-center gap-x-2">
+      <ion-icon style="font-size: 23px; color: orange;" name="pin"></ion-icon>
+      <p class="text-gray-600">{{ shop.location }}</p>
+    </div>
+    <div class="flex items-center gap-x-2">
+      <ion-icon name="call" style="font-size: 23px; color: orange;"></ion-icon>
+      <p class="text-gray-600 text-sm">{{ shop.contact }}</p>
+    </div>
+  </div>
+</div>
+{% endfor %} {% else %} No shops available {% endif %}
+<div class="flex flex-row items-center">
+  {% if shops.has_previous %}
+  <a href="?page={{shops.previous_page_number}}">previous</a>
+  {% endif %}
+  <span class="mx-2 text-primary"
+    >Page {{ shops.number }} of {{ shops.paginator.num_pages }}</span
+  >
+  {% if shops.has_next %}
+  <a href="?page={{shop.next_page_number}}">Next</a>
+  {% endif %}
+</div>

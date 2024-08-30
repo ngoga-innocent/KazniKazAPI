@@ -1,0 +1,119 @@
+{% load static %}
+<div class="flex flex-col h-[100%] w-[80%] mx-auto min-h-[100%] py-5 relative">
+  <div class="flex flex-row px-3 items-center gap-x-2 mb-14">
+    <div
+      class="w-20 h-20 rounded-full border border-slate-300 max-w-20 max-h-20 overflow-hidden"
+    >
+      <img src="{% static 'images/icon.png' %}" class="object-contain" alt="" />
+    </div>
+    <div>
+      <h1 class="text-primary text-xl font-bold">Dashboard</h1>
+    </div>
+  </div>
+  <ul class="staff_nav_list">
+    <li class="flex flex-row gap-x-3 items-center">
+      <ion-icon
+        name="analytics-sharp"
+        class="text-primary"
+        style="font-size: 2rem;"
+      ></ion-icon>
+      <a href="{% url 'staff_home' %}">Home</a>
+    </li>
+    <li class="parent_nav">
+      <div class="flex flex-row gap-x-3 items-center">
+        <ion-icon
+          name="apps-sharp"
+          style="font-size: 2rem;"
+          class="text-xl text-primary"
+        ></ion-icon>
+        <a href="{% url 'category_staff' %}">Category</a>
+      </div>
+      <ul class="child_nav">
+        <li><a href="{% url 'category_staff' %}">All Categories</a></li>
+        <li><a href="{% url 'addCategory' %}">Add Category</a></li>
+      </ul>
+    </li>
+    <li class="parent_nav">
+      <div class="flex flex-row gap-x-3 items-center">
+        <!-- <i
+          class="fa-brands fa-product-hunt"
+          style="font-size: 1.2rem;"
+          class="text-xl text-primary"
+        ></i> -->
+        <ion-icon
+          name="logo-paypal"
+          style="font-size: 2rem;"
+          class="text-xl text-primary"
+        ></ion-icon>
+        <a href="{% url 'products' %}">Product</a>
+      </div>
+      <ul class="child_nav">
+        <li><a href="{% url 'get_form' %}">Add New </a></li>
+        <li><a href="{% url 'products' %}">All Products</a></li>
+      </ul>
+    </li>
+    <li class="parent_nav">
+      <div class="flex flex-row gap-x-3 items-center">
+        <ion-icon
+          name="people"
+          style="font-size: 2rem;"
+          class="text-xl text-primary"
+        ></ion-icon>
+        <!-- <i
+          class="fa-brands fa-product-hunt"
+          style="font-size: 1.2rem;"
+          class="text-xl text-primary"
+        ></i> -->
+        <a href="{% url 'users' %}">Users</a>
+      </div>
+      <ul class="child_nav">
+        <li><a href="{% url 'add_new_user' %}">Add New </a></li>
+        <li><a href="{% url 'users' %}">All Users</a></li>
+        <li><a href="{% url 'shops' %}">Shops</a></li>
+      </ul>
+    </li>
+    <li class="parent_nav">
+      <div class="flex flex-row gap-x-3 items-center">
+        <!-- <i
+          class="fa-brands fa-product-hunt"
+          style="font-size: 1.2rem;"
+          class="text-xl text-primary"
+        ></i> -->
+        <ion-icon
+          name="wallet"
+          style="font-size: 2rem;"
+          class="text-xl text-primary"
+        ></ion-icon>
+        <a href="{% url 'wallet' %}">Wallet</a>
+      </div>
+      <ul class="child_nav">
+        <li><a href="#">My Wallet </a></li>
+        <li><a href="{% url 'all_transactions' %}">Transactions</a></li>
+      </ul>
+    </li>
+    <li class="parent_nav">
+      <div class="flex flex-row gap-x-3 items-center">
+        <!-- <i
+          class="fa-brands fa-product-hunt"
+          style="font-size: 1.2rem;"
+          class="text-xl text-primary"
+        ></i> -->
+        <ion-icon
+          style="font-size: 2rem;"
+          class="text-xl text-primary"
+          name="git-pull-request"
+        ></ion-icon>
+        <a href="#">Requests</a>
+      </div>
+      <ul class="child_nav">
+        <li><a href="{% url 'all_requests' %}">All Request </a></li>
+        <!-- <li><a href="#">All Products</a></li> -->
+      </ul>
+    </li>
+    <button
+      class="w-[80%] py-2 absolute bottom-4 items-center justify-center bg-transparent border border-primary rounded-md"
+    >
+      <a href="#" class="font-bold">Logout</a>
+    </button>
+  </ul>
+</div>

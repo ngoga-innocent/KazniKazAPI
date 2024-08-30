@@ -1,0 +1,38 @@
+{% extends '../base.html' %} {% block Content %}
+<div class="flex flex-col mx-auto w-[80vw] px-5">
+  <form
+    class="bg-white w-[90%] mx-auto flex flex-col gap-y-2 px-4 py-4 rounded-lg"
+    action="{% url 'web_shops' %}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    {% if form.errors %}
+    <div class="form-errors">
+      <ul>
+        {% for field, errors in form.errors.items %} {% for error in errors %}
+        <li class="text-red-700 font-bold">{{ field }}: {{ error }}</li>
+        {% endfor %} {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    <h1 class="font-bold text-textColor text-[1.2rem]">Create Your Shop</h1>
+    {% csrf_token %} {{form.name.label_tag}}{{ form.name}}
+    <div>
+      {{form.shop_category.label_tag}} {{ form.shop_category}}
+    </div>
+    {{form.slug.label_tag}}{{ form.slug}}
+    <div>
+      {{form.location.label_tag}}{{ form.location}}
+    </div>
+    {{form.contact.label_tag}} {{ form.contact}}
+    <div>{{form.thumbnail.label_tag}}{{ form.thumbnail}}</div>
+    <input type="hidden" name="owner" value="{{request.user.id}}" />
+    <button
+      type="submit"
+      class="bg-primary py-2 px-5 my-3 rounded-md text-white font-bold w-fit"
+    >
+      Create Shop
+    </button>
+  </form>
+</div>
+{% endblock Content %}

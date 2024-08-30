@@ -1,0 +1,91 @@
+{% extends '../base.html' %} {% block Content %}
+<div class="flex flex-col">
+  <div class="flex flex-row">
+    <div
+      class="flex flex-col login_view1 w-[55%] min-h-screen bg-cover items-center justify-center gap-y-3"
+    >
+      <h2 class="text-[3rem] font-bold text-primary">Kaz ni kaz</h2>
+      <p class="text-white text-2xl font-bold">
+        Join Kaz ni Kaz now to start selling your items and finding what you
+        need!
+      </p>
+      <p class="text-white text-2xl">
+        Discover leading online classifieds marketplace.
+      </p>
+    </div>
+    <div
+      class="flex-1 bg-slate-100 flex flex-col item-center justify-center text-center"
+    >
+      <div class="w-[80%] mx-auto text-center flex flex-col gap-y-3 my-10">
+        <h1 class="font-bold text-textColor text-[2.2rem]">Welcome,</h1>
+        <p class="font-bold text-textColor text-[1rem]">
+          Join Big community of Kaz ni Kaz
+        </p>
+      </div>
+      <form
+        action="{% url 'register' %}"
+        method="post"
+        enctype="multipart/form-data"
+        class="w-[85%] mx-auto flex flex-col gap-y-2 my-2 text-start"
+      >
+        {% csrf_token %} {% if errors %}
+        <p class="text-orange-700 font-bold">{{errors}}</p>
+        {% endif %}
+
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.username.label}}
+          </label>
+          {{form.username}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.first_name.label}}
+          </label>
+          {{form.first_name}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.last_name.label}}
+          </label>
+          {{form.last_name}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.email.label}}
+          </label>
+          {{form.email}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.phone_number.label}}
+          </label>
+          {{form.phone_number}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.password.label}}
+          </label>
+          {{form.password}}
+        </div>
+        <div class="w-[95%] flex flex-col gap-y-1">
+          <label for="" class="text-textColor font-bold"
+            >{{form.profile.label}}
+          </label>
+          {{form.profile}}
+        </div>
+        <button
+          type="submit"
+          class="bg-primary text-white font-bold text-center w-[93%] mx-auto py-2 rounded-full"
+        >
+          Register
+        </button>
+      </form>
+      <div class="flex flex-row gap-x-2 self-center items-center my-3">
+        <p class="text-textColor font-semibold">Already have an Account?</p>
+        <a href="{% url 'login' %}" class="text-primary font-bold">Login </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock Content %}

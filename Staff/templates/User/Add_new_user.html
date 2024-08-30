@@ -1,0 +1,31 @@
+{% extends '../staff_base.html' %} {% block content %}
+<div class="w-[95%] mx-auto">
+  <h2 class="text-textColor font-bold text-xl my-2">Add New User</h2>
+  {% if is_editing %}
+  <form
+    action="{% url 'save_edited_user' %}"
+    enctype="multipart/form-data"
+    class="bg-white py-5 rounded-lg px-3 w-[80%]"
+    method="post"
+  >
+    {% else %}
+    <form
+    action="{% url 'save_user' %}"
+    enctype="multipart/form-data"
+    class="bg-white py-5 rounded-lg px-3 w-[80%]"
+    method="post"
+  >
+  {% endif %}
+  
+    {% if is_editing %}
+    <input type="hidden" name="user_id" value="{{user_id}}" />
+    {% endif %} {% csrf_token %} {{form}}
+    <button
+      type="submit"
+      class="px-4 py-3 bg-primary text-white font-bold rounded-md my-2"
+    >
+      Create new User
+    </button>
+  </form>
+</div>
+{% endblock content %}

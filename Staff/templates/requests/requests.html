@@ -1,0 +1,214 @@
+{% extends '../staff_base.html' %} {% block content %}
+
+<div class="flex flex-col w-[95%] mx-auto py-2">
+  <h1 class="text-textColor font-bold text-2xl">
+    Account Request Verifications
+  </h1>
+
+  <table class=" user_request my-3">
+    <thead class="border border-primary rounded-md">
+      <th>Username</th>
+      
+      <th>Email</th>
+      <th>Phone Number</th>
+      <th>Id Number</th>
+      <th>Id card</th>
+      <th>Selfie</th>
+      <th>Action</th>
+    </thead>
+    <tbody>
+      {% for request in requests %}
+      <tr>
+        <td>{{request.username}}</td>
+        
+        <td>{{request.email}}</td>
+        <td>{{request.phone_number}}</td>
+        <td>{{request.id_no}}</td>
+        <td>
+            {% if request.id_card %}
+            <a target="_blank" href="{{request.id_card.url}}">
+                
+                <img
+                class="h-8 w-8 rounded-full"
+                src="{{request.id_card.url}}"
+                alt="id_card"
+                />
+            </a>
+            {% else %}
+            <span class="text-gray-500">No image uploaded</span>
+            {% endif %}
+          
+        </td>
+        <td>
+          
+            {% if request.selfie %}
+                <a target="_blank" href="{{request.selfie.url}}"></a>
+                    <img
+                    class="h-8 w-8 rounded-full"
+                    src="{{request.selfie.url}}"
+                    alt="id_card"
+                    />
+                </a>
+            {% else %}
+            <span class="text-gray-500">No image uploaded</span>
+            {% endif %}
+          
+        </td>
+        <td>
+          <div class="flex flex-row gap-x-2">
+             <button data-user_id="{{request.id}}" class="view_button py-2 px-3 rounded-md text-white bg-blue-600">
+              View
+            </button>
+            <button data-user_id="{{request.id}}" class="approve_button py-2 px-3 rounded-md text-white bg-green-600">
+              Approve
+            </button>
+            <button data-user_id="{{request.id}}" class="reject_button py-2 px-3 rounded-md text-white bg-red-600">
+              Reject
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div
+    class="pagination flex flex-row items-center ml-7 bg-slate-500 w-fit self-center py-3 px-4 rounded-md justify-center"
+  >
+    {% if requests.has_previous %}
+    <a
+      class="text-center flex flex-col items-center"
+      href="?page={{ requests.previous_page_number }}"
+    >
+      <ion-icon
+        name="arrow-back"
+        style="color: orange; font-size: larger; font-weight: bold;"
+      ></ion-icon>
+    </a>
+    {% endif %}
+    <span class="mx-2 text-orange-300">
+      {{ requests.number }} of {{ requests.paginator.num_pages}}
+    </span>
+    {% if requests.has_next %}
+    <a
+      class="text-center flex flex-col items-center"
+      href="?page={{ requests.next_page_number }}"
+    >
+      <ion-icon
+        name="arrow-forward"
+        style="color: orange; font-size: larger; font-weight: bold;"
+      ></ion-icon>
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="modal hidden min-h-screen min-w-full absolute top-0 z-50 user_Info  flex-col items-center">
+    <div class="bg-white py-3 px-4 rounded-lg items-center w-[60%] my-4 mx-auto flex flex-col">
+        <h1 class="text-textColor font-bold text-xl">User Information</h1>
+        <div id="user_modal_body"></div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block Additional_scripts %}
+    <script>
+        $(document).ready(function(){
+            //View Modal 
+            $(document).on("click", ".view_button", function(e){
+                e.preventDefault();
+
+                const user_id = $(this).data("user_id");
+                $(".user_Info").toggleClass("hidden flex");
+                $.ajax({
+                    url: "{% url 'view_user' %}",
+                    type: "GET",
+                    data:{user_id: user_id},
+                    success: function(response){
+                        console.log(response);
+                        $("#user_modal_body").html(`
+                        <div class="flex flex-col gap-y-2">
+                            <p><strong>Username:</strong> ${response.user.username}</p>
+                            <p><strong>Email:</strong> ${response.user.email}</p>
+                            <p><strong>Phone Number:</strong> ${response.user.phone_number}</p>
+                            <p><strong>Id Number:</strong> ${response.user.id_number}</p>
+                            <p><strong>Id Card:</strong> 
+                                {% if response.id_card %}
+                                    <a target="_blank" href=${response.id_card}>
+                                        <img
+                                        class="h-12 w-12 rounded-full"
+                                        src=${response.id_card}
+                                        alt="id_card"
+                                        />
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-500">No image uploaded</span>
+                                {% endif %}
+                            </p>
+                             <p><strong>Id Card:</strong> 
+                                {% if response.selfie %}
+                                    <a target="_blank" href=${response.selfie}>
+                                        <img
+                                        class="h-12 w-12 rounded-full"
+                                        src=${response.selfie}
+                                        alt="id_card"
+                                        />
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-500">No image uploaded</span>
+                                {% endif %}
+                            </p>
+                           
+                        </div>
+                        `);
+                        
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+            //Close Modal
+            $(document).on('click',function(e){
+                if($(e.target).hasClass('user_Info') && !$("user_info").hasClass('hidden')){
+                    $(".user_Info").addClass("hidden flex");
+                }
+            })
+            //Approve User
+            $(document).on("click", ".approve_button", function(e){
+                e.preventDefault();
+                const user_id = $(this).data("user_id");
+                $.ajax({
+                    url: "{% url 'approve_request' %}",
+                    type: "GET",
+                    data: { user_id: user_id },
+                    success: function(response){
+                        console.log(response);
+                        location.reload();
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+            //Reject User
+            $(document).on("click", ".reject_button", function(e){
+                e.preventDefault();
+                const user_id = $(this).data("user_id");
+                const message=prompt()
+                $.ajax({
+                    url: "{% url 'reject_request' %}",
+                    type: "GET",
+                    data:{user_id: user_id},
+                    success: function(response){
+                        location.reload();
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock Additional_scripts %}
+    

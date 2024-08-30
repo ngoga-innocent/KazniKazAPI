@@ -1,0 +1,168 @@
+{% extends '../staff_base.html' %} {% load static %} {% block content %}
+
+<div class="flex flex-col my-2 mx-2">
+  {% if users %}
+  <table class="table-auto">
+    <thead>
+      <tr class="border-0 border-primary border-b-2 py-4 rounded-md px-2">
+        <th>user</th>
+        <th>email</th>
+        <th>status</th>
+        <th>verified</th>
+        <th>action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr class="bg-gray-200 py-10 my-2">
+        <td>
+          <div class="flex flex-row gap-x-2 items-center">
+            {% if user.profile %}
+            <div
+              class="max-w-10 max-h-10 w-10 h-10 rounded-full overflow-hidden"
+            >
+              <img
+                src="{{user.profile.url}}"
+                class="w-10 h-10 rounde-full"
+                alt=""
+              />
+            </div>
+            {% else %}
+            <div
+              class="max-w-10 max-h-10 w-10 h-10 rounded-full overflow-hidden"
+            >
+              <img
+                src="{% static 'images/avatar.png' %}"
+                class="w-10 h-10 rounde-full"
+                alt=""
+              />
+            </div>
+            {% endif %}
+            <p class="font-bold">{{user.username}}</p>
+          </div>
+        </td>
+        <td>{{user.email}}</td>
+        <td>{{user.account_status}}</td>
+        <td>{{user.verified}}</td>
+        <td>
+          <div class="flex flex-row gap-x-3">
+            <a
+              href="{% url 'edit_users' user.id %}"
+              class="w-10 flex flex-col items-center bg-orange-500 h-10 rounded-lg justify-center"
+            >
+              <ion-icon
+                name="create"
+                style="color: white; font-size: large; font-weight: bold;"
+              ></ion-icon>
+            </a>
+            <button
+              data-user_id="{{user.id}}"
+              class="view_user w-10 flex flex-col items-center bg-slate-500 h-10 rounded-lg justify-center"
+            >
+              <ion-icon
+                name="eye"
+                style="color: white; font-size: large; font-weight: bold;"
+              ></ion-icon>
+            </button>
+            <!-- <a
+              href=""
+              class="w-10 flex flex-col items-center bg-red-500 h-10 rounded-lg justify-center"
+            >
+              <ion-icon
+                name="trash"
+                style="color: white; font-size: large; font-weight: bold;"
+              ></ion-icon>
+            </a> -->
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+<div
+  class="hidden modal min-h-screen min-w-full absolute top-0 flex-col items-center justify-center"
+  style="background-color: rgba(71, 69, 69, 0.4);"
+>
+  <div
+    class="bg-white py-2 px-3 rounded-md w-[80%] mx-auto single_student"
+  ></div>
+</div>
+{% endblock content %} {% block Additional_scripts %}
+<script>
+  $(document).ready(function () {
+    $(document).on("click", ".view_user", function (e) {
+      e.preventDefault();
+      $(".overlay_spinner").toggleClass("hidden flex");
+      const user_id = $(this).data("user_id");
+      $(".modal").toggleClass("hidden flex");
+      $.ajax({
+        url: `user/${user_id}`,
+        type: "GET",
+        success: function (data) {
+          //console.log(data);
+          $(".overlay_spinner").toggleClass("hidden flex");
+          $(".single_student").html(`
+          <div class='flex flex-col relative'>
+            
+            <a target="_blank" href="${
+              data.user.profile
+            }"  class='w-14 h-14 max-w-14 max-h-14 rounded-full overflow-hidden'>
+              <img src='${
+                data.user.profile
+              }' class='w-14 h-14 object-contain' />
+            </a>
+            <div class='flex flex-col gap-y-2'>
+              <h1 class='text-primary text-xl font-bold'>${
+                data.user.username
+              }</h1>
+              <p>Email: ${data.user?.email}</p>
+              <p>Account Status: ${data.user.account_status}</p>
+              <p>Verified: ${data.user.verified ? "Yes" : "No"}</p>
+               <p>Id Number: ${data.user.id_number}</p>
+               <p>Phone Number: ${data.user.phone_number}</p>
+               <p>Seller: ${data.user.seller ? "yes" : "No"}</p>
+            </div>
+            <p>Uploaded Id Card</p>
+            <a target="_blank" href='${
+              data.user.id_card
+            }' class='w-14 h-14 max-w-14 max-h-14 rounded-md overflow-hidden'>
+              <img src='${
+                data.user.id_card
+              }' class='w-14 h-14 object-contain' />
+            </a>
+            <p>Uploaded Selfie</p>
+            <a target="_blank" href="${
+              data.user.selfie
+            }" class='w-14 h-14 max-w-14 max-h-14 rounded-md overflow-hidden'>
+              <img src='${data.user.selfie}' class='w-14 h-14 object-contain' />
+            </a>
+            <button class="bg-orange-700 absolute top-2 right-0 w-fit p-2 rounded-lg close_modal">
+              
+              <ion-icon name="eye-off" style="color:white; font-weight:bold"></ion-icon>
+            </button>
+          </div>
+          `);
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.error(error);
+        },
+      });
+    });
+    $(document).on("click", ".close_modal", function (e) {
+      e.preventDefault();
+      $(".modal").toggleClass("hidden flex");
+    });
+    $(document).on("click", function (e) {
+      if (
+        !$(e.target).hasClass("single_student") &&
+        $(".modal").hasClass("hidden")
+      ) {
+        $(".modal").addClass("hidden");
+      }
+    });
+  });
+</script>
+{% endblock Additional_scripts %}

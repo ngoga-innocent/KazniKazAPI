@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff- {% block title %} {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+    <link
+      rel="icon"
+      href="{% static 'images/icon.png' %}"
+      type="image/x-icon"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="{% static 'Js/jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-slate-200 flex flex-col relative">
+    <div class="flex flex-row">
+      <!-- Navbar -->
+      <div
+        class="w-[20%] min-h-screen max-h-screen overflow-scroll scrollbar-hidden bg-white"
+      >
+        {% include 'navbar.html' %}
+      </div>
+      <div class="flex-1 relative max-h-screen overflow-scroll">
+        {% block content %} {% endblock content %}
+      </div>
+    </div>
+    <div
+      class="overlay_spinner hidden min-h-screen min-w-full flex-col absolute top-0 items-center justify-center"
+      style="background-color: rgba(0, 0, 0, 0.5);"
+    >
+      <div
+        class="border-dashed animate-spin border border-white w-14 h-14 rounded-full"
+      ></div>
+    </div>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    {% block Additional_scripts %} {% endblock Additional_scripts %}
+  </body>
+</html>

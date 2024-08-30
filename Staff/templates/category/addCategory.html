@@ -1,0 +1,125 @@
+{% extends '../staff_base.html' %} {% block content %}
+<div class="flex flex-col mx-3">
+  <div class="flex flex-row items-center justify-between py-4">
+    <h1 class="text-[2rem] text-textColor font-bold">
+      Category
+    </h1>
+    <button class="bg-primary text-white py-2 px-4 rounded-md">
+      Add Parent Category
+    </button>
+  </div>
+  <div>
+    <button>
+      Add Child Category
+    </button>
+  </div>
+  <div
+    class="flex flex-col gap-y-4 bg-white w-[70%] mx-auto py-4 rounded-lg px-4"
+  >
+    <form class="parent_category" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="flex flex-col space-y-2">
+        <label for="parent_name" class="font-bold text-textColor"
+          >Category Name</label
+        >
+        <input
+          type="text"
+          name="name"
+          id="parent_name"
+          class="w-[60%] py-2 rounded-md px-3 bg-slate-200"
+        />
+      </div>
+      <div class="flex flex-col space-y-2 my-2">
+        <label for="file" class="font-bold text-textColor"
+          >Category Thumbnail</label
+        >
+        <input type="file" name="thumbnail" id="file" />
+      </div>
+      <button
+        type="button"
+        class="bg-green-200 text-white font-bold px-4 py-2 rounded-md add_child"
+      >
+        Add Child to This Category
+      </button>
+      <div class="childs_view flex flex-col space-y-2 ml-14"></div>
+      <button
+        type="submit"
+        class="bg-primary my-2 text-white py-2 px-4 rounded-md"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+  <div
+    class="loader hidden absolute min-h-screen min-w-full w-[100%] flex-col items-center justify-center z-40 top-0"
+    style="background-color: rgba(0, 0, 0, 0.3);"
+  >
+    <div
+      class="spinner animate-spin w-14 h-14 rounded-full border-2 border-dotted z-50 border-white"
+    ></div>
+  </div>
+  {% endblock content %}
+</div>
+
+{% block Additional_scripts %}
+<script>
+  $(document).ready(function () {
+    let childIndex = 0;
+
+    //Add Children to Category
+    $(".add_child").click(function () {
+      childIndex++;
+      $(".childs_view").append(
+        `<div class="flex flex-row space-x-2 w-[100%] space-y-2 items-center">
+        <div class="flex flex-col space-y-2 min-w-fit w-fit flex-1">
+            <label for="child_name_${childIndex}" class="font-bold text-textColor">Child Category Name</label>
+            <input type="text" name="child_name_${childIndex}" id="child_name_${childIndex}" class="w-[90%] py-2 rounded-md px-3 bg-slate-200" />
+        </div>
+        <div class="flex flex-col space-y-2 min-w-fit w-fit flex-1">
+            <label for="child_thumbnail_${childIndex}" class="font-bold text-textColor">Child Category Thumbnail</label>
+            <input type="file" name="child_thumbnail_${childIndex}" id="child_thumbnail_${childIndex}" class="w-[90%] rounded-md py-1 px-3 bg-slate-200" />
+        </div>    
+      </div>`
+      );
+    });
+
+    $(".parent_category").on("submit", function (e) {
+      e.preventDefault();
+      $(".loader").toggleClass("hidden flex");
+      const formData = new FormData(this);
+
+      // Append child data
+      $(".childs_view > div").each(function (index) {
+        const childName = $(this).find('input[type="text"]').val();
+        const childThumbnail = $(this).find('input[type="file"]')[0].files[0];
+
+        formData.append(`child_name_${index}`, childName);
+        formData.append(`child_thumbnail_${index}`, childThumbnail);
+      });
+
+      $.ajax({
+        url: "{% url 'addCategory' %}",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        success: function (response) {
+          $(".loader").toggleClass("hidden flex");
+          alert("Category and its children added successfully");
+          // Optionally, you can reset the form or redirect to another page
+          $(".parent_category")[0].reset();
+          $(".childs_view").empty();
+          window.location.reload();
+        },
+        error: function (error) {
+          $(".loader").toggleClass("hidden flex");
+          console.error(error);
+        },
+      });
+    });
+  });
+</script>
+{% endblock Additional_scripts %}

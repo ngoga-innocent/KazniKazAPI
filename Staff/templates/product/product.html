@@ -1,0 +1,336 @@
+{% extends '../staff_base.html' %} {% block content %} <br />
+<div class="flex flex-row gap-x-2">
+  <button
+    class="unverified_products flex flex-col px-3 py-3 bg-orange-300 rounded-md text-white font-bold mx-2"
+  >
+    Unverified Products
+  </button>
+  <button
+    class="verified_products flex flex-col px-3 py-3 bg-orange-300 rounded-md text-white font-bold mx-2"
+  >
+    Verified Products
+  </button>
+  <button
+    class="our_products flex flex-col px-3 py-3 bg-orange-300 rounded-md text-white font-bold mx-2"
+  >
+    Our Products
+  </button>
+</div>
+<div class="products grid"></div>
+{% if univerified_products %} <br />
+<div>
+  <h1 class="font-bold text-textColor">Unverified Products</h1>
+</div>
+<div class="grid grid-cols-4 flex-wrap max-w-[100%] gap-2 mx-3">
+  {% for product in univerified_products %}
+  <div>
+    <div
+      class="flex flex-col shadow-sm shadow-black rounded-md my-2 items-center p-2"
+    >
+      <img
+        src="{{ product.thumbnail.url }}"
+        alt="{{ product.name }}"
+        class="w-[100px] h-[100px] object-cover rounded-md"
+      />
+      <div class="flex flex-col gap-y-2">
+        <h2 class="text-xl font-bold">{{ product.name }}</h2>
+        <h2 class="text-md font-bold">category:{{product.category}}</h2>
+        <p class="text-gray-600">{{ product.description }}</p>
+        <p class="text-gray-600">
+          Price: {{ product.price }} {{product.currency}}
+        </p>
+        <form>
+          {% csrf_token %}
+          <button
+            class="bg-primary text-white py-2 px-4 rounded-md approve_btn"
+            data-product_id="{{ product.id }}"
+            data-product_name="{{ product.name }}"
+          >
+            Approve
+          </button>
+          <a
+            href="{% url 'get_edit_form' product.id %}"
+            class="bg-orange-800 text-white py-2 px-4 rounded-md edit_btn"
+            data-product_id="{{ product.id }}"
+            data-product_name="{{ product.name }}"
+          >
+            Edit
+          </a>
+          <button
+            data-product_id="{{product.id}}"
+            class="reject bg-orange-800 mx-2 text-white font-bold py-2 px-4 rounded-md edit_btn"
+          >
+            Reject
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %} {% endif %}
+  <div
+    class="reject_message hidden absolute min-h-screen min-w-full h-screen w-full justify-center flex-col items-center z-40 top-0"
+    style="background-color: rgba(0, 0, 0, 0.3);"
+  >
+    <form
+      class="message bg-white flex flex-col p-2 w-[60%] my-5 mx-2 rounded-md"
+    >
+      {% csrf_token %}
+
+      <textarea
+        name="message_input"
+        placeholder="Add Message"
+        class="w-[80%] p-3 rounded-lg bg-slate-200"
+        id=""
+        cols="4"
+        rows="4"
+      ></textarea>
+      <button
+        type="submit"
+        class="flex flex-col px-3 py-2 bg-primary rounded-md w-fit text-white font-bold my-2"
+      >
+        Send Message
+      </button>
+    </form>
+  </div>
+  {% endblock content %}
+</div>
+
+{% block Additional_scripts %}
+<script>
+  $(document).ready(function () {
+    $(".approve_btn").on("click", function (e) {
+      e.preventDefault();
+      let productId = $(this).data("product_id");
+      let productName = $(this).data("product_name");
+      $(".overlay_spinner").toggleClass("hidden flex");
+      $.ajax({
+        url: "{% url 'products' %}",
+        type: "PUT",
+        data: JSON.stringify({ product_id: productId }),
+        contentType: "application/json",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          alert("Product '" + productName + "' has been approved.");
+
+          location.reload();
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.log(error);
+          alert("Failed to approve product '" + productName + "'.");
+        },
+      });
+    });
+    //Get Product by Type
+    $(".verified_products").on("click", function (e) {
+      e.preventDefault();
+      //const type = "verified";
+      $(".overlay_spinner").toggleClass("hidden flex");
+      const type = "verified";
+      console.log(type);
+      $.ajax({
+        url: "{% url 'get_products_by_type' %}",
+        type: "GET",
+        data: { type: type },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          //console.log(response);
+          $(".products")
+            .html(`<div class="flex flex-row flex-wrap w-[100%] max-w-[100%] gap-2 mx-3">
+            ${response.map((product, index) => {
+              return `
+              <div class="flex flex-col shadow-sm p-2 w-[30%] max-w-[40%] justify-center shadow-black rounded-md my-2 items-center ">
+                <img
+                  src="${product.thumbnail}"
+                  alt="${product.name}"
+                  class="w-[100px] h-[100px] object-cover rounded-md"
+                />
+                <div class="flex flex-col gap-y-2">
+                  <h2 class="text-xl font-bold">${product.name}</h2>
+                  <h2 class="text-md font-bold">category:${product.category_details.name}</h2>
+                  <p class="text-gray-600">${product.description}</p>
+                  <p class="text-gray-600">
+                    Price: ${product.price} ${product.currency}
+                  </p>
+
+
+
+                </div>
+              </div>
+            </div>`;
+            })}
+
+          </div>`);
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.log(error);
+        },
+      });
+    });
+    //Unverified Products
+    $(".unverified_products").on("click", function (e) {
+      e.preventDefault();
+      //const type = "verified";
+      const type = "unverified";
+      //console.log(type);
+      $(".overlay_spinner").toggleClass("hidden flex");
+      $.ajax({
+        url: "{% url 'get_products_by_type' %}",
+        type: "GET",
+        data: { type: type },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          //console.log(response);
+          $(".products").html(`<div class="flex flex-row flex-wrap gap-2 mx-3">
+            ${response.map((product, index) => {
+              return `<div class="flex flex-col shadow-sm p-2 w-[30%] max-w-[40%] justify-center shadow-black rounded-md my-2 items-center ">
+
+                <img
+                  src="${product.thumbnail}"
+                  alt="${product.name}"
+                  class="w-[100px] h-[100px] object-cover rounded-md"
+                />
+                <div class="flex flex-col gap-y-2">
+                  <h2 class="text-xl font-bold">${product.name}</h2>
+                  <h2 class="text-md font-bold">category:${product.category_details.name}</h2>
+                  <p class="text-gray-600">${product.description}</p>
+                  <p class="text-gray-600">
+                    Price: ${product.price} ${product.currency}
+                  </p>
+                  <form>
+                    {% csrf_token %}
+                    <button
+                      class="bg-primary text-white py-2 px-4 rounded-md approve_btn"
+                      data-product_id="${product.id}"
+                      data-product_name="${product.name}"
+                    >
+                      Approve
+                    </button>
+                    <a
+
+                      class="bg-orange-800 text-white py-2 px-4 rounded-md edit_btn"
+                      data-product_id="${product.id}"
+                      data-product_name="${product.name}"
+                    >
+                      Edit
+                    </a>
+                  </form>
+
+                  <button class="bg-gray">Delete</button>
+                </div>
+
+            </div>`;
+            })}
+
+          </div>`);
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.log(error);
+        },
+      });
+    });
+    //Our Products
+    $(".our_products").on("click", function (e) {
+      e.preventDefault();
+      $(".overlay_spinner").toggleClass("hidden flex");
+      //const type = "verified";
+      const type = "our_products";
+      console.log(type);
+      $.ajax({
+        url: "{% url 'get_products_by_type' %}",
+        type: "GET",
+        data: { type: type },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          //console.log(response);
+          $(".products")
+            .html(`<div class="flex flex-row flex-wrap w-[100%] max-w-[100%] gap-2 mx-3">
+            ${response.map((product, index) => {
+              return `<div>
+              <div
+                class="flex flex-col w-fit max-w-[100%] shadow-sm shadow-black rounded-md my-2 items-center p-2"
+              >
+                <img
+                  src="${product.thumbnail}"
+                  alt="${product.name}"
+                  class="w-[100px] h-[100px] object-cover rounded-md"
+                />
+                <div class="flex flex-col gap-y-2">
+                  <h2 class="text-xl font-bold">${product.name}</h2>
+                  <h2 class="text-md font-bold">category:${product.category_details.name}</h2>
+                  <p class="text-gray-600">${product.description}</p>
+                  <p class="text-gray-600">
+                    Price: ${product.price} ${product.currency}
+                  </p>
+
+
+                  <button class="bg-gray">Delete</button>
+                </div>
+              </div>
+            </div>`;
+            })}
+
+          </div>`);
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.log(error);
+        },
+      });
+    });
+    $(".reject").on("click", function (e) {
+      e.preventDefault();
+      localStorage.setItem("product_id", $(this).data("product_id"));
+      $(".reject_message").toggleClass("hidden flex");
+    });
+    //Hidding/unhide the reject modal
+    $(document).on("click", function (e) {
+      console.log($(e.target).hasClass("reject_message"));
+      console.log(!$(".reject_message").hasClass("hidden"));
+      //if ($(e.target).closest(".reject_message").length > 0) {
+      //$(".reject_message").addClass("hidden flex");
+      //}
+      if (
+        !$(".reject_message").hasClass("hidden") &&
+        $(e.target).hasClass("reject_message")
+      ) {
+        $(".reject_message").addClass("hidden flex");
+      }
+    });
+    //Submitting the reject message
+    $(document).on("submit", ".message", function (e) {
+      e.preventDefault();
+      $(".overlay_spinner").toggleClass("hidden flex");
+      let message = $(this).serializeArray();
+      console.log(message);
+      $.ajax({
+        url: "{% url 'reject_product' %}",
+        type: "POST",
+        data: {
+          message: message[1].value,
+          product_id: localStorage.getItem("product_id"),
+        },
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          //console.log(response);
+          alert("Message sent successfully.");
+          $(".message")[0].reset();
+        },
+        error: function (error) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          console.log(error);
+          alert("Failed to send message.");
+        },
+      });
+    });
+  });
+</script>
+{% endblock Additional_scripts %}

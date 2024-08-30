@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ngoga.KazniKaz",
+      "sha256_cert_fingerprints": [
+        "0D:B7:6B:3A:A4:93:A5:8D:AB:DB:1C:E4:8E:1A:3A:85:32:6F:9F:41:A3:93:47:B7:6F:4F:13:12:18:FB:E0:2C",
+        "44:79:FC:12:E3:51:3A:9B:85:BD:85:AD:9D:1C:12:FD:1C:FA:5B:06:B2:ED:2E:3F:35:5F:0F:64:1F:84:74:A3"
+      ]
+    }
+  }
+]

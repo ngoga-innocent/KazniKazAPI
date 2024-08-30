@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %} {% endblock title %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+     <script src="{% static 'Js/jquery.js' %}"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+     <link rel="icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
+     
+     {% block in_page_styles %}
+      
+     {% endblock in_page_styles %}
+      
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="">
+    <div class="nav hidden w-full md:flex flex-row justify-between items-center px-24">
+      <div class="flex flex-row items-center gap-x-3">
+        <img
+          src="{% static 'images/icon.png' %}"
+          alt=""
+          class="w-20 h-20 rounded-full"
+        />
+        <h2 class="text-primary font-bold text-xl">Kaz ni Kaz</h2>
+      </div>
+       <div class="flex flex-row items-center gap-x-2">
+         <a href="{% url 'web_shops' %}" class="flex flex-row items-center gap-x-2">
+          <div class="bg-orange-200 flex flex-col items-center justify-center h-12 w-12 rounded-full">
+            <i class="fa-solid fa-shop text-orange-700 font-bold text-lg"></i>
+          </div>
+          <p>Shops</p>
+        </a>
+        <div class="flex flex-row flex-1 mx-4 items-center bg-slate-200 py-2 px-3 rounded-md">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="bg-transparent w-[90%]" placeholder="Search" >
+        </div>
+        <!-- <div class="relative h-12 w-12 rounded-full flex flex-col items-center justify-center bg-orange-300">
+          <i class="fa-regular fa-bell text-white font-bold"></i>
+          <div class="absolute -top-4">12</div>
+        </div> -->
+        <a href="{% url 'upload_products' %}" class="flex flex-row items-center rounded-md bg-primary gap-x-3 px-3 py-2">
+          <i class="fa-solid fa-plus text-white font-bold"></i>
+          <p class="text-white font-bold">Post Product</p>
+        </a>
+       </div>
+      <div>
+        <ul class="flex flex-row gap-x-4 items-center">
+            <li>
+              <a href="{% url 'homepage' %}">Home</a>
+            </li>
+            <li>
+              <a href="{% url 'about_us' %}">About</a>
+            </li>
+            <li>
+              <a href="#">News</a>
+            </li>
+            
+            <li>
+              <a href="#">Jobs</a>
+            </li>
+           
+          </ul>
+        </ul>
+      </div>
+    </div>
+    <div class="flex-1 ">
+     
+     {% block Content %}
+        
+     {% endblock Content %}
+        
+    </div>
+    <!-- Footer Menu -->
+    <div class="hidden md:flex flex-row gap-x-3 w-full bg-slate-200 py-14 px-24">
+      <div class="w-[30%]">
+        <h1 class="font-bold text-xl">Stay Connected</h1>
+        <button class="flex flex-row gap-x-2 items-center bg-blue-600 py-2 px-4 rounded-md">
+          <i class="fa-solid fa-headphones text-white font-bold text-2xl" ></i>
+          <p class="text-white font-bold">Live Chat</p>
+        </button>
+        <div class="flex flex-row items-center  rounded-md bg-white my-2">
+          <input type="text" name="" id="" placeholder="enter Your Email" class="bg-transparent py-2 w-[80%] px-2">
+          <button class="bg-primary py-2 rounded-md px-4 text-white">Subscribe</button>
+        </div>
+      </div>
+      <div class="flex flex-col flex-1">
+        <h2 class="text-xl font-bold">About Kaz ni Kaz</h2>
+        <a href="{% url 'privacy' %}" class="font-italic font-light ">Privacy and policy</a>
+        <a href="{% url 'about_us' %}" class="font-italic font-light ">About Us</a>
+
+      </div>
+      <div class="flex-1">
+        <h2 class="text-xl font-bold">Check Our App</h2>
+        <div class="flex flex-row items-center gap-x-2 bg-primary rounded-md px-3 py-2 max-w-fit">
+          <i class="fa-brands fa-google-play text-white font-bold text-xl" ></i>
+          <p>PlayStore</p>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h2 class="text-xl font-bold">Contact Us</h2>
+        <div class="flex flex-row items-center gap-x-2  px-3 ">
+          <i class="fa-solid fa-phone"></i>
+          <p>0782214360</p>
+        </div>
+         <div class="flex flex-row items-center gap-x-2  px-3 ">
+          <i class="fa-solid fa-envelope"></i>
+          <p>kaznikaz@gmail.com</p>
+        </div>
+        <div class="flex flex-row items-center gap-x-2  px-3 ">
+          <i class="fa-solid fa-location-crosshairs"></i>
+          <p>kigali, Rwanda Kimisagara</p>
+        </div>
+        
+      </div>
+    </div>
+    <div class="w-full items-center bg-slate-200">
+      <p class="text-center text-sm text-gray-600">
+        &copy; 2023 KazniKaz. All rights reserved.
+      </p>
+    </div>
+      <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    {% block script %}
+      
+    {% endblock script %}
+      
+  </body>
+</html>

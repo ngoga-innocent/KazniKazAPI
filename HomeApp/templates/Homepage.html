@@ -1,0 +1,242 @@
+{% extends 'base.html' %} {% block Content %}
+<div class="flex flex-row w-[80vw] gap-x-2 mx-auto h-fit max-h-fit">
+    <!-- First Div -->
+    <div class="w-[20%] h-fit pb-2 max-h-[60vh] overflow-y-scroll scrollbar-hidden bg-white">
+        <div class="bg-primary py-3 w-[100%] items-center justify-center rounded-md">
+            <h2 class="font-bold text-white text-center">Products By Category</h2>
+        </div>
+        {% if categories %}
+        <div class="gap-y-2 px-2">
+            {% for category in categories %}
+            <div class="py-1 category hover:bg-slate-200">
+                <a href="{% url 'category' category.id %}" class="">{{ category.name }}</a>
+                {% if category.getCategoryChildren %}
+                <div
+                    class="absolute left-[20%] w-fit max-w-[40%] flex flex-row flex-wrap px-3 rounded-md bg-white z-[50]">
+                    {% for children in category.getCategoryChildren %}
+                    <div class="children ml-5 gap-y-1 my-1 px-2 rounded-md py-2 bg-slate-300 hover:bg-primary">
+                        <a href="{% url 'category' category.id %}" class="text-black font-bold">{{children.name}}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No categories found.</p>
+        {% endif %}
+    </div>
+    <!-- Second Div -->
+    <div class="relative flex flex-col w-[60%] max-w-[60%] h-[60vh] gap-y-2 overflow-x-hidden scrollbar-hidden">
+        <div class="carousel_container flex flex-row w-[100%] h-[70%]">
+            {% for ads in our_ads %}
+            <div class="carousel_item w-[100%] min-w-[100%] h-[100%] max-w-[100%] max-h-[100%] overflow-hidden">
+                <img src="{{ ads.thumbnail.url }}" alt="Image {{ forloop.counter }}"
+                    class="object-cover w-[100%] h-[60vh] min-w-[100%] max-w-[60vh] max-h-[100%]" />
+            </div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <button class="carousel-control prev">
+                &#10094;
+            </button>
+            <button class="carousel-control next">
+                &#10095;
+            </button>
+        </div>
+        <div class="grid grid-cols-2 w-[100%] gap-2">
+            {% for category in category_products %} {% if forloop.counter == 1 %}
+            <div
+                class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-blue-800 to-blue-200">
+                {% elif forloop.counter == 2 %}
+                <div
+                    class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-purple-800 to-purple-200">
+                    {% elif forloop.counter == 3 %}
+                    <div
+                        class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-orange-800 to-orange-200">
+                        {% elif forloop.counter == 4 %}
+                        <div
+                            class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-yellow-800 to-yellow-200">
+                            {% endif %}
+
+                            <div>
+                                <h1 class="text-white text-[0.9rem] font-bold">
+                                    {{category.name}}
+                                </h1>
+                                <button
+                                    class="bg-slate-300 border rounded-lg py-1 px-4 hover:bg-primary text-white font-bold">
+                                    View
+                                </button>
+                            </div>
+                            <div class="w-14 h-14 max-h-14 max-w-14 overflow-hidden rounded-full">
+                                <img src="{{category.thumbnail.url}}" class="w-14 h-14 object-contain max-w-14 max-h-14"
+                                    alt="" />
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w-[80vw] mx-auto mt-12 mb-3">
+    <p class="text-[1.3rem] text-primary font-bold ">Featured Products</p>
+</div>
+<div class=" second_div w-[80vw] mx-auto my-4 flex flex-row flex-wrap  max-w-[80vw]   gap-2">
+    
+    {% for product in admin_products %}
+        <div
+            style="background-color: rgba(0, 0, 0, 0.1);"
+            class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 hover:scale-125 transition-all duration-5000"
+          >
+            <a href="{% url 'single_product' product.id %}">
+              {% if product.thumbnail %}
+              <img
+                src="{{product.thumbnail.url}}"
+                class="w-[100%] h-[20vh] object-cover"
+                alt=""
+              />
+              {% else %}
+              <div
+                class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+              >
+                {{product.name}}
+              </div>
+              {% endif %}
+              <div
+                class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+                style="background-color: rgba(0, 0, 0, 0.4);"
+              >
+                <p class="text-white font-semibold">
+                  {{product.category.name}}
+                </p>
+              </div>
+              <p class="text-lg italic mt-3">{{product.name}}</p>
+              <div class="flex flex-row items-center mb-3">
+                <ion-icon name="clock"></ion-icon>
+                <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+              </div>
+              <hr
+                class="w-[80%]"
+                style="color: gray; background-color: gray; height: 3px;"
+              />
+              <div
+                class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+              >
+                <div class="flex flex-row items-center gap-x-2">
+                  <ion-icon
+                    name="pricetags"
+                    style="font-size: 23px;"
+                  ></ion-icon>
+                  <p class="text-gray-500 text-md font-bold">
+                    {{ product.price }} {{ product.currency }}
+                  </p>
+                </div>
+                <div class="flex gap-x-2 flex-row">
+                  <a
+                    href="https://wa.me/{{product.uploader.phone_number}}"
+                    target="_blank"
+                    class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+                  >
+                    <ion-icon
+                      style="color: white; font-size: 17px;"
+                      name="logo-whatsapp"
+                    ></ion-icon>
+                  </a>
+                  <a
+                    href="tel:{{ product.uploader.phone_number }}"
+                    target="_blank"
+                    class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+                  >
+                    <ion-icon
+                      style="color: white; font-size: 17px;"
+                      name="call"
+                    ></ion-icon>
+                  </a>
+                </div>
+              </div>
+            </a>
+          </div>
+    {% endfor %}    
+</div>
+<div class="w-[80vw] mx-auto mt-12 mb-3">
+    <p class="text-[1.3rem] text-primary font-bold ">Kaz ni Kaz  Discounted Products</p>
+</div>
+<div class="flex flex-row flex-wrap mx-auto w-[80vw] max-w-[80vw] my-2">
+    {% for discount_product in discounts %}
+         <a href="#" class=" relative flex-shrink-0 hover:bg-slate-200 flex flex-col items-center rounded-md  justify-center w-[18%] h-[25vh] border-2 ">
+            
+            <img src="{{discount_product.thumbnail.url}}" loading="lazy" class="object-cover  min-h-[80%] min-w-[100%] h-[80%] w-[100%]" alt="">
+            <p class="font-light text-sm ">{{discount_product.name}}</p>
+            <p class="price text-primary">{{discount_product.price}} {{discount_product.currency}}</p>
+            <div class="absolute top-2 left-2 flex flex-col items-center justify-center rounded-md bg-primary px-3 py-2 text-white font-bold">
+                {{discount_product.discount}}%
+            </div>
+        </a>
+    {% endfor %}
+    
+</div>
+<!-- Three products for each category -->
+ <div>
+    <p class="text-[1.4rem] w-[80vw] mx-auto text-primary font-bold ">Kaz ni Kaz Choices</p>
+ </div>
+ <div class="grid grid-cols-4 my-3 w-[80vw] max-w-[80vw] mx-auto gap-2">
+    {% for category in categories %}
+        {% if category.getProductCategory %}
+           <div class="flex flex-col gap-1 p-1 bg-whiye shadow-sm shadow-black rounded-md ">
+             <h1 class="text-textColor">{{category.name}}</h1>
+             <div class="grid grid-cols-3 p-2">
+                 {% for product in category.getCategorythreeProducts %}
+                     <a href="">
+                         <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}" class="object-cover w-full h-32" />
+                         
+                     </a>
+                 {% endfor %}
+             </div>
+           </div>
+        {% endif %}
+        
+    {% endfor %}
+    
+ </div>
+{% endblock Content %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        const slides = document.querySelectorAll(".carousel_item");
+        let currentIndex = 0;
+
+        function showSlide(slide) {
+            if (slide >= slides.length) {
+                currentIndex = 0;
+            } else if (slide < 0) {
+                currentIndex = slides.length - 1;
+            } else {
+                currentIndex = slide;
+            }
+            const offset = -currentIndex * 100;
+            //slides[currentIndex].style.transform = `translateX(${offset}%)`;
+            $(".carousel_container").css("transform", `translateX(${offset}%)`);
+        }
+        showSlide(currentIndex);
+        setInterval(function () {
+            currentIndex++;
+            showSlide(currentIndex);
+        }, 5000);
+        $(".prev").click(function () {
+            currentIndex--;
+            showSlide(currentIndex);
+        });
+        $(".next").click(function () {
+            currentIndex++;
+            showSlide(currentIndex);
+        });
+    });
+</script>
+{% endblock script %}
+</div>
+</div>

@@ -1,0 +1,102 @@
+{% extends '../staff_base.html' %} {% block content %}
+<div
+  class="flex flex-col w-[90%] mx-auto border rounded-lg bg-white py-4 px-7 my-7"
+>
+  <h1 class="text-textColor font-bold text-lg">{{shop.name}}</h1>
+  <div
+    class="w-[80%] h-[20%] roounded-md my-2 mx-auto max-w-[80%] max-h-[20%] overflow-hidden"
+  >
+    <img
+      src="{{shop.thumbnail.url}}"
+      class="w-[80%] h-32 object-contain"
+      alt=""
+    />
+  </div>
+  <div class="flex flex-col gap-y-2">
+    <div class="flex flex-row items-center gap-x-2">
+      <h2 class="text-textColor text-lg font-bold">Location:</h2>
+      <p class="text-gray-600 text-sm">{{shop.location}}</p>
+    </div>
+    <div class="flex flex-row items-center gap-x-2">
+      <h2 class="text-textColor text-lg font-bold">contact:</h2>
+      <p class="text-gray-600 text-sm">{{shop.contact}}</p>
+    </div>
+    <div class="flex flex-row items-center gap-x-2">
+      <div class="flex flex-col gap-y-1">
+        <h2 class="text-textColor text-lg font-bold">Owner:</h2>
+        <p class="text-gray-600 text-sm">{{shop.owner}}</p>
+      </div>
+      <div class="flex flex-col gap-y-1">
+        <h2 class="text-textColor text-lg font-bold">Owner email:</h2>
+        <p class="text-gray-600 text-sm">{{shop.owner.email}}</p>
+      </div>
+      <div class="flex flex-col gap-y-1">
+        <h2 class="text-textColor text-lg font-bold">Owner phone number:</h2>
+        <p class="text-gray-600 text-sm">{{shop.owner.phone_number}}</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-y-1">
+      <h2 class="text-textColor text-lg font-bold">verified:</h2>
+      <p class="text-gray-600 text-sm">{{shop.verified}}</p>
+    </div>
+    <div class="flex flex-col items-center gap-x-2">
+      <div class="border-primary border py-4 px-2 rounded-md">
+        <h2 class="text-xl text-textColor font-bold">
+          Shop Products
+        </h2>
+      </div>
+      {% if products %}
+      <div class="grid grid-cols-4 gap-2">
+        {% for product in products %}
+        <div>
+          <div
+            class="flex flex-col shadow-sm shadow-black rounded-md my-2 items-center p-2"
+          >
+            <img
+              src="{{ product.thumbnail.url }}"
+              alt="{{ product.name }}"
+              class="w-[100px] h-[100px] object-cover rounded-md"
+            />
+            <div class="flex flex-col gap-y-2">
+              <h2 class="text-xl font-bold">{{ product.name }}</h2>
+              <h2 class="text-md font-bold">category:{{product.category}}</h2>
+              <p class="text-gray-600">{{ product.description }}</p>
+              <p class="text-gray-600">
+                Price: {{ product.price }} {{product.currency}}
+              </p>
+              <!-- <form>
+                {% csrf_token %}
+                <button
+                  class="bg-primary text-white py-2 px-4 rounded-md approve_btn"
+                  data-product_id="{{ product.id }}"
+                  data-product_name="{{ product.name }}"
+                >
+                  Approve
+                </button>
+                <a
+                  href="{% url 'get_edit_form' product.id %}"
+                  class="bg-orange-800 text-white py-2 px-4 rounded-md edit_btn"
+                  data-product_id="{{ product.id }}"
+                  data-product_name="{{ product.name }}"
+                >
+                  Edit
+                </a>
+                <button
+                  data-product_id="{{product.id}}"
+                  class="reject bg-orange-800 mx-2 text-white font-bold py-2 px-4 rounded-md edit_btn"
+                >
+                  Reject
+                </button>
+              </form> -->
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <h2>This Shop has no product</h2>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

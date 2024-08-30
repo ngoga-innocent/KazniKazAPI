@@ -1,0 +1,219 @@
+{% extends '../base.html' %} {% block Content %}
+<div class="flex flex-col items-center justify-center w-[80vw] mx-auto">
+  <h1 class="text-textColor font-bold text-2xl">Add New Product</h1>
+  {% for error in errors %}
+  <p>{{error}}</p>
+  {% endfor %}
+
+  <form
+    action="{% url 'web_products' %}"
+    class="w-[100%] bg-white shadow-black shadow-xs rounded-lg p-3 px-4 flex flex-col my-3 add_product_form"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <div class="space-y-2">
+      {{ form.name.label_tag }}{{ form.name }} <br />
+      {% if shops %}
+      <div class="flex flex-col">
+        {{form.shop.label_tag}}
+        <select
+          name="shop"
+          id=""
+          class="flex-1 p-2 border border-gray-300 bg-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <option value="">Select Shop</option>
+          {% for shop in shops %}
+          <option value="{{ shop.id }}">{{ shop.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %} {{ form.description.label_tag }}{{ form.description }} <br />
+      <div class="flex flex-row gap-x-2 items-center">
+        {{ form.currency.label_tag }}{{ form.currency }} <br />
+        {{ form.price.label_tag }}{{ form.price }} <br />
+      </div>
+
+      {{ form.thumbnail.label_tag }}{{ form.thumbnail }} <br />
+      <div class="bg-white flex flex-col">
+        <div class="flex items-center gap-x-2 my-2">
+          <label for="">Select Category</label>
+          <div
+            class="hidden category_loader w-4 h-4 rounded-full border-dashed border border-primary animate-spin"
+          ></div>
+        </div>
+        <div class="category_select flex gap-x-2 flex-wrap items-center">
+          <select
+            name="category"
+            id=""
+            data-level="1"
+            class="parent_category flex-1 p-2 border border-gray-300 bg-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Select Category</option>
+            {% for category in categories %}
+            <option value="{{category.id}}">{{category.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="category_feature flex flex-col gap-y-2"></div>
+      {{ form.colors.label_tag }}{{ form.colors }} <br />
+      {{form.discount.label_tag }}{{ form.discount }} <br />
+      {{form.place.label_tag }}{{ form.place }} <br />
+
+      <input type="hidden" value="{{request.user.id}}" name="uploader" />
+      <div>
+        <label for="">Add Other Images</label>
+        <input
+          name="uploaded_files"
+          class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          type="file"
+          multiple
+          accept="image/x-png,image/jpeg,image/gif,image/png"
+        />
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="mt-4 bg-primary text-white py-2 px-4 rounded-md"
+    >
+      Upload Product
+    </button>
+  </form>
+</div>
+
+{% endblock Content %} {% block script %}
+<script>
+  $(document).ready(function () {
+    let parent_category_level = 1;
+
+    $(document).on("change", ".parent_category", function () {
+      var selectedValue = $(this).val();
+      $(this).attr("category");
+      $(".category_loader").removeClass("hidden");
+      var level = parseInt($(this).data("level"));
+      localStorage.setItem("category_id", selectedValue);
+      $(".category_feature").empty();
+      clearSelectWithLevelGreaterThanThis(level);
+      fetchChildCateory(selectedValue, level);
+    });
+
+    function clearSelectWithLevelGreaterThanThis(level) {
+      $(".parent_category").each(function () {
+        var current_level = parseInt($(this).data("level"));
+        //console.log("current_level = " + current_level);
+        if (current_level > level) {
+          console.log(current_level);
+          $(this).remove();
+        }
+      });
+    }
+    function fetchChildCateory(parent_id, level) {
+      $.ajax({
+        url: "{% url 'getchildren' %}",
+        data: {
+          parent_id: parent_id,
+        },
+        method: "GET",
+        success: function (data) {
+          console.log(data);
+          $(".category_loader").addClass("hidden");
+          if (data.children.length > 0) {
+            var selectHTML = `
+          <select
+            data-level="${level + 1}"
+            
+            class="parent_category flex-1 p-2 border border-gray-300 bg-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Select Category</option>
+            ${data.children
+              .map(
+                (category) => `
+              <option value="${category.id}">${category.name}</option>
+            `
+              )
+              .join("")}
+          </select>
+        `;
+            if (data.features.length > 0) {
+              var category_features = `<div class="flex flex-col gap-y-2">
+
+                ${data?.features
+                  .map(
+                    (feature) => `<div class="flex items-center gap-x-2">
+                        ${
+                          feature.feature_options.length > 0 &&
+                          `<label for="">${feature.name}</label>
+                            <select data-name="${
+                              feature.id
+                            }" class="feature_select flex-1 p-2 border border-gray-300 bg-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option>select ${feature.name}</option>
+                            ${feature.feature_options
+                              .map((option, value) => {
+                                return `<option value="${option.id}">${option.name}</option>`;
+                              })
+                              .join("")}
+                        </select>`
+                        }
+
+                    </div>`
+                  )
+                  .join("")}
+
+              </div>`;
+            }
+
+            // Append the new <select> to a container with class .category_select
+            $(".category_select").append(selectHTML);
+            $(".category_feature").append(category_features);
+          }
+        },
+        error: function (data, status, error) {
+          console.log(data);
+          console.log(status);
+          console.log(error);
+        },
+      });
+    }
+    $(document).on("submit", ".add_product_form", function (e) {
+      e.preventDefault();
+
+      var formData = new FormData(this);
+      var product_feature = [];
+      $(".feature_select").each(function () {
+        var feature = $(this).data("name");
+        console.log(feature);
+        var option = $(this).val();
+        if (option) {
+          product_feature.push({ feature: feature, option: option });
+        }
+      });
+      formData.append("product_features", JSON.stringify(product_feature));
+      $.ajax({
+        url: "{% url 'web_products' %}",
+        data: formData,
+        method: "POST",
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          console.log(data);
+          if (data.success) {
+            alert("Product added successfully.");
+            window.location.href = "{% url 'web_products' %}";
+          } else {
+            $(".errors").empty();
+            $.each(data.errors, function (key, value) {
+              $(".errors").append(`<p>${value}</p>`);
+            });
+          }
+        },
+        error: function (data, status, error) {
+          console.log(data);
+          console.log(status);
+          console.log(error);
+        },
+      });
+    });
+  });
+</script>
+{% endblock script %}

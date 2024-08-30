@@ -1,0 +1,318 @@
+{% extends '../staff_base.html' %} {% block content %}
+<div class="flex flex-row gap-x-2 gap-y-2">
+  {% if parent_categories %}
+  <div class="space-y-2 mx-5 space-x-2 flex flex-row w-[100%]">
+    {% for category in parent_categories %}
+    <button
+      data-category_id="{{category.id}}"
+      data-category_name="{{category.name}}"
+      class="category flex items-center w-[fit] min-w-fit gap-x-4 bg-white rounded-md p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+    >
+      <img
+        src="{{category.thumbnail.url}}"
+        class="w-12 h-12 rounded-full object-cover"
+        alt="{{ category.name }}"
+      />
+      <p class="text-lg font-medium text-gray-800">{{ category.name }}</p>
+    </button>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+<div
+  class="children_categories flex flex-row max-w-[100%] flex-wrap space-x-2 space-y-2"
+></div>
+<div
+  class="loader hidden absolute min-h-screen min-w-full w-full flex-col items-center z-40 top-0"
+  style="background-color: rgba(0, 0, 0, 0.3);"
+>
+  <div
+    class="bg-white rounded-md py-3 px-3 max-w-fit gap-x-3 mx-auto flex flex-row space-x-3"
+  >
+    <button class="view_children px-2 py-2 rounded-md bg-primary text-white">
+      View Children
+    </button>
+    <button class="add_children px-2 py-2 rounded-md bg-primary text-white">
+      Add Children
+    </button>
+    <button class="add_features px-2 py-2 rounded-md bg-primary text-white">
+      Add Features
+    </button>
+    <button class="cancel px-2 py-2 rounded-md bg-primary text-white">
+      Dismiss
+    </button>
+  </div>
+  <div
+    class="spinner hidden animate-spin w-14 h-14 rounded-full border-2 border-dotted z-50 border-white"
+  ></div>
+  <!-- Add New Category on Existing Category -->
+  <div
+    class="child_category hidden w-[70%] flex-col bg-white px-3 py-3 rounded-md mx-5 my-3"
+  >
+    <div class="category_title"></div>
+    <form class="child_category_form w-[60%]">
+      {% csrf_token %}
+      <div class="flex flex-col space-y-2">
+        <label for="">Category Name</label>
+        <input
+          type="text"
+          id="category_name"
+          name="name"
+          class="border-2 border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:border-primary"
+        />
+      </div>
+      <div class="flex flex-col space-y-2">
+        <label for="">Category Thumbnail</label>
+        <input
+          type="file"
+          id="category_thumbnail"
+          name="thumbnail"
+          class="border-2 border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:border-primary"
+        />
+      </div>
+      <button class="bg-primary rounded-md px-4 py-2 my-2 text-white font-bold">
+        Submit
+      </button>
+    </form>
+  </div>
+  <!-- Add Category Feature -->
+  <div
+    class="hidden category_feature w-[70%] my-2 flex-col bg-white mx-auto rounded-md py-3"
+  >
+    <div class="category_name"></div>
+    <form class="add_features_form w-[70%] mx-auto flex flex-col">
+      {% csrf_token %}
+      <div class="flex flex-col space-y-1">
+        <label for="" class="font-bold">Feature</label>
+        <div class="flex flex-row items-center">
+          <input
+            type="text"
+            name="feature"
+            placeholder="E.g: Brand"
+            class="w-[80%] py-2 px-3 rounded-md outline-none bg-slate-200"
+          />
+        </div>
+      </div>
+      <div class="option_section ml-14 flex flex-col my-1 gap-y-2">
+        <label for="" class="font-bold">Add Choose Options</label>
+        <div class="option_item flex flex-row items-center gap-x-3">
+          <input
+            type="text"
+            name="option"
+            placeholder="option name  e.g: TOYOTA"
+            class="w-[80%] py-2 px-3 rounded-md outline-none bg-slate-200"
+          />
+          <button
+            class="remove_option w-10 h-10 rounded-full flex flex-col items-center justify-center bg-red-600 text-white font-bold"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+      <button
+        class="add_option w-10 h-10 self-end rounded-full flex flex-col items-center justify-center border-primary text-white bg-textColor font-bold"
+      >
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+      <div class="flex flex-row items-center gap-x-2">
+        <button class="bg-primary px-3 py-2 rounded-md text-white font-bold">
+          Save
+        </button>
+        <!-- <button
+          type="submit"
+          class="bg-primary px-3 py-2 rounded-md text-white font-bold"
+        >
+          Save
+        </button> -->
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %} {% block Additional_scripts %}
+<script>
+  $(document).ready(function () {
+    function loadCategories(category_id) {
+      $(".loader").toggleClass("hidden flex");
+      $(".overlay_spinner").removeClass("hidden");
+      $(".overlay_spinner").addClass("flex");
+      $("html, body").animate({ scrollLeft: 0 }, "slow");
+      $(".children_categories").scrollLeft(0);
+      $.ajax({
+        url: "/staff/categories",
+        type: "GET",
+        data: { category_id: category_id },
+        success: function (response) {
+          console.log(response);
+          $("html, body").animate({ scrollLeft: 0 }, "slow");
+          $(".loader").addClass("hidden flex");
+          $(".overlay_spinner").addClass("hidden");
+          if (response.children.length < 1) {
+            $(".children_categories").html(`
+                    <div>
+                        <h2 class="font-bold text-primary text-xl mx-5 mt-10 mb-3">
+                            ${response.parent.name}
+                        </h2>
+                        <div class="mx-5 flex flex-row flex-wrap max-w-[100%] space-y-2 gap-x-2 gap-y-2">
+                            <p class="text-center text-gray-500 text-lg">No child categories available.</p>
+                        </div>
+                    </div>
+                `);
+            return;
+          }
+          // Update children categories
+          $(".children_categories").html(`
+                    <div>
+                        <h2 class="font-bold text-primary text-xl mx-5 mt-10 mb-3">
+                            ${response.parent.name}
+                        </h2>
+                        <div class="mx-5 flex flex-row flex-wrap max-w-[100%] space-y-2 gap-x-2 gap-y-2">
+                            ${response.children
+                              .map(
+                                (child) =>
+                                  `<button
+                                        data-category_id="${child.id}"
+                                        data-category_name="${child.name}"
+                                        class="category flex items-center w-[fit] min-w-fit gap-x-4 bg-white rounded-md p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+                                    >
+                                        <img
+                                            src="${child.thumbnail}"
+                                            class="w-12 h-12 rounded-full object-cover"
+                                            alt="${child.name}"
+                                        />
+                                        <p class="text-lg font-medium text-gray-800">${child.name}</p>
+                                    </button>`
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                `);
+        },
+        error: function (error) {
+          console.log(error);
+          $(".loader").toggleClass("hidden flex");
+        },
+      });
+    }
+
+    // Initial category click event handler
+    $(document).on("click", ".category", function () {
+      const category_id = $(this).data("category_id");
+      localStorage.setItem("category_id", category_id);
+      localStorage.setItem("category_name", $(this).data("category_name"));
+      $(".loader").toggleClass("hidden flex");
+    });
+    $(document).on("click", ".view_children", function () {
+      const category_id = localStorage.getItem("category_id");
+      loadCategories(category_id);
+    });
+    $(document).on("click", ".add_children", function () {
+      const category_name = localStorage.getItem("category_name");
+      $(".category_title").html(`<div>
+        <h2 class="font-bold text-primary text-xl mx-5 mt-10 mb-3">
+            Adding new Child To ${category_name} Category
+        </h2>
+        
+      </div>`);
+      $(".child_category").toggleClass("hidden flex");
+    });
+    $(document).on("click", ".cancel", function () {
+      $(".loader").toggleClass("hidden flex");
+
+      localStorage.removeItem("category_id");
+    });
+    //Submit The Category Form
+    $(document).on("submit", ".child_category_form", function (event) {
+      event.preventDefault();
+      $(".overlay_spinner").toggleClass("hidden flex");
+      const category_id = localStorage.getItem("category_id");
+      console.log(category_id);
+      console.log($("#category_thumbnail")[0].files[0]);
+      const formData = new FormData();
+      formData.append("name", $("#category_name").val());
+      formData.append("thumbnail", $("#category_thumbnail")[0].files[0]);
+      formData.append("parent", localStorage.getItem("category_id"));
+
+      $.ajax({
+        url: '{% url "category_staff" %}',
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        success: function (response) {
+          $(".overlay_spinner").toggleClass("hidden flex");
+          $(".child_category").toggleClass("hidden flex");
+          $(".loader").toggleClass("hidden flex");
+          loadCategories(category_id);
+        },
+        error: function (error) {
+          console.log(error);
+          $(".loader").toggleClass("hidden flex");
+        },
+      });
+    });
+    //Add New Option
+    $(document).on("click", ".add_option", function (e) {
+      e.preventDefault();
+      $(
+        ".option_section"
+      ).append(`<div class="option_item flex flex-row items-center gap-x-3">
+        <input
+          type="text"
+          name="option"
+          placeholder="option name  e.g: TOYOTA"
+          class="w-[80%] py-2 px-3 rounded-md outline-none bg-slate-200"
+        />
+        <button
+            class="remove_option w-10 h-10 rounded-full flex flex-col items-center justify-center bg-red-600 text-white font-bold"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+      </div>`);
+    });
+    $(document).on("click", ".remove_option", function (e) {
+      e.preventDefault();
+      $(this).closest(".option_item").remove();
+    });
+    $(document).on("click", ".add_features", function (e) {
+      $(".category_feature").toggleClass("hidden flex");
+    });
+    //Add New Feature
+    $(document).on("submit", ".add_features_form", function (e) {
+      e.preventDefault();
+      //$(".add_features").toggleClass("hidden flex");
+
+      $(".spinner").toggleClass("hidden flex");
+      $(".overlay_spinner").toggleClass("hidden flex");
+      let options = [];
+      $("input[name='option']").each(function () {
+        options.push($(this).val());
+      });
+      const category = localStorage.getItem("category_id");
+      const feature = $("input[name='feature']").val();
+      $.ajax({
+        url: '{% url "category_features" %}',
+        type: "POST",
+        data: { feature: feature, options: options, category: category },
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        success: function (response) {
+          //console.log(response);
+          $(".overlay_spinner").toggleClass("hidden flex");
+          //$(".add_features").toggleClass("hidden flex");
+
+          $(".spinner").toggleClass("hidden flex");
+        },
+        error: function (error) {
+          console.log(error);
+          $(".spinner").toggleClass("hidden flex");
+        },
+      });
+    });
+  });
+</script>
+{% endblock Additional_scripts %}

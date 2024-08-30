@@ -1,0 +1,95 @@
+{% extends '../base.html' %} {% block Content %}
+
+<div class="flex flex-col">
+  <div class="flex flex-row gap-x-2 w-[80vw] mx-auto">
+    <!-- shop categories -->
+    <div
+      class="w-[20vw] min-w-[20vw] max-h-[60vh] h-fit overflow-y-scroll scrollbar-hidden"
+    >
+      <a
+        href="{% url 'add_shop' %}"
+        class="w-[100%] py-2 flex flex-row gap-x-2 items-center justify-center bg-primary my-2 rounded-lg text-white font-bold"
+      >
+        <div
+          class="flex flex-col items-center justify-center bg-[#212d5e] w-8 h-8 rounded-full"
+        >
+          <ion-icon name="add"></ion-icon>
+        </div>
+        <p>CREATE SHOP</p>
+      </a>
+      <div class="bg-slate-300 px-2 py-3 rounded-lg">
+        <a href="{% url 'web_shops' %}" class="font-bold text-textColor text-xl"
+          >Shop Categories</a
+        >
+        <hr style="height: 2px;" class="w-[90%] bg-primary my-2" />
+        <div class="flex flex-col gap-y-2">
+          {% for category in shop_categories %}
+          <button
+            data-category="{{category.id}}"
+            class="category_button flex py-2 px-2 flex-row items-center hover:text-primary font-bold text-textColor"
+          >
+            {{category.name}}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <!-- Showing Categories -->
+    <div class="flex flex-col gap-y-2 flex-1">
+      <div class="flex gap-x-5 items-center my-2">
+        <form
+          class="w-[70%] border-textColor border rounded-lg flex items-center"
+        >
+          <input
+            type="text"
+            class="search w-[100%] py-2 px-2 rounded-md bg-transparent"
+            placeholder="Search ..."
+          />
+          <button type="submit">
+            <ion-icon
+              name="search"
+              style="font-size: 35px; color: gray;"
+            ></ion-icon>
+          </button>
+        </form>
+      </div>
+      <div class="shops">
+        {% include './partial.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock Content %} {% block script %}
+<script>
+  $(document).ready(function () {
+    $(".search").on("keyup", function () {
+      let search_text = $(this).val().toLowerCase();
+      $(".shops").empty();
+      // Call API to search shop with search_text
+
+      $.ajax({
+        url: "{% url 'search_shop' %}",
+        type: "GET",
+        data: { search_text: search_text },
+        success: function (response) {
+          $(".shops").html(response.html);
+        },
+      });
+    });
+    $(".category_button").on("click", function () {
+      let category_id = $(this).data("category");
+      $(".category_button").removeClass("bg-primary text-white font-bold");
+      $(this).addClass("bg-primary text-white font-bold rounded-md");
+      // Call API to get shops in selected category
+      $.ajax({
+        url: `/shops/${category_id}`,
+        type: "GET",
+        data: { category_id: category_id },
+        success: function (response) {
+          $(".shops").html(response.html);
+        },
+      });
+    });
+  });
+</script>
+{% endblock script %}

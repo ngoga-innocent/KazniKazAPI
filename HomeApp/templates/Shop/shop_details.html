@@ -1,0 +1,164 @@
+{% extends '../base.html' %} {% block Content %}
+<div class="flex flex-col w-[80vw] mx-auto">
+  <div
+    class="w-[100%] h-[33vh] max-h-[33vh] rounded-xl min-w-[80vw] max-w-[80vw] overflow-hidden"
+  >
+    <img src="{{shop.thumbnail.url}}" class="w-[100%] h-[100%]" alt="" />
+  </div>
+  <div
+    class="flex flex-row gap-x-4 items-center my-5 bg-slate-200 py-3 px-3 rounded-lg"
+  >
+    {% if shop.thumbnail %}
+    <a
+      href="{{shop.thumbnail.url}}"
+      target="_blank"
+      class="w-36 h-36 rounded-full border-primary border-4 max-w-36 max-h-36 overflow-hidden"
+    >
+      <img src="{{shop.thumbnail.url}}" class="w-36 h-36 object-cover" alt="" />
+    </a>
+    {% else %}
+    <a
+      href="#"
+      target="_blank"
+      class="w-28 h-28 rounded-full items-center justify-center border-primary border-3 max-w-28 max-h-28 overflow-hidden"
+    >
+      <p>{{shop.name|slice:":1"}}</p>
+    </a>
+    {% endif %}
+    <div class="gap-y-2 flex flex-col">
+      <h2 class="font-bold text-lg flex-wrap w-[100%]">{{shop.name}}</h2>
+      <div class="flex flex-row items-center gap-x-2">
+        <ion-icon name="compass"></ion-icon>
+        <p class="text-gray-500 text-sm">{{ shop.location }}</p>
+      </div>
+      {% if shop.owner.phone_number %}
+      <p class="text-gray-500 text-sm">{{ shop.owner.phone_number }}</p>
+      {% endif %}
+
+      <div
+        class="flex flex-row items-center gap-x-2 border border-primary py-3 px-3 rounded-lg"
+      >
+        <p class="text-gray-500">Owner: {{ shop.owner }}</p>
+        <a href="">{{ shop.owner.email }}</a>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col gap-y-2 my-2">
+    <h2 class="font-bold text-2xl text-textColor">Shop Products</h2>
+    <div class="grid grid-cols-5 gap-x-2">
+      {% for product in products %}
+
+      <div
+        style="background-color: rgba(0, 0, 0, 0.1);"
+        class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-3"
+      >
+        <a href="{% url 'single_product' product.id %}">
+          {% if product.thumbnail %}
+          <img
+            src="{{product.thumbnail.url}}"
+            class="w-[100%] h-[20vh]"
+            alt=""
+          />
+          {% else %}
+          <div
+            class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+          >
+            {{product.name}}
+          </div>
+          {% endif %}
+          <div
+            class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+            style="background-color: rgba(0, 0, 0, 0.4);"
+          >
+            <p class="text-white font-semibold">{{product.category.name}}</p>
+          </div>
+          <p class="text-lg italic mt-3">{{product.name}}</p>
+          <div class="flex flex-row items-center mb-3">
+            <ion-icon name="clock"></ion-icon>
+            <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+          </div>
+          <hr
+            class="w-[80%]"
+            style="color: gray; background-color: gray; height: 3px;"
+          />
+          <div
+            class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+          >
+            <div class="flex flex-row items-center gap-x-2">
+              <ion-icon name="pricetags" style="font-size: 23px;"></ion-icon>
+              <p class="text-gray-500 text-lg font-bold">
+                {{ product.price }} {{ product.currency }}
+              </p>
+            </div>
+            <div class="flex gap-x-2 flex-row">
+              <a
+                href="https://wa.me/{{product.uploader.phone_number}}"
+                target="_blank"
+                class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+              >
+                <ion-icon
+                  style="color: white; font-size: 17px;"
+                  name="logo-whatsapp"
+                ></ion-icon>
+              </a>
+              <a
+                href="tel:{{ product.uploader.phone_number }}"
+                target="_blank"
+                class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+              >
+                <ion-icon
+                  style="color: white; font-size: 17px;"
+                  name="call"
+                ></ion-icon>
+              </a>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="flex flex-row items-center justify-center">
+      <div class="flex gap-x-2">
+        {% if products.has_previous %}
+        <a
+          href="?page={{ page_obj.previous_page_number }}"
+          class="py-1 px-2 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+        >
+          <ion-icon
+            style="color: white; font-size: 17px;"
+            name="arrow-round-back"
+          ></ion-icon>
+        </a>
+        {% endif %}
+        <div class="flex gap-x-1 items-center">
+          {% for i in products.paginator.page_range %}
+          <div>
+            {% if products.number == i %}
+            <a
+              href="?page={{i}}"
+              class="text-white bg-primary w-6 h-6 flex flex-col items-center justify-center rounded-full font-bold"
+              >{{i}}</a
+            >
+            {% else %}
+            <a href="?page={{i}}" class="text-primary font-bold">{{i}}</a>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% if products.has_next %}
+        <a
+          href="?page={{ page_obj.next_page_number }}"
+          class="py-1 px-2 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+        >
+          <ion-icon
+            name="arrow-round-forward"
+            style="color: white; font-size: 17px;"
+          ></ion-icon>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% endblock Content %}
+</div>
