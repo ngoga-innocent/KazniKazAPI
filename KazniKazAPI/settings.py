@@ -101,7 +101,7 @@ DATABASES = {
         
     }
 }
-# DATABASES['default']=dj_database_url.parse(os.getenv('DATABASE_URL'))
+DATABASES['default']=dj_database_url.parse(os.getenv('DATABASE_URL'))
 # DATABASES['default']=dj_database_url.parse('postgresql://kaznikaz_tcy6_user:xzFFTwJ9vHJnMR3opp2zekMDKeBTuFl2@dpg-cqpmo1bv2p9s73cfhsi0-a.oregon-postgres.render.com/kaznikaz_tcy6')
 
 # Password validation
@@ -167,4 +167,4 @@ CLOUDINARY_STORAGE={
 }
 # LOGIN_URL = '/login/'
 # LOGIN_REDIRECT_URL = '/' 
-# DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
