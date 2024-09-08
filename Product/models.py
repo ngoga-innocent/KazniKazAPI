@@ -51,7 +51,7 @@ class Category(models.Model):
     def getCategorythreeProducts(self):
         return self.productmodel_set.all()[:3] 
     def getCategoryFeatures(self):
-        return self.categoryfeatures_set.all()
+        return CategoryFeatures.objects.filter(category=self)
 class CategoryFeatures(models.Model):
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     name=models.CharField(max_length=255)
@@ -59,6 +59,8 @@ class CategoryFeatures(models.Model):
 
     def __str__(self):
         return self.name + " " + self.category.name
+    def featureOptions(self):
+        return FeatureOptions.objects.filter(feature=self)
     class Meta:
         verbose_name = 'Features of Category'
         verbose_name_plural = 'Features of Category'
@@ -116,7 +118,12 @@ class ProductFeatureOptions(models.Model):
     option=models.ForeignKey(FeatureOptions,on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.product.name}-{self.feature.name} - {self.option.name}"    
+        return f"{self.product.name}-{self.feature.name} - {self.option.name}" 
+    class Meta:
+        verbose_name = 'Product Feature Options'
+        verbose_name_plural = 'Product Feature Options'
+    
+               
 class Like(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     liker=models.ForeignKey(User,on_delete=models.CASCADE,related_name='liker')
@@ -130,7 +137,7 @@ class OurAds(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     thumbnail=models.ImageField(upload_to='OurAds/',null=False)
     name=models.CharField(max_length=255,null=False)
-
+    created_at=models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{{self.name}}- {{self.id}}" 
     class Meta:

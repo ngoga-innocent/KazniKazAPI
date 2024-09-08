@@ -1,0 +1,72 @@
+{% extends '../base.html' %}
+{% block Content %}
+  <div  class="flex flex-col w-[90%] mx-auto my-20 md:my-2">
+        {% if wallet %}
+        <div class="wallet_view self-center flex flex-col w-[100%] md:w-[40%] my-3 px-2 py-3 bg-white rounded-md items-center justify-center">
+            <p id="copy-status" class="hidden text-green-500">Copied!</p>
+            <div class="flex flex-row gap-x-2 flex-wrap items-center">
+                <p class="text-sm md:text-md font-bold text-white font-bold">{{wallet.id}}</p>
+                <button data-copy="{{wallet.id}}" class="copy_btn bg-white py-2 px-4 rounded-md shadow-md"> 
+                    <ion-icon name="copy"></ion-icon> 
+                </button>
+            </div>
+            <div class="border py-2 px-3 rounded-md">
+                <p class='text-white'>Balance:<span class="font-bold">{{wallet.amount}} Rwf</span> </p>
+            </div>
+        </div>
+        {% else %}
+        <p> Your  wallet Is unavailable pleasee Reach out kaz ni kaz for your account activation</p>
+        {% endif %}
+        {% if histories %}
+            <table>
+                <thead class="border-b border-black">
+                    <tr>
+                        <th class="text-xs md:text-sm">Date</th>
+                        <th class="text-xs md:text-sm">Amount</th>
+                        <th class="text-xs md:text-sm">Type</th>
+                        <th class="text-xs md:text-sm">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for history in histories %}
+                    <tr>
+                        <td class="text-xs md:text-sm">{{ history.created_at | date }}</td>
+                        <td class="text-xs md:text-sm">{{ history.amount }}</td>
+                        <td class="text-xs md:text-sm">{{ history.action }}</td>
+                        <td class="text-xs md:text-sm">{{ history.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            <p> No Transaction History found.</p>
+        {% endif %}
+  </div>  
+{% endblock Content %}
+{% block script %}
+  <script>
+
+    $(document).ready(function(){
+        $(document).on('click', '.copy_btn', function() {
+            const textToCopy = $(this).data('copy');  // Get the text from the button's data attribute
+        
+            // Copy the text to the clipboard
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                // Show a success message or change the button style temporarily
+                $('#copy-status').removeClass('hidden').text('Copied!');
+                
+                // Hide the status message after a few seconds
+                setTimeout(function() {
+                    $('#copy-status').addClass('hidden');
+                }, 2000);
+                
+                
+            }).catch(function(error) {
+                $('#copy-status').removeClass('hidden text-green-500').text('Failed to copy!');
+            });
+        });
+    });
+  </script>
+{% endblock script %}
+

@@ -3,12 +3,12 @@ from django.conf.urls.static import static
 from django.urls import path,include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from HomeApp.views import LoginView,RegisterView
+from HomeApp.views import LoginView,RegisterView,LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls,name='register'),
     path('login/', LoginView.as_view(), {"action":"login"}, name='login'),
     path('register/', RegisterView.as_view(), {"action":"register"}, name='register'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('logouts/', LogoutView.as_view(), name='web_logout'),
     path('account/',include('Account.urls')),
     path('product/',include('Product.urls')),
     path('wallet/',include('Wallet.urls')),

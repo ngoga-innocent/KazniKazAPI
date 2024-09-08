@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -18,6 +18,8 @@ class JobView(APIView):
         return [permission() for permission in self.permission_classes]
 
     def get(self, request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         jobs = Job.objects.all()
         serializer = JobSerializer(jobs, many=True, context={"request": request})
         return Response({"jobs": serializer.data}, status=200)
@@ -52,6 +54,8 @@ class JobCategoryViews(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         job_categories = JobCategoryChoice.objects.all()
         serializer = JobCategorySerializer(job_categories, many=True)
         return Response({"job_categories": serializer.data}, status=200)

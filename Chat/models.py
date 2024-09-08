@@ -12,6 +12,9 @@ class Room(models.Model):
     timestamp=models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.user1.username) + " and " + str(self.user2.username)
+    
+    def roomMessage(self):
+        return Message.objects.filter(room=self).order_by('-timestamp')
 class Message(models.Model):
     message_choice=(
         ('text','text'),

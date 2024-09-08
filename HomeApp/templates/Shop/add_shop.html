@@ -1,7 +1,7 @@
 {% extends '../base.html' %} {% block Content %}
-<div class="flex flex-col mx-auto w-[80vw] px-5">
+<div class="flex flex-col mx-auto my-14 w-[99%] md:w-[80vw] md:px-5">
   <form
-    class="bg-white w-[90%] mx-auto flex flex-col gap-y-2 px-4 py-4 rounded-lg"
+    class="bg-white w-[90%] mx-auto flex flex-col gap-y-2 px-2 md:px-4 py-4 rounded-lg"
     action="{% url 'web_shops' %}"
     method="post"
     enctype="multipart/form-data"

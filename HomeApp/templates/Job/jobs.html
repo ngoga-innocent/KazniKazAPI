@@ -1,0 +1,185 @@
+{% extends '../base.html'  %}
+{% block Content %}
+    <d class="flex flex-col w-[90%] py-5 mx-auto mt-12 md:mt-2">
+      
+            {% if our_ads %}
+            <div class="our_ads flex flex-row w-[100%] min-w-[100%] h-[30vh] max-w-[100%] overflow-scroll my-3 flex-1">
+                {% for ads in our_ads %}
+                    <div class="" style="height:20vh">
+                        <div class="rounded-md  transition-all duration-5000 delay-500 items-center justify-center text-center flex flex-col" style="height:100%;display:flex;flex-direction:column;border-radius:10px; align-items:center; background-image: linear-gradient(to right,rgba(0,0,0,0.2),rgba(0,0,0,0.4),rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('{{ads.thumbnail.url}}');background-position:center;background-size:cover;">
+                            <div class="flex flex-row relative items-center text-center">
+                                <span class="text-[7rem] text-white text-opacity-20">J</span>
+                                <span class="text-[7rem] text-white text-opacity-40">o</span>
+                                <span class="text-[7rem] text-white text-opacity-60">b</span>
+                                <span class="text-[5rem] absolute bottom-4 -right-11 text-white text-opacity-80">$</span>
+                            </div>
+                            {% comment %} <h1 class="text-[7rem] text-white text-opacity-30">JOBS</h1> {% endcomment %}
+                        </div>
+                       
+                    </div>
+                {% endfor %}
+            </div>
+                
+            {% endif %}
+        
+        <div class="flex items-center w-[100%] gap-x-5">
+            <div class="flex fleex-1 gap-x-2 items-center">
+                <ion-icon name="funnel" style="font-size:34px"></ion-icon>
+               
+            </div>
+            <div class="flex gap-x-2 items-center">
+                <select name="category" id="" class="py-2 px-3 rounded-md bg-white filter_by_category">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{category.id}}">{{category.category}}</option>
+                    {% endfor %}
+                </select>
+            </div> 
+            <div class="flex items-center justify-between px-2 bg-white w-[20%] border rounded-md py-1 gap-x-2">
+                <input placeholder="Search a Job " name="query" class="search_job bg-transparent  rounded-md px-2 " />
+                <ion-icon name="search"></ion-icon>
+            </div>
+            <a href="{% url 'post_job' %}" class="bg-primary rounded-md text-white font-bold px-3 py-2 hover:bg-opacity-50">Post a Job</a>   
+        </div>
+
+        <h1 class="text-textColor font-bold text-2xl my-3">Kaz ni Kaz Job Listings</h1>
+        {% if jobs %}
+        <div class="all_jobs grid grid-cols-1 md:grid-cols-4 gap-2">
+            {% for job in jobs %}
+            <a href="{% url 'jobs_details' job.id %}" class="flex flex-col hover:bg-slate-100 hover:border-2 bg-white px-4 py-2 items-center justify-center rounded-md w-[100%] gap-y-2">
+                <div class="flex flex-row justify-between w-[90%] items-center gap-x-2">
+                   
+
+                    {% if job.job_thumbnail %}
+                    <div class="w-12 h-12 rounded-full max-w-12 max-h-12 overflow-hidden border border-textColor">
+                        <img src="{{job.job_thumbnail.url}}" alt="job thumbnail" class="w-full h-full object-cover" />
+                    </div>
+                    {% else %}
+                    <div class="w-7 h-7 rounded-full max-w-7 max-h-7 flex flex-col items-center justify-center overflow-hidden border border-textColor">
+                        {{job.job_title | slice:":1"}}
+                    </div>
+                    {% endif %}
+                    <h2 class="font-bold text-textColor">{{job.job_title}}</h2>
+                    <div class="flex flex-end items-center gap-x-2">
+                        <p class="text-gray-500 text-xs">posted by: {{job.job_provider}}</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-row items-center gap-x-2">
+                    
+                    {% if job.job_location %}
+                    <p class="text-gray-500 text-sm">{{job.job_location}}</p>
+                    {% endif %}
+                    <div class="flex items-center gap-x-1 ">
+                        <p class="text-textColor text-xs">{{job.currency}}</p>
+                        <p class="text-textColor text-sm"> {{job.job_min_salary}} - </p>
+                        <p class="text-textColor text-sm"> {{job.job_max_salary}} - </p>
+                        <p class="text-textColor text-xs"> / Month</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <p class="text-gray-500 text-xs">created: {{job.created_at}}</p>
+                    <p class="text-gray-500 text-xs">deadline: {{job.job_deadline}}</p>
+                </div>
+                <div class="my-4">
+                    <p class="text-gray-800 text-xs  text-wrap mx-auto text-center">{{job.job_slug}}</p>
+                    
+                </div>
+                
+                <button class="py-1 rounded-lg border border-textColor transition-all duration-5000 w-[90%] mx-auto hover:bg-primary hover:text-white text-textColor font-bold">View More</button>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="pagination my-4 self-center">
+            <span class="step-links">
+                {% if jobs.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ jobs.previous_page_number }}">previous</a>
+                {% endif %}
+
+                {% for num in jobs.paginator.page_range %}
+                    {% if jobs.number == num %}
+                        <strong class="text-primary">{{ num }}</strong> <!-- Current page highlighted -->
+                    {% else %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if jobs.has_next %}
+                <a href="?page={{ jobs.next_page_number }}">next</a>
+                <a href="?page={{ jobs.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        {% else %}
+        <p>No jobs Available for Now</p>
+        {% endif %}
+    </div>
+{% endblock Content %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('change','.filter_by_category',function(e){
+            let category_id = $(this).val();
+            $.ajax({
+                url:"{% url 'filter_job' %}",
+                method:"GET",
+                data:{category_id:category_id},
+                success:function(response){
+                    $(".all_jobs").html(response);
+                },
+                error: function(error){
+                    //console.log(error);
+                }
+            })
+        })
+
+        $(".our_ads").slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 8000,
+            arrows: false, // Remove next/previous buttons
+            infinite: true,
+            responsive: [
+              {
+                breakpoint: 768,
+                settings: {
+                  slidesToShow: 1
+                }
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  slidesToShow: 1
+                }
+              }
+            ]
+        });
+
+        $(document).on("keyup",".search_job",function(){
+            let search_job = $(this).val();
+            if(search_job.length >= 1){ // Changed here
+                data={search_job:search_job};
+            }
+            else{
+                data={search_job:''};
+            }
+            $.ajax({
+                url:"{% url 'filter_job_search' %}",
+                method:"GET",
+                data:data, // Changed here
+                success:function(response){
+                    $(".all_jobs").html(response);
+                },
+                error: function(error){
+                    //console.log(error);
+                }
+            });
+        });
+    }); // This was the missing closing bracket
+</script>
+{% endblock script %}
+

@@ -2,8 +2,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 import uuid
+import datetime
 # Create your models here.
 class User(AbstractUser):
+    def create_user(self, **extra_fields):
+        
+        if username:
+            username = username.capitalize()  # Capitalize the username
+        user = self.model(username=username, **extra_fields)
+        
+        user.save(using=self._db)
+        return user
     status_choice=(
         ("Not_Verified","Not Verified"),
         ("Pending","Pending"),
@@ -11,8 +20,11 @@ class User(AbstractUser):
         ("Rejected","Rejected"),
     )
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
+    phone_number = models.CharField(max_length=15, null=True,blank=True,unique=True)
+    username = models.CharField(max_length=150, unique=True)
     profile=models.ImageField(upload_to='Profile',null=True,blank=True)
-    phone_number=models.CharField(null=True,blank=True,max_length=25)
+    
     coverphoto=models.ImageField(upload_to='cover',null=True)
     seller=models.BooleanField(default=False)
     id_number=models.CharField(null=True,blank=True,default='No number',max_length=16)
@@ -52,3 +64,14 @@ class Notifications(models.Model):
         
         verbose_name = 'Notifcation'
         verbose_name_plural = 'Notifcations'
+class OTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp_code = models.CharField(max_length=6)  # OTP can be a 6-digit code
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_valid(self):
+        # Check if the OTP is valid (e.g., not expired and not used)
+        now = timezone.now()
+        expiration_time = self.created_at + datetime.timedelta(minutes=10)  # OTP valid for 10 minutes
+        return now <= expiration_time and not self.is_used        

@@ -183,9 +183,9 @@ table {
 .login_view1 {
   background-image: linear-gradient(
       to right,
-      rgba(218, 159, 33, 1) 0%,
-      rgba(218, 159, 33, 0.7) 20%,
-      rgba(218, 159, 33, 0.4) 50%,
+      rgba(218, 159, 33, 0.5) 0%,
+      rgba(218, 159, 33, 0.2) 20%,
+      rgba(218, 159, 33, 0.2) 50%,
       rgba(218, 159, 33, 0.2) 70%
     ),
     url("../images/login_bg.jpeg");
@@ -200,6 +200,53 @@ label {
   font-family: "Ubuntu", sans-serif;
   font-weight: bold;
   font-style: normal;
+}
+.chat{
+  color:#f9f9f9
+}
+.message_body {
+  overflow-y: auto;  /* Enables vertical scrolling */
+  overflow-x: hidden; /* Disables horizontal scrolling */
+  max-height: 100vh;  /* Adjust this to your desired max height */
+  width: 100%;        /* Ensures the container takes full width without causing horizontal overflow */
+  box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+}
+
+.chat {
+  width: 100%; /* Prevents the chat container from overflowing its parent */
+  max-width: 100%; /* Ensures the chat container doesn't exceed 100% of its parent's width */
+  overflow-x: hidden; /* Disables horizontal scrolling */
+}
+.new{
+  background-image: linear-gradient(to left,rgba(0,0,0,0.2),rgba(0,0,0,0.5),rgba(0,0,0,0.7), rgba(0,0,0,0.95));
+  width: 90%;
+}
+.new_header {
+  background-image: linear-gradient(to right,rgba(0,0,0,0.2),rgba(0,0,0,0.4),rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('../images/treding.jpeg');
+  background-size: contain;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.wallet_view{
+  background-image: linear-gradient(to right,rgba(206, 90, 37, 0.8),rgba(184, 139, 173, 0.8),rgba(60, 55, 58, 0.8));
+}
+.active_room{
+  background-color: #757575;
+}
+.search_result_overall{
+  
+  grid-template-columns: repeat(6,1fr);
+  gap:10px;
+  width: 90%;
+  margin: 0 auto;
+}
+.footer{
+  background-image: linear-gradient(rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.2) 10%,rgba(0,0,0,0.3) 20%,rgba(0,0,0,0.5) 40%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.8) 90%);
+}
+.foooter_last{
+  background-color: rgba(0, 0, 0, 0.8);
 }
 /* .second_div {
   display: flex;

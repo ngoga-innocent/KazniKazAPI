@@ -50,9 +50,11 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        
         user = User.objects.create(
-            username=validated_data['username'],
+            username=validated_data['username'].capitalize(),
             email=validated_data['email'],
+            phone_number=validated_data['phone_number'],
             profile=validated_data.get('profile'),
             coverphoto=validated_data.get('coverphoto'),
             id_card=validated_data.get('id_card'),

@@ -1,197 +1,324 @@
-{% extends 'base.html' %} {% block Content %}
-<div class="flex flex-row w-[80vw] gap-x-2 mx-auto h-fit max-h-fit">
-    <!-- First Div -->
-    <div class="w-[20%] h-fit pb-2 max-h-[60vh] overflow-y-scroll scrollbar-hidden bg-white">
-        <div class="bg-primary py-3 w-[100%] items-center justify-center rounded-md">
-            <h2 class="font-bold text-white text-center">Products By Category</h2>
-        </div>
-        {% if categories %}
-        <div class="gap-y-2 px-2">
-            {% for category in categories %}
-            <div class="py-1 category hover:bg-slate-200">
-                <a href="{% url 'category' category.id %}" class="">{{ category.name }}</a>
-                {% if category.getCategoryChildren %}
-                <div
-                    class="absolute left-[20%] w-fit max-w-[40%] flex flex-row flex-wrap px-3 rounded-md bg-white z-[50]">
-                    {% for children in category.getCategoryChildren %}
-                    <div class="children ml-5 gap-y-1 my-1 px-2 rounded-md py-2 bg-slate-300 hover:bg-primary">
-                        <a href="{% url 'category' category.id %}" class="text-black font-bold">{{children.name}}</a>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+{% extends 'base.html' %} {% block Content %} {% load static %}
+<div class=" md:flex flex-col">
+  <div class="flex flex-col md:flex-row w-full md:w-[90vw] gap-x-2 mx-auto">
+  
+    <!-- First Div: Categories -->
+    <div id="category-sidebar" class="w-full md:w-[20%] h-fit pb-2 md:max-h-[60vh] overflow-y-scroll scrollbar-hidden bg-white hidden md:block">
+      <div class="bg-primary py-3 w-[100%] items-center justify-center rounded-md">
+        <h2 class="font-bold text-white text-center">Products By Category</h2>
+      </div>
+      {% if categories %}
+      <div class="gap-y-2 px-2">
+        {% for category in categories %}
+        <div class="py-1 category hover:bg-slate-200">
+          <a href="{% url 'category' category.id %}" class="">{{ category.name }}</a>
+          {% if category.getCategoryChildren %}
+          <div class="md:absolute md:left-[20%] w-full md:w-fit md:max-w-[40%] flex flex-wrap px-3 rounded-md bg-white z-[50]">
+            {% for children in category.getCategoryChildren %}
+            <div class="children ml-5 gap-y-1 my-1 px-2 rounded-md py-2 bg-slate-300 hover:bg-primary">
+              <a href="{% url 'category' category.id %}" class="text-black font-bold">{{children.name}}</a>
             </div>
             {% endfor %}
+          </div>
+          {% endif %}
         </div>
-        {% else %}
-        <p>No categories found.</p>
-        {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <p>No categories found.</p>
+      {% endif %}
     </div>
-    <!-- Second Div -->
-    <div class="relative flex flex-col w-[60%] max-w-[60%] h-[60vh] gap-y-2 overflow-x-hidden scrollbar-hidden">
+    
+    <!-- Second Div: Main Content -->
+    <div class="w-[98%] mx-auto md:w-[60%] max-w-full md:max-w-[60%]">
+      <div class="relative flex flex-col w-[100%] max-w-[100%] h-[60vh] gap-y-2 overflow-x-hidden scrollbar-hidden">
         <div class="carousel_container flex flex-row w-[100%] h-[70%]">
-            {% for ads in our_ads %}
-            <div class="carousel_item w-[100%] min-w-[100%] h-[100%] max-w-[100%] max-h-[100%] overflow-hidden">
-                <img src="{{ ads.thumbnail.url }}" alt="Image {{ forloop.counter }}"
-                    class="object-cover w-[100%] h-[60vh] min-w-[100%] max-w-[60vh] max-h-[100%]" />
-            </div>
-            {% endfor %}
+          {% for ads in our_ads %}
+          <div class="carousel_item w-[100%] min-w-[100%] h-[100%] max-w-[100%] max-h-[100%] overflow-hidden">
+            <img src="{{ ads.thumbnail.url }}" alt="Image {{ forloop.counter }}"
+              class="object-cover w-[100%] h-[60vh] min-w-[100%] max-w-[60vh] max-h-[100%]" />
+          </div>
+          {% endfor %}
         </div>
-
         <div>
-            <button class="carousel-control prev">
-                &#10094;
-            </button>
-            <button class="carousel-control next">
-                &#10095;
-            </button>
+          <button class="carousel-control prev">&#10094;</button>
+          <button class="carousel-control next">&#10095;</button>
         </div>
-        <div class="grid grid-cols-2 w-[100%] gap-2">
-            {% for category in category_products %} {% if forloop.counter == 1 %}
-            <div
-                class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-blue-800 to-blue-200">
-                {% elif forloop.counter == 2 %}
-                <div
-                    class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-purple-800 to-purple-200">
-                    {% elif forloop.counter == 3 %}
-                    <div
-                        class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-orange-800 to-orange-200">
-                        {% elif forloop.counter == 4 %}
-                        <div
-                            class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 bg-gradient-to-r from-yellow-800 to-yellow-200">
-                            {% endif %}
-
-                            <div>
-                                <h1 class="text-white text-[0.9rem] font-bold">
-                                    {{category.name}}
-                                </h1>
-                                <button
-                                    class="bg-slate-300 border rounded-lg py-1 px-4 hover:bg-primary text-white font-bold">
-                                    View
-                                </button>
-                            </div>
-                            <div class="w-14 h-14 max-h-14 max-w-14 overflow-hidden rounded-full">
-                                <img src="{{category.thumbnail.url}}" class="w-14 h-14 object-contain max-w-14 max-h-14"
-                                    alt="" />
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 w-[100%] gap-2">
+          {% for category in category_products %}
+          <div class="w-[100%] flex flex-row justify-between items-center px-7 rounded-lg h-fit py-3 
+            {% if forloop.counter == 1 %}bg-gradient-to-r from-blue-800 to-blue-200
+            {% elif forloop.counter == 2 %}bg-gradient-to-r from-purple-800 to-purple-200
+            {% elif forloop.counter == 3 %}bg-gradient-to-r from-orange-800 to-orange-200
+            {% elif forloop.counter == 4 %}bg-gradient-to-r from-yellow-800 to-yellow-200{% endif %}">
+            <div>
+              <h1 class="text-white text-[0.9rem] font-bold">{{category.name}}</h1>
+              <a href="{% url 'category' category.id %}"
+                class="bg-slate-300 border rounded-lg py-1 px-4 hover:bg-primary text-white font-bold">
+                View
+              </a>
             </div>
+            {% if category.thumbnail %}
+            <div class="w-14 h-14 max-h-14 max-w-14 overflow-hidden rounded-full">
+              <img src="{{category.thumbnail.url}}" class="w-14 h-14 object-contain max-w-14 max-h-14" alt="" />
+            </div>
+            {% else %}
+            <div class="w-14 h-14 max-h-14 max-w-14 border border-primary flex flex-col items-center justify-center overflow-hidden rounded-full">
+              {{category.name | slice:":2"}}
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
+      </div>
     </div>
-</div>
-<div class="w-[80vw] mx-auto mt-12 mb-3">
+    
+    <!-- Third Div: User Info and Wallet -->
+    <div class="flex flex-col mx-auto w-[98%] md:w-[20%]">
+      {% if request.user.is_authenticated and wallet %}
+      <div class="flex flex-col gap-y-2 my-2 rounded-md items-center justify-center w-[100%] border py-3">
+        <div class="w-12 h-12 rounded-full max-w-12 max-h-12 overflow-hidden border-2 flex items-center justify-center">
+          {% if request.user.profile %}
+            <img src="request.user.profile.url" class="w-12 h-12 rounded-full" />
+          {% else %}
+            <h2>{{ request.user.username | slice:":2" }}</h2>
+          {% endif %}
+        </div>
+        <div class="flex flex-col items-center">
+          <p class="font-bold text-primary"> {{request.user.username}} </p>
+          <p class="text-primary font-bold text-sm"> {{request.user.first_name}} {{ request.user.last_name}} </p>
+          <p class="text-xs font-bold text-textColor">{{request.user.account_status}} </p>
+        </div>
+      </div>
+      <div class="flex text-center py-3 flex-col items-center justify-center wallet_view w-[100%] py-2 rounded-lg">
+        <h1 class="text-white text-lg font-bold my-2">Wallet Status</h1>
+        <p class="font-bold text-textColor">Balance: {{wallet.amount}} Rwf</p>
+        <div class="flex flex-row items-center my-2 mt-3 gap-x-3">
+          <button class="deposit_button bg-transparent border rounded-lg py-2 px-3 w-fit hover:bg-primary text-white font-bold">Make Deposit</button>
+          <button class="transfer_button bg-transparent border rounded-lg py-2 px-3 w-fit hover:bg-primary text-white font-bold">Make Transfer</button>
+        </div>
+      </div>
+      {% else %}
+      <div class="rounded-lg py-4 px-4 flex flex-col items-center justify-evenly">
+        <div class="w-14 h-14 max-w-14 max-h-14 rounded-full overflow-hidden">
+          <img src="{% static 'images/icon.png' %}" class="w-14 h-14"/>
+        </div>
+        <h1>Welcome to Kaz ni Kaz</h1>
+        <div class="flex flex-row items-center w-[100%] my-3 justify-evenly gap-x-2">
+          <a href="{% url 'login' %}" class="flex-1 hover:bg-textColor py-2 px-3 bg-primary text-white font-bold rounded-md">
+            Login
+          </a>
+          <a href="{% url 'register' %}" class="flex-1 hover:bg-textColor py-2 px-3 bg-primary text-white font-bold rounded-md">
+            Register
+          </a>
+        </div>
+      </div>
+      {% endif %}
+      <div class="flex flex-col gap-y-3 my-3">
+        <div class="flex flex-row items-center px-3 gap-x-2 border py-2 rounded-lg">
+          <ion-icon style="font-size:30px" name="wallet"></ion-icon>
+          <div>
+            <p>Payments</p>
+            <p class="text-xs">Secure Payment and Wallet Transfer</p>
+          </div>
+        </div>
+        <div class="flex flex-row items-center px-3 gap-x-2 border py-2 rounded-lg">
+          <ion-icon style="font-size:30px" name="chatboxes"></ion-icon>
+          <div>
+            <p>Chat</p>
+            <p class="text-xs">Trusted Messaging</p>
+          </div>
+        </div>
+        <div class="flex flex-row items-center px-3 gap-x-2 border py-2 rounded-lg">
+          <ion-icon style="font-size:30px" name="planet"></ion-icon>
+          <div>
+            <p>Connect</p>
+            <p class="text-xs">WorldWide Integrated Connections</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Featured Product {% endcomment %}
+<div class="flex flex-col w-[90vw] mx-auto mt-12 mb-3">
     <p class="text-[1.3rem] text-primary font-bold ">Featured Products</p>
 </div>
-<div class=" second_div w-[80vw] mx-auto my-4 flex flex-row flex-wrap  max-w-[80vw]   gap-2">
-    
-    {% for product in admin_products %}
-        <div
-            style="background-color: rgba(0, 0, 0, 0.1);"
-            class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 hover:scale-125 transition-all duration-5000"
-          >
-            <a href="{% url 'single_product' product.id %}">
-              {% if product.thumbnail %}
-              <img
-                src="{{product.thumbnail.url}}"
-                class="w-[100%] h-[20vh] object-cover"
-                alt=""
-              />
-              {% else %}
-              <div
-                class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
-              >
-                {{product.name}}
-              </div>
-              {% endif %}
-              <div
-                class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
-                style="background-color: rgba(0, 0, 0, 0.4);"
-              >
-                <p class="text-white font-semibold">
-                  {{product.category.name}}
+<div class="slick-slider-container second_div w-[90vw] mx-auto my-4 grid grid-cols-1 md:grid-cols-5   max-w-[90vw]   gap-2">
+  
+      {% for product in admin_products %}
+      <div
+          style="background-color: rgba(0, 0, 0, 0.1);"
+          class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 transition-all duration-5000"
+        >
+          <a href="{% url 'single_product' product.id %}">
+            {% if product.thumbnail %}
+            <img
+              src="{{product.thumbnail.url}}"
+              class="w-[100%] h-[20vh] object-cover hover:scale-110 transition-all duration-5000"
+              alt=""
+            />
+            {% else %}
+            <div
+              class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+            >
+              {{product.name}}
+            </div>
+            {% endif %}
+            <div
+              class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+              style="background-color: rgba(0, 0, 0, 0.4);"
+            >
+              <p class="text-white font-semibold">
+                {{product.category.name}}
+              </p>
+            </div>
+            <p class="text-lg italic mt-3">{{product.name}}</p>
+            <div class="flex flex-row items-center mb-3">
+              <ion-icon name="clock"></ion-icon>
+              <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+            </div>
+            <hr
+              class="w-[80%]"
+              style="color: gray; background-color: gray; height: 3px;"
+            />
+            <div
+              class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+            >
+              <div class="flex flex-row items-center gap-x-2">
+                <ion-icon
+                  name="pricetags"
+                  style="font-size: 23px;"
+                ></ion-icon>
+                <p class="text-gray-500 text-md font-bold">
+                  {{ product.price }} {{ product.currency }}
                 </p>
               </div>
-              <p class="text-lg italic mt-3">{{product.name}}</p>
-              <div class="flex flex-row items-center mb-3">
-                <ion-icon name="clock"></ion-icon>
-                <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
-              </div>
-              <hr
-                class="w-[80%]"
-                style="color: gray; background-color: gray; height: 3px;"
-              />
-              <div
-                class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
-              >
-                <div class="flex flex-row items-center gap-x-2">
+              <div class="flex gap-x-2 flex-row">
+                <a
+                  href="https://wa.me/{{product.uploader.phone_number}}"
+                  target="_blank"
+                  class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+                >
                   <ion-icon
-                    name="pricetags"
-                    style="font-size: 23px;"
+                    style="color: white; font-size: 17px;"
+                    name="logo-whatsapp"
                   ></ion-icon>
-                  <p class="text-gray-500 text-md font-bold">
-                    {{ product.price }} {{ product.currency }}
-                  </p>
-                </div>
-                <div class="flex gap-x-2 flex-row">
-                  <a
-                    href="https://wa.me/{{product.uploader.phone_number}}"
-                    target="_blank"
-                    class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
-                  >
-                    <ion-icon
-                      style="color: white; font-size: 17px;"
-                      name="logo-whatsapp"
-                    ></ion-icon>
-                  </a>
-                  <a
-                    href="tel:{{ product.uploader.phone_number }}"
-                    target="_blank"
-                    class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
-                  >
-                    <ion-icon
-                      style="color: white; font-size: 17px;"
-                      name="call"
-                    ></ion-icon>
-                  </a>
-                </div>
+                </a>
+                <a
+                  href="tel:{{ product.uploader.phone_number }}"
+                  target="_blank"
+                  class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+                >
+                  <ion-icon
+                    style="color: white; font-size: 17px;"
+                    name="call"
+                  ></ion-icon>
+                </a>
               </div>
-            </a>
-          </div>
-    {% endfor %}    
+            </div>
+          </a>
+        </div>
+  {% endfor %} 
+  
+       
 </div>
-<div class="w-[80vw] mx-auto mt-12 mb-3">
+<div class="w-[90vw] mx-auto mt-12 mb-3">
     <p class="text-[1.3rem] text-primary font-bold ">Kaz ni Kaz  Discounted Products</p>
 </div>
-<div class="flex flex-row flex-wrap mx-auto w-[80vw] max-w-[80vw] my-2">
-    {% for discount_product in discounts %}
-         <a href="#" class=" relative flex-shrink-0 hover:bg-slate-200 flex flex-col items-center rounded-md  justify-center w-[18%] h-[25vh] border-2 ">
-            
-            <img src="{{discount_product.thumbnail.url}}" loading="lazy" class="object-cover  min-h-[80%] min-w-[100%] h-[80%] w-[100%]" alt="">
-            <p class="font-light text-sm ">{{discount_product.name}}</p>
-            <p class="price text-primary">{{discount_product.price}} {{discount_product.currency}}</p>
-            <div class="absolute top-2 left-2 flex flex-col items-center justify-center rounded-md bg-primary px-3 py-2 text-white font-bold">
-                {{discount_product.discount}}%
-            </div>
-        </a>
+<div class="grid grip-cols-2 md:grid-cols-5 mx-auto md:w-[85vw] md:max-w-[85vw] gap-2 my-2">
+    {% for product in discounts %}
+    <div
+    style="background-color: rgba(0, 0, 0, 0.1);"
+    class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 transition-all duration-5000"
+  >
+    <a href="{% url 'single_product' product.id %}">
+      {% if product.thumbnail %}
+      <img
+        src="{{product.thumbnail.url}}"
+        class="w-[100%] h-[20vh] object-cover hover:scale-110 transition-all duration-5000"
+        alt=""
+      />
+      {% else %}
+      <div
+        class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+      >
+        {{product.name}}
+      </div>
+      {% endif %}
+      <div
+        class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+        style="background-color: rgba(0, 0, 0, 0.4);"
+      >
+        <p class="text-white font-semibold">
+          {{product.category.name}}
+        </p>
+      </div>
+      <p class="text-lg italic mt-3">{{product.name}}</p>
+      <div class="flex flex-row items-center mb-3">
+        <ion-icon name="clock"></ion-icon>
+        <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+      </div>
+      <hr
+        class="w-[80%]"
+        style="color: gray; background-color: gray; height: 3px;"
+      />
+      <div
+        class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+      >
+        <div class="flex flex-row items-center gap-x-2">
+          <ion-icon
+            name="pricetags"
+            style="font-size: 23px;"
+          ></ion-icon>
+          <p class="text-gray-500 text-md font-bold">
+            {{ product.price }} {{ product.currency }}
+          </p>
+        </div>
+        <div class="flex gap-x-2 flex-row">
+          <a
+            href="https://wa.me/{{product.uploader.phone_number}}"
+            target="_blank"
+            class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+          >
+            <ion-icon
+              style="color: white; font-size: 17px;"
+              name="logo-whatsapp"
+            ></ion-icon>
+          </a>
+          <a
+            href="tel:{{ product.uploader.phone_number }}"
+            target="_blank"
+            class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+          >
+            <ion-icon
+              style="color: white; font-size: 17px;"
+              name="call"
+            ></ion-icon>
+          </a>
+        </div>
+      </div>
+    </a>
+    <div class="absolute top-3 left-3 z-50 text-primary font-bold px-4 rounded-md flex flex-col items-center" style="background-color: rgba(0, 0, 0, 0.7);">
+      {{product.discount}} %
+    </div>
+  </div>
     {% endfor %}
     
 </div>
 <!-- Three products for each category -->
  <div>
-    <p class="text-[1.4rem] w-[80vw] mx-auto text-primary font-bold ">Kaz ni Kaz Choices</p>
+    <p class="text-[1.4rem] w-[90vw] mx-auto text-primary font-bold ">Kaz ni Kaz Choices</p>
  </div>
- <div class="grid grid-cols-4 my-3 w-[80vw] max-w-[80vw] mx-auto gap-2">
+ <div class="grid grid-cols-1 md:grid-cols-4 my-14 md:my-3 w-[85vw] max-w-[85vw] mx-auto gap-2">
     {% for category in categories %}
         {% if category.getProductCategory %}
            <div class="flex flex-col gap-1 p-1 bg-whiye shadow-sm shadow-black rounded-md ">
-             <h1 class="text-textColor">{{category.name}}</h1>
-             <div class="grid grid-cols-3 p-2">
+             <h1 class="text-textColor font-bold">{{category.name}}</h1>
+             <div class="grid grid-cols-3 p-2 gap-1">
                  {% for product in category.getCategorythreeProducts %}
-                     <a href="">
-                         <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}" class="object-cover w-full h-32" />
+                     <a href="{% url 'single_product' product.id %}" class="rounded-md">
+                         <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}" class="object-cover w-full h-32 rounded-md" />
                          
                      </a>
                  {% endfor %}
@@ -202,9 +329,46 @@
     {% endfor %}
     
  </div>
+</div>
+
+{% comment %} 
+Deposit modal {% endcomment %}
+<div class="modal transition-opacity duration-5000 opacity-0  ease-in-out hidden min-h-screen min-w-full max-h-screen max-w-full overflow-scroll flex flex-col items-center justify-center absolute top-0  z-90" style="background-color:rgba(0,0,0,0.9)">
+        <div class="response bg-white flex flex-col items-center justify-center w-full flex-wrap md:w-[50%] my-2 py-2 rounded-md"></div>
+        <form class="hidden deposit_form md:w-[50%] px-4 gap-y-2 w-[90%] h-fit py-4 bg-white rounded-md flex flex-col items-center justify-center">
+          {% csrf_token %}
+           <h1 class="text-4xl font-bold">Deposit</h1>
+           <input type="number" placeholder="Enter Phone number" name="phone_number" required class="phone p-3 rounded-md w-[80%] my-2 bg-transparent text-textColor border"/>
+           <input type="number" placeholder="Enter deposit amount" name="amount" required class="amount p-3 rounded-md w-[80%] my-2 bg-transparent text-textColor border"/>
+           <select name="currency" class="currency w-[80%] py-3 rounded-md border bg-transparent">
+            <option value="Rwf">Rwf</option>
+            <option value="USD">USD</option>
+           </select>
+           <input type="submit" value="Deposit" class="p-3 bg-primary text-white rounded-md w-[80%]"/>
+        </form>
+
+        <form class="hidden transfer_form md:w-[50%] px-4 gap-y-2 w-[90%] h-fit py-4 bg-white rounded-md flex flex-col items-center justify-center">
+          
+          {% csrf_token %}
+          <h1 class="text-4xl font-bold">Transfer</h1>
+          <input type="text" placeholder="Enter Receiver Wallet Address" name="wallet" required class="p-3 rounded-md w-[80%] my-2 bg-transparent text-textColor border"/>
+          <input type="number" placeholder="Enter transfer amount" name="amount" required class="p-3 rounded-md w-[80%] my-2 bg-transparent text-textColor border"/>
+          <select name="currency" class="w-[80%] py-3 rounded-md border bg-transparent">
+            <option value="Rwf">Rwf</option>
+            <option value="USD">USD</option>
+           </select>
+          <input type="submit" value="Transfer" class="p-3 bg-primary text-white rounded-md w-[80%]"/>
+       </form>
+    
+
+</div>
 {% endblock Content %}
 
 {% block script %}
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
 <script>
     $(document).ready(function () {
         const slides = document.querySelectorAll(".carousel_item");
@@ -236,6 +400,147 @@
             showSlide(currentIndex);
         });
     });
+    
+</script>
+<script>
+  $(document).ready(function () {
+    if (window.innerWidth < 768) {
+      $(".slick-slider-container").slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        utoplaySpeed: 4000,
+        arrows: false,
+        infinite: true,
+
+      });
+    }
+  });
+</script>
+<script>
+{% comment %} Wallet Scripts {% endcomment %}
+$(document).ready(function() {
+//Deposit 
+$(document).on('click','.deposit_button',function(e) {
+  $('.modal').toggleClass('hidden');
+  $('.modal').addClass('opacity-100');
+  $('.deposit_form').removeClass('hidden');
+
+  e.preventDefault();
+})
+$(document).on('click','.transfer_button',function(e) {
+  $('.modal').toggleClass('hidden');
+  $('.modal').addClass('opacity-100');
+  $('.transfer_form').removeClass('hidden');
+
+  e.preventDefault();
+})
+$(document).on('click',function(e){
+  if($(e.target).hasClass('modal') && !$(e.target).hasClass('hidden')){
+    $('.modal').addClass('hidden');
+  }
+})
+//Submit Deposit Form
+$(document).on('submit','.deposit_form',function(e){
+    e.preventDefault();
+    const phone_number = $(this).find('input[name="phone_number"]').val();
+    var amount = $(this).find('input[name="amount"]').val();
+    const currency = $(this).find('select[name="currency"]').val();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    if(currency == "USD"){
+      amount =amount * 1000;
+    }
+    if(amount < 100){
+      $('.response').html(`<p class="text-red-500 font-bold">The deposit amount can't be less than 100 Rwf!</p>`);
+      return ;
+    }
+    const $submitButton = $(this).find('input[type="submit"]');
+    $submitButton.val("Processing...").prop('disabled', true);
+    $('.response').empty();
+    $.ajax({
+      url: "{% url 'mywallet' %}",  // Make sure 'wallet' URL is properly configured in Django
+      method: 'POST',
+      data: {
+        'phone_number': phone_number,
+        'amount': amount,
+        'action':'Deposit'
+      },
+      
+      headers: {
+        'X-CSRFToken': csrftoken  // Include CSRF token in headers
+      },
+      
+      success: function(response){
+    
+        $submitButton.val("Deposit").prop('disabled', false);
+        $('.response').html(`<p class="text-green-500 font-bold">${response.detail}</p>`);
+        setTimeout(function(){
+          window.location.reload();
+        },60000);
+        
+      },
+      error: function(xhr, status, error){
+        
+        $submitButton.val("Deposit").prop('disabled', false);
+        $('.response').html(`<p class="text-red-500 font-bold">Failed to process your payment please try again</p>`);
+        setTimeout(function(){
+          window.location.reload();
+        },60000)
+        
+      }
+    });
+    
+});
+
+//Submit Transfer Form
+$(document).on('submit','.transfer_form',function(e){
+  e.preventDefault();
+  var amount=$(this).find('input[name="amount"]').val();
+  var wallet_address=$(this).find('input[name="wallet"]').val();
+  var currency=$(this).find('select[name="currency"]').val();
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const $submitButton = $(this).find('input[type="submit"]');
+  $submitButton.val("Transfering ...").prop('disabled', true);
+  $.ajax({
+    url: "{% url 'mywallet' %}",  // Make sure 'wallet' URL is properly configured in Django
+    method: 'POST',
+    data: {
+      'wallet': wallet_address,
+      'amount': amount,
+      'action':'Transfer'
+    },
+    
+    headers: {
+      'X-CSRFToken': csrftoken  // Include CSRF token in headers
+    },
+    
+    success: function(response){
+      
+      
+      $submitButton.val("Transfer").prop('disabled', false);
+      $('.response').html(`<p class="text-green-500 font-bold">${response.detail}</p>`);
+      if(response.success == True){
+        setTimeout(function(){
+          window.location.reload();
+        },60000);
+      }
+      
+    },
+    error: function(xhr, status, error){
+      
+      $submitButton.val("Transfer").prop('disabled', false);
+      $('.response').html(`<p class="text-red-500 font-bold">Failed to process your payment please try again</p>`);
+      setTimeout(function(){
+        window.location.reload();
+      },60000)
+      
+    }
+  });
+  
+})
+
+});
 </script>
 {% endblock script %}
 </div>

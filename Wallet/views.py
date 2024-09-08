@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import MyWallet,WalletHistory,Payments
@@ -15,6 +15,8 @@ import requests
 import json
 import time
 from django.views.decorators.csrf import csrf_exempt
+from functools import wraps
+from django.utils.decorators import method_decorator
 client_id="4645d206-48c1-11ef-a6a2-deade826d28d", 
 client_secret="76ff484a244047ecbbc3ffeca5dc79a3da39a3ee5e6b4b0d3255bfef95601890afd80709"
 # client_id="66d24278-48cd-11ef-82f6-deade826d28d"
@@ -22,9 +24,22 @@ client_secret="76ff484a244047ecbbc3ffeca5dc79a3da39a3ee5e6b4b0d3255bfef95601890a
 Base_url="https://payments.paypack.rw/api"
 
 # Create your views here.
+def mozilla_browser_redirect(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
+        return view_func(request, *args, **kwargs)
+    return wrapper
 class WalletView(APIView):
+   
     permission_classes=[IsAuthenticated]
+    @method_decorator(mozilla_browser_redirect)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     def get(self,request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         user=request.user
         
         try:
@@ -58,8 +73,16 @@ class WalletView(APIView):
     
                 
     def put(self,request):
+        if not request.data['action']:
+            return Response({"detail":"No action"},status=400)
         action=request.data['action']
         amount=request.data['amount']
+        api_key = request.headers.get('X-API-KEY')
+        
+        if api_key != 'KazniKazSecuritykey_0782214360':
+            return Response({"detail":"Invalid API key."},status=401)
+        if action is None:
+            return Response({"detail":"Action is required"},status=400)
        
         try:
            

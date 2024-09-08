@@ -1,0 +1,126 @@
+{% extends "../base.html" %}
+{% load static %}
+{% block Content %}
+<div class="news_container flex flex-col w-[90%] mx-auto md:mt-10 mt-14">
+    <div  class=" my-2 mb-7 w-[100%] max-w-[100%] ">
+        {% if today_news %}
+        <div class="featured_news  flex flex-row w-[100%] min-w-[100%] max-w-[100%] overflow-scroll flex-1">
+            {% for new in today_news %}
+            <a class="w-[100%] px-2 md:px-auto relative flex flex-col min-h-[20vh] h-[20vh] rounded-md flex flex-col items-center justify-center" href="{{new.link}}" target="_blank" style="height:20vh;display:flex;flex-direction:column; align-items:center;justify-center:end; background-image: linear-gradient(to right,rgba(0,0,0,0.2),rgba(0,0,0,0.4),rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('{{new.thumbnail.url}}');">
+              <p class="absolute bottom-3 text-white opacity-80 w-[80%] mx-auto md:w-auto md:text-[1.3rem] flex-end">
+                {{new.title}}
+              </p>
+              <p class="text-opacity-5 text-[3rem] md:text-[5rem] font-bold" style="opacity:0.3;">NEWS</p>
+            </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <h1 class="text-primary text-[1.9rem] font-bold">Treding News</h1>
+    </div>
+    <div class="flex flex-col md:flex-row gap-x-3 my-2">
+        {% comment %} This Week news {% endcomment %}
+        <div class="hidden min-w-[25%] w-[25%] md:flex flex-col gap-y-2">
+            {% if week_news %}
+                {% for new in week_news %}
+                    <a href="{{new.link}}" target="_blank" class="flex flex-col w-[100%] text-center relative">
+                        {% if new.thumbnail %}<img src="{{new.thumbnail.url}}" class="w-[100%] h-[12vh] border rounded-md"/>{% endif %}
+                        <div class="flex flex-row gap-x-2 items-center">
+                            <h1 class="text-[1.3rem]">{{forloop.counter}}</h1>
+                            <h1 class="text-textColor ">{{new.title}}</h1>
+                        </div>
+                        <div class="flex flex-row gap-x-2 items-center">
+                           
+                           <div class="absolute top-2 right-3 py-2 px-2 rounded-md" style="background-color :rgba(0,0,0,0.4)">
+                            <p class="text-white text-sm"> {{new.created_at | date}}</p>
+                           </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% comment %} End Of This Week {% endcomment %}
+        {% comment %} Today's news {% endcomment %}
+
+        <div class="flex flex-col gap-y-2 md:min-w-[50%] md:w-[50%] w-[100%] mb-20">
+            {% if today_news %}
+                {% for new in today_news %}
+                <a href="{{new.link}}" target="_blank" class="flex flex-col w-[100%] relative text-center relative">
+                    {% if new.thumbnail %}<img src="{{new.thumbnail.url}}" class="w-[100%] h-[25vh] border rounded-md"/>{% endif %}
+
+                    <div class="new absolute bottom-0 py-4 text-start px-2 rounded-md left-0 ">
+                        <div>
+                            <h1 class="text-[1rem] text-white">{{new.title}}</h1>
+                            <p class="text-white text-xs"> {{new.created_at | date}}</p>
+                        </div>
+                    </div>
+                </a>    
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% comment %} end Today's news  {% endcomment %}
+        {% comment %} Popular news {% endcomment %}
+        <div class="hidden md:flex flex-col md:w-[25%] w-[100%] min-w-[25%]">
+            {% if ads %}
+            <div>
+                <img src="{{ads.thumbnail.url}}" class="w-[100%] h-[12vh]" />
+            </div>
+           
+            {% endif %}
+            {% if news %}
+            <div class="flex flex-col gap-y-2">
+                {% for new in news %}
+                    <a href="{{new.link}}" target="_blank" class="flex flex-row items-center w-[80%] gap-x-2">
+                        {% if new.thumbnail %}
+                            <img src="{{new.thumbnail.url }}" class="w-[30%] h-[6vh]" />
+                        {% endif %}
+                        <div class="flex flex-col gap-y-2">
+                            <p class="font-bold  text-sm" > {{new.title}}</p>
+                            <p class="text-xs">Posted on:  {{new.created_at | date}}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+                </div>
+            {% endif %}
+
+        </div>
+        {% comment %} end popular news {% endcomment %}
+    </div>
+</div>
+
+{% endblock Content %}
+
+{% block script %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            $('.featured_news').slick({
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              autoplay: true,
+              autoplaySpeed: 8000,
+              arrows: false,
+              infinite: true,
+              responsive: [
+                {
+                  breakpoint: 768,
+                  settings: {
+                    slidesToShow: 1
+                  }
+                },
+                {
+                  breakpoint: 480,
+                  settings: {
+                    slidesToShow: 1
+                  }
+                }
+              ]
+            });
+          });
+
+    </script>
+
+{% endblock script %}
+
+

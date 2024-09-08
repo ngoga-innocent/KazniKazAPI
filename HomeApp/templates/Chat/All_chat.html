@@ -1,0 +1,309 @@
+{% extends "./chatbase.html" %} {% block title %}Kaz NI Kaz Chat{% endblock title %} {% block Chat_content %}
+<div class="chat flex flex-col md:flex-row w-[100%] max-h-screen overflow-auto md:overflow-hidden">
+  <!-- Sidebar for User Profile and Navigation -->
+  <div
+    class="fixed top-0 z-50 md:relative w-[100%] bg-[rgba(19,18,19,1)] md:w-fit px-3 md:py-4 py-2 md:min-w-fit mb-2 md:my-0  md:h-full border-r border-gray-200 flex md:items-end justify-between items-center md:justify-end md:max-h-screen md:min-h-screen md:overflow-scroll scrollbar-hidden"
+    
+  >
+    <button  class="md:hidden toggle_chats">
+      <ion-icon name="chatbubbles" style="color:white;font-size:24px"></ion-icon>
+    </button>
+    <a class="md:absolute md:top-2" href="{% url 'homepage' %}">Home</a>
+    <div
+      class="w-8 h-8 max-w-8 max-h-8 md:w-12 md:h-12 md:max-w-12 md:max-h-12 overflow-hidden border border-textColor flex flex-col items-center justify-center rounded-full"
+    >
+      {% if request.user.profile %}
+      <img src="{{request.user.profile.url}}" class="w-12 h-12 object-cover" />
+      {% else %}
+      <h2>{{ request.user.username|slice:":2" }}</h2>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Chat Room List -->
+  <div
+    class="absolute top-0 z-50 md:relative md:w-[25%] md:bg-[rgba(19,18,19,0.89)]  w-[70%] bg-gray-900 px-3 md:py-4 mt-8 md:my-0 md:min-w-[25%] h-fit md:h-full border-r border-gray-200 md:max-h-screen  md:min-h-screen overflow-scroll scrollbar-hidden"
+    
+  >
+    <div class="flex flex-col md:sticky">
+      <h1 class="text-white font-bold hidden md:flex md:text-[1.7rem]">Chats</h1>
+      <!-- Search Bar -->
+      <div
+        class="hidden w-[100%] items-center gap-x-3  md:flex flex-row px-2 rounded-md"
+        style="background-color: rgba(19, 18, 19, 0.4)"
+      >
+        <ion-icon
+          name="search"
+          style="color: white; font-size: 24px"
+        ></ion-icon>
+        <input
+          class="flex-1 bg-transparent py-2 text-white"
+          placeholder="Search"
+        />
+      </div>
+    </div>
+    <div class="min-h-screen w-[100%] hidden md:min-h-auto md:my-4 max-w-[100%] overflow-x-scroll md:overflow-auto md:w-auto md:max-w-auto gap-x-2 md:flex flex-col user_rooms">
+      {% if all_rooms %} {% for room in all_rooms %} {% if request.user.id == room.user1.id %}
+      <button data-roomId="{{room.id}}" class="room_button w-[100%] max-w-[100%] md:max-w-[100%] md:w-[100%] ">
+        <div
+          class="flex flex-col md:flex-row items-center  justify-center gap-x-2 w-[100%] py-2 hover:bg-gray-100 hover:bg-opacity-10 hover:rounded-lg transition-all duration-5000"
+        >
+          <div
+            class="w-7 h-7 max-w-7 max-h-7 md:w-12 md:h-12 md:max-w-12 md:max-h-12 overflow-hidden border border-textColor flex flex-col items-center justify-center rounded-full"
+          >
+            {% if room.user2.profile %}
+            <img
+              src="{{room.user1.profile.url}}"
+              class="w-7 h-7 object-cover"
+            />
+            {% else %}
+            <h2>{{room.user2.username | slice:":2"}}</h2>
+            {% endif %}
+          </div>
+          <div class="w-[90%] md:text-start">
+            <p class="text-xs md:text-sm">{{room.user2}}</p>
+            {% if room.last_message %}
+                <p class="hidden md:flex w-[80%] text-ellipsis overflow-hidden ...">{{ room.last_message  }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <hr
+          style="
+            height: 1px;
+            border-width: 0;
+            color: white;
+            background-color: gray;
+            width: 80%;
+            text-align: left;
+            margin-left: 0;
+          "
+        />
+      </button>
+      {% else %}
+      <button data-roomId="{{room.id}}" class="room_button w-[100%] max-w-[100%] md:max-w-[100%] md:w-[100%] ">
+        <div
+          class="flex flex-row md:flex-row items-center  justify-center gap-x-2 w-[100%] py-2 hover:bg-gray-100 hover:bg-opacity-10 hover:rounded-lg transition-all duration-5000"
+        >
+          <div
+            class="w-7 h-7 max-w-7 max-h-7    md:w-12 md:h-12 md:max-w-12 md:max-h-12 overflow-hidden border border-textColor flex flex-col items-center justify-center rounded-full"
+          >
+            {% if room.user1.profile %}
+            <img
+              src="{{room.user1.profile.url}}"
+              class="w-7 h-7 object-cover"
+            />
+            {% else %}
+            <h2>{{room.user1.username | slice:":2"}}</h2>
+            {% endif %}
+          </div>
+          <div class="w-[90%] md:text-start">
+            <p class="text-xs md:text-sm">{{room.user1}}</p>
+            {% if room.last_message %}
+                <p class="hidden md:flex w-[80%] text-ellipsis overflow-hidden ...">{{ room.last_message  }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <hr
+          style="
+            height: 1px;
+            border-width: 0;
+            color: white;
+            background-color: gray;
+            width: 80%;
+            text-align: left;
+            margin-left: 0;
+          "
+        />
+      </button>
+      {% endif %} {% endfor %} {% else %}
+      <h2 class="text-white text-[1.7rem] text-center py-5">
+        No Chats Available
+      </h2>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Chat Messages -->
+  <div
+    class="max-h-screen w-[100%] md:w-[70%] h-[100vh]  py-4 flex flex-col  relative"
+  >
+    <div class="message_body w-[100%]  flex flex-col-reverse px-6 my-2 space-y-1 h-[90%] max-h-[90%] overflow-y-scroll scrollbar-hidden ">
+      {% if messages %} {% for message in messages %}
+      {% if message.sender.id == request.user.id %}
+        <div
+            class="self-end flex-end relative flex flex-col w-fit px-3 py-3 mr-4 min-w-[15%] max-w-[45%] rounded-md"
+            style="background-color: rgba(19, 18, 19, 0.5)"
+        >
+            <p>{{ message.message }}</p>
+            <span class="self-end flex-end text-xs text-white"
+            >{{ message.timestamp }}</span
+            >
+        </div>
+      {% else %}
+        <div
+            class=" relative flex flex-col-reverse w-fit px-3 py-3 min-w-[15%] max-w-[45%] rounded-md"
+            style="background-color: rgba(19, 18, 19, 0.89)"
+        >
+            <p>{{ message.message }}</p>
+            <span class="self-end flex-end text-xs text-white">{{ message.timestamp }}</span>
+        </div>
+      {% endif %}
+      {% endfor %} {% endif %}
+    </div>
+
+    <!-- Send Message Input -->
+    <div
+      class="absolute bottom-0 h-[10%] items-center justify-center flex flex-col gap-x-3 w-[100%] py-3 px-3 absolute bottom-0"
+      style="background-color: rgba(19, 18, 19, 0.89)"
+    >
+    <form id="send-message-form" class="send-message_form flex items-center justify-between px-2 w-[90%] mx-auto py-2 bg-gray-100 bg-opacity-10 rounded-lg">
+        <input id="message-input" class="py-2 bg-transparent flex-1" placeholder="Type a message" />
+        <button type="button" id="emoji-button" class="mr-2">
+            😊
+        </button>
+        <button type="submit">
+            <ion-icon name="send" style="color: green; font-size: 30px"></ion-icon>
+        </button>
+    </form>
+    </div>
+  </div>
+</div>
+{% endblock Chat_content %} {% block script %}
+<script>
+  $(document).ready(function () {
+    var messageInterval;
+    var isInitialLoad = true;
+    
+    //Scroll To bottom
+    var roomId=localStorage.getItem("roomid");
+    if(roomId){
+        loadMessages(roomId);
+    }
+    var messageBody = $(".message_body");
+    function scrollToBottom() {
+        
+        var lastMessage = messageBody.find(".message-item").last();
+
+        if (lastMessage.length) {
+            // Adjust the scroll position to the last message
+            messageBody.scrollTop(lastMessage.offset().top - messageBody.offset().top + messageBody.scrollTop());
+        }
+
+        messageBody.animate({ scrollTop: messageBody[0].scrollHeight }, 'fast');
+    }
+    // Add delay to ensure rendering is complete
+    setTimeout(function () {
+      messageBody.animate({ scrollTop: messageBody[0].scrollHeight }, 'fast');
+  }, 100);
+    var Room="";
+    clearInterval(Room);
+    Room=setInterval(function() {
+        loadRooms()
+      },1000);
+    // Load messages for a specific room when clicked
+    
+
+    // Function to load messages for a specific room
+    function loadMessages(roomId) {
+        
+      $.ajax({
+        url: "{% url 'load_messages' %}", // Your view to handle message loading
+        data: {
+          room_id: roomId,
+        },
+        success: function (data) {
+          $(".message_body").html(data); // Populate messages
+          if (isInitialLoad ) {
+            scrollToBottom();
+            isInitialLoad = false; // Reset flag after the first load
+        }
+        },
+      });
+    }
+
+    function loadRooms(){
+        
+        $.ajax({
+          url: "{% url 'load_rooms' %}", // Your view to handle room loading
+          success: function (data) {
+            
+            $(".user_rooms").html(data); // Populate rooms
+          },
+        });
+    }
+    $(document).on("click", ".room_button", function (e) {
+      var roomId = $(this).data("roomid");
+      
+      $(".message_body").empty(); // Clear current messages
+      isInitialLoad = true;
+      loadMessages(roomId);
+       // Load new messages via AJAX
+      localStorage.setItem("roomid", roomId); 
+      
+      if(screen.width < 768){
+        $(".user_rooms").toggleClass("hidden flex");
+      }
+      clearInterval(messageInterval); // Clear any existing interval
+      messageInterval = setInterval(function () {
+        loadMessages(roomId);
+        }, 2000);
+        // Update selected room style or UI
+
+
+      
+      // Optional: Update selected room style or UI
+      $(".room_button").removeClass("active_room");
+     $(this).addClass("active_room");
+      scrollToBottom(); // Scroll to bottom after new messages are loaded
+    });
+    // Handle message sending
+    $("#send-message-form").on("submit", function (e) {
+      e.preventDefault();
+      var message = $("#message-input").val();
+      var roomId = localStorage.getItem("roomid")
+
+      if (message.trim() !== "") {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'chats' %}", // Your view to handle message sending
+          data: {
+            message: message,
+            room_id: roomId,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (response) {
+            // On success, append the new message
+             // Scroll to bottom after appending the new message
+            $(".message_body").append(response);
+            $("#message-input").val(""); // Clear the input field
+            scrollToBottom();
+          },
+        });
+      }
+    });
+    scrollToBottom();
+    
+  });
+  //Togle Chats
+  $(document).on("click",".toggle_chats",function(e){
+    e.preventDefault();
+    $(".user_rooms").toggleClass("hidden flex");
+
+  })
+  //cdnjs.cloudflare.com/ajax/libs/font
+  document.addEventListener('DOMContentLoaded', function () {
+    const button = document.querySelector('#emoji-button');
+    const picker = new EmojiButton();
+
+    picker.on('emoji', emoji => {
+        const input = document.querySelector('#message-input');
+        input.value += emoji;
+    });
+
+    button.addEventListener('click', () => {
+        picker.togglePicker(button);
+    });
+
+});
+</script>
+{% endblock script %}

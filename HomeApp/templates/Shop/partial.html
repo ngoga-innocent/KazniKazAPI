@@ -1,9 +1,9 @@
 {% if shops %} {% for shop in shops %}
 <div
-  class="flex flex-row w-[100%] gap-x-10 py-2 px-4 bg-slate-200 rounded-lg items-center my-2"
+  class="flex flex-row w-[99%] gap-x-10 py-2 px-4 bg-slate-200 rounded-lg items-center my-2"
 >
   <div
-    class="w-[12vw] h-[12vh] overflow-hidden rounded-lg border border-primary"
+    class="w-14 h-14  md:w-[12vw] md:h-[12vh] overflow-hidden rounded-full md:rounded-lg border border-primary"
   >
     {% if shop.thumbnail %}
     <a target="_blank" href="{{shop.thumbnail.url}}">
@@ -15,7 +15,7 @@
   <div class="flex flex-col">
     <a
       href="{% url 'shop_details' shop.id %}"
-      class="text-xl text-pretty uppercase text-textColor font-bold"
+      class="md:text-xl text-pretty uppercase text-textColor font-bold"
     >
       {{ shop.name }}
     </a>
@@ -24,22 +24,22 @@
         style="font-size: 23px; color: orange;"
         name="albums"
       ></ion-icon>
-      <p>{{shop.slug}}</p>
+      <p class="text-xs font-bold md:text-sm" >{{shop.slug}}</p>
     </div>
     <div class="flex items-center gap-x-2">
       <ion-icon
         style="font-size: 23px; color: orange;"
         name="contact"
       ></ion-icon>
-      <p>{{shop.owner}}</p>
+      <p class="text-xs font-bold md:text-sm" >{{shop.owner}}</p>
     </div>
     <div class="flex items-center gap-x-2">
       <ion-icon style="font-size: 23px; color: orange;" name="pin"></ion-icon>
-      <p class="text-gray-600">{{ shop.location }}</p>
+      <p class=" text-gray-600 text-xs md:text-sm">{{ shop.location }}</p>
     </div>
     <div class="flex items-center gap-x-2">
       <ion-icon name="call" style="font-size: 23px; color: orange;"></ion-icon>
-      <p class="text-gray-600 text-sm">{{ shop.contact }}</p>
+      <p class=" text-gray-600 text-xs md:text-sm">{{ shop.contact }}</p>
     </div>
   </div>
 </div>

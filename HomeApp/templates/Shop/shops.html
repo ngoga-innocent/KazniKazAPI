@@ -1,10 +1,10 @@
 {% extends '../base.html' %} {% block Content %}
 
-<div class="flex flex-col">
-  <div class="flex flex-row gap-x-2 w-[80vw] mx-auto">
+<div class="flex flex-col mt-14">
+  <div class="flex flex-col md:flex-row gap-x-2 w-[98%] md:w-[80vw] mx-auto">
     <!-- shop categories -->
     <div
-      class="w-[20vw] min-w-[20vw] max-h-[60vh] h-fit overflow-y-scroll scrollbar-hidden"
+      class="md:w-[20vw] w-[100%] min-w-[20vw] md:max-h-[60vh] h-fit md:overflow-y-scroll scrollbar-hidden"
     >
       <a
         href="{% url 'add_shop' %}"
@@ -17,7 +17,7 @@
         </div>
         <p>CREATE SHOP</p>
       </a>
-      <div class="bg-slate-300 px-2 py-3 rounded-lg">
+      <div class=" hidden md:flex flex-col md:bg-slate-300 px-2 py-3 rounded-lg">
         <a href="{% url 'web_shops' %}" class="font-bold text-textColor text-xl"
           >Shop Categories</a
         >
@@ -38,11 +38,11 @@
     <div class="flex flex-col gap-y-2 flex-1">
       <div class="flex gap-x-5 items-center my-2">
         <form
-          class="w-[70%] border-textColor border rounded-lg flex items-center"
+          class=" w-[99%] md:w-[70%] border-textColor border rounded-lg flex items-center"
         >
           <input
             type="text"
-            class="search w-[100%] py-2 px-2 rounded-md bg-transparent"
+            class="search w-[100%] py-1 md:py-2 px-2 rounded-md bg-transparent"
             placeholder="Search ..."
           />
           <button type="submit">

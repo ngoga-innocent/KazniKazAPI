@@ -1,11 +1,11 @@
 {% extends '../base.html' %} {% block Content %}
 <div class="flex flex-col w-[80vw] mx-auto">
   <div
-    class="flex flex-row gap-x-2 w-[100%] max-h-[52vh] overflow-y-scroll scrollbar-hidden"
+    class="flex flex-col md:flex-row gap-x-2 w-[100%] md:max-h-[52vh] overflow-y-scroll scrollbar-hidden"
   >
     <!-- first div -->
     <div
-      class="flex flex-col gap-y-2 min-w-[18vw] max-h-[50vh] overflow-y-scroll scrollbar-hidden"
+      class="hidden md:flex flex-col gap-y-2 min-w-[18vw] md:max-h-[50vh] overflow-y-scroll scrollbar-hidden"
     >
       {% for image in product_images %}
       <div class="w-[14vw] h-[15vh] cursor-pointer">
@@ -21,7 +21,7 @@
     <a
       href="{{product.thumbnail.url}}"
       target="_blank"
-      class="transition-all thumbnail duration-1000 w-[40vw] h-[50vh] border border-textColor min-h-[50vh] min-w-[40vw] max-h-[50vh] max-w-[40vw] overflow-hidden flex flex-col items-center justify-center bg-slate-100 rounded-md"
+      class="transition-all thumbnail duration-1000 w-[100%] md:w-[40vw] h-[50vh] border border-textColor min-h-[35vh] mx-auto md:min-h-[50vh] w-[100%] md:min-w-[40vw] md:max-h-[50vh]  md:max-w-[40vw] md:overflow-hidden flex flex-col items-center justify-center bg-slate-100 rounded-md"
     >
       <img
         src="{{product.thumbnail.url}}"
@@ -31,13 +31,13 @@
     </a>
     <!-- Third Div -->
     <div
-      class="flex flex-col gap-y-2 max-h-[50vh] overflow-y-scroll scrollbar-hidden"
+      class="flex flex-col   gap-y-2 md:max-h-[50vh] md:overflow-y-scroll scrollbar-hidden"
     >
-      <h1 class="text-[1.1rem ] text-textColor font-bold">{{product.name}}</h1>
+      <h1 class="md:text-[1.1rem ] text-textColor font-bold">{{product.name}}</h1>
       <div
         class="flex items-center gap-x-2 border py-2 px-4 border-text-color hover:scale-125 rounded-md hover:bg-white w-fit"
       >
-        <h1 class="text-primary font-bold text-lg">Price:</h1>
+        <h1 class="text-primary font-bold md:text-lg">Price:</h1>
         <div class="flex flex-row items-center">
           {{product.price}} {{product.currency}}
         </div>
@@ -45,11 +45,11 @@
 
       {% if product_features %}
       <div class="flex flex-col gap-y-2">
-        <h2 class="font-bold text-2xl text-primary">Specifications</h2>
+        <h2 class="font-bold md:text-2xl text-primary">Specifications</h2>
         <div class="flex flex-row gap-2 flex-wrap">
           {% for feature in product_features %}
           <div
-            class="flex flex-row justify-between px-2 w-fit py-2 gap-x-1 rounded-md hover:bg-primary text-white bg-textColor items-center"
+            class="flex flex-row justify-between px-2 w-fit md:py-2 py-1 gap-x-1 rounded-md hover:bg-primary text-white bg-textColor items-center"
           >
             <p class="font-bold">{{feature.feature.name}}:</p>
             <p>{{feature.option.name}}</p>
@@ -60,34 +60,47 @@
       {% endif %}
 
       <div
-        class="flex flex-row flex-wrap justify-evenly gap-y-2 my-2 text-start items-center border border-textColor border-dashed py-2 rounded-lg"
+        class="flex flex-col flex-wrap justify-evenly gap-y-2 my-2 w-fit text-start items-center  border border-textColor px-2 border-dashed py-2 rounded-lg"
       >
         <h3 class="text-textColor text-start font-bold underline">
           Connect With Product Owner
         </h3>
-        {% if product.uploader.phone_number %}
-        <a
-          class="bg-[#25d366] rounded-lg py-2 flex items-center justify-center text-center w-[40%]"
-          href="https://wa.me/{{product.uploader.phone_number}}"
-          target="_blank"
-        >
-          <ion-icon
-            style="color: white; font-size: 20px;"
-            name="logo-whatsapp"
-          ></ion-icon>
-        </a>
-        {% endif %}
+        {% if request.user.is_authenticated %}
+        <div class="flex w-[100%] flex-row items-center px-4">
 
-        <a
-          class="bg-primary py-2 text-center w-[40%] rounded-lg flex items-center justify-center"
-          href=""
-        >
-          <i
-            class="fa-brands fa-rocketchat"
-            class="text-primary text-2xl"
-            style="color: white; font-size: 20px;"
-          ></i>
-        </a>
+          {% if product.uploader.phone_number and  not product.uploader.id == request.user.id  %}
+          <a
+            class="bg-[#25d366] rounded-lg py-2 flex items-center justify-center text-center w-[40%]"
+            href="https://wa.me/{{product.uploader.phone_number}}"
+            target="_blank"
+          >
+            <ion-icon
+              style="color: white; font-size: 20px;"
+              name="logo-whatsapp"
+            ></ion-icon>
+          </a>
+          
+          {% endif %}
+          {% if not product.uploader.id == request.user.id %}
+          <button data-uploader="{{ product.uploader.id}}"
+            class="connect mx-2 bg-primary py-2 text-center w-[40%] rounded-lg flex items-center justify-center"
+            
+          >
+            <i
+              class="fa-brands fa-rocketchat"
+              class="text-primary text-2xl"
+              style="color: white; font-size: 20px;"
+            ></i>
+          </button>
+          {% endif %}
+
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}"> Login to connect<a/>
+        {% endif %}
+        
+        
+        
       </div>
       <div class="flex flex-col gap-y-2">
         <h2 class="font-bold text-2xl text-primary">Description</h2>
@@ -97,15 +110,15 @@
   </div>
   <!-- Section OF uploader -->
   <div class="flex flex-col py-2 px-2 my-3">
-    <div class="flex flex-row gap-x-2">
+    <div class="flex  flex-col md:flex-row gap-x-2">
       <!-- First Div -->
-      <div class="flex flex-col gap-y-2 min-w-[18vw] w-[18vw]">
-        <div class="border border-textColor pb-2 rounded-lg overflow-hidden">
+      <div class="flex flex-col md:items-start items-center gap-y-2 min-w-[18vw] md:w-[18vw] w-[100%]">
+        <div class="border border-textColor pb-2 rounded-lg overflow-hidden ">
           <div class="bg-gray-200 py-2 text-center">
             <h2 class="font-bold">Seller Info</h2>
           </div>
           <div
-            class="text-center flex flex-row items-center my-2 mx-3 gap-x-2 w-[100%]"
+            class="text-center flex flex-row items-center text-center my-2 mx-3 gap-x-2 w-[100%]"
           >
             {% if product.uploader.profile %}
             <a
@@ -121,7 +134,7 @@
             </a>
 
             {% endif %}
-            <div class="flex flex-col">
+            <div class="flex flex-col items-center justify-center md:items-start md:justify-auto  text-center">
               <p class="font-bold text-sm">{{product.uploader.username}}</p>
               <p class="text-xs text-textColor">
                 {{product.uploader.phone_number}}
@@ -150,16 +163,7 @@
             </a>
             {% endif %}
 
-            <a
-              class="bg-primary py-2 text-center w-[40%] rounded-lg flex items-center justify-center"
-              href=""
-            >
-              <i
-                class="fa-brands fa-rocketchat"
-                class="text-primary text-2xl"
-                style="color: white; font-size: 20px;"
-              ></i>
-            </a>
+            
           </div>
         </div>
       </div>
@@ -167,11 +171,11 @@
       {% if related_products %}
       <div>
         <h2 class="font-bold text-2xl text-primary">Related Products</h2>
-        <div class="grid grid-cols-4 gap-2 flex-wrap">
+        <div class="related_product w-[100%] md:grid md:grid-cols-4 flex flex-row gap-2 md:flex-wrap">
           {% for product in related_products %}
           <div
             style="background-color: rgba(0, 0, 0, 0.1);"
-            class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2"
+            class="w-[100%] flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2"
           >
             <a href="{% url 'single_product' product.id %}">
               {% if product.thumbnail %}
@@ -245,17 +249,66 @@
         </div>
       </div>
     </div>
+  </div>
     {% endblock Content %}
   </div>
 </div>
 
 {% block script %}
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
 <script>
+  $(document).ready(function () {
+    if (window.innerWidth < 768) {
+      $(".related_product").slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        utoplaySpeed: 4000,
+        arrows: false,
+        infinite: true,
+
+      });
+    }
+  });
+</script>
+<script>
+  
   $(document).ready(function () {
     $(".product_image").on("mouseover", function () {
       $(".product_thumbnail").attr("src", $(this).attr("src"));
       $(".thumbnail").attr("href", $(this).attr("src"));
-      console.log($(this).attr("src"));
+      //console.log($(this).attr("src"));
+    });
+
+    //Handling Connect
+    $(".connect").on("click", function () {
+      var uploader_id = $(this).data("uploader");
+      //console.log(uploader_id);
+      $.ajax({
+        url: `/chats/`+ uploader_id,
+        method: "GET",
+        data: { uploader_id: uploader_id },
+        beforeSend:function(){
+          $('.connect').text("Connecting...").prop("disabled",true)
+        },
+        success: function (response) {
+          
+          if (response.success) {
+            localStorage.setItem("roomid", response.room);
+            window.location.href = "{% url 'normal_chat' %}"
+            //console.log(response)
+          } else {
+            alert("Failed to connect!");
+          }
+        },
+        error: function (error) {
+          //console.log(error);
+          alert("Failed to connect!");
+        },
+      });
     });
   });
 </script>

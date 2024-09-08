@@ -1,0 +1,38 @@
+{% if grouped_messages %}
+    {% for date, messages in grouped_messages.items %}
+        
+
+        {% for message in messages %}
+            <div class="message-item flex flex-col"> <!-- Add this class -->
+                {% if message.sender.id == request.user.id %}
+                    <div class="self-end flex-end relative flex flex-col-reverse w-fit px-3 py-3 min-w-[15%] max-w-[45%] rounded-md" style="background-color: rgba(19, 18, 19, 0.5)">
+                        <span class="self-end flex-end text-xs text-white">{{ message.timestamp|date:"H:i" }}</span>
+                        <p class="text-xs md:text-sm">{{ message.message }}</p>
+                        
+                    </div>
+                {% else %}
+                    <div class="relative flex flex-col-reverse w-fit px-3 py-3 min-w-[15%] max-w-[45%] rounded-md" style="background-color: rgba(19, 18, 19, 0.89)">
+                        <span class="self-end flex-end text-xs text-white">{{ message.timestamp|date:"H:i" }}</span>
+                        <p class="text-xs md:text-sm">{{ message.message }}</p>
+                        
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        {% if date == today %}
+            <div class="date-header">
+                <p class="text-textColor text-center">Today</p>
+            </div>
+        {% elif date == yesterday %}
+            <div class="date-header">
+                <p class="text-textColor text-center">Yesterday</p>
+            </div>
+        {% else %}
+            <div class="date-header">
+                <p class="text-textColor text-center">{{ date|date:"F j, Y" }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <h2 class="text-white text-[1.7rem] text-center py-5">No Chats Available</h2>
+{% endif %}

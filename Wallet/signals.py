@@ -31,33 +31,42 @@ def AnyActionOnWallet(sender,instance,created,**kwargs):
     if created:
         try:
             if instance.action=='Transfer':
-                reciever_device=Device.objects.get(User=instance.reciever.user)
-                sender_device=Device.objects.get(User=instance.wallet.user)
+                try:
+                    reciever_device=Device.objects.get(User=instance.reciever.user)
+                    sender_device=Device.objects.get(User=instance.wallet.user)
+                except Device.DoesNotExist:
+                    pass    
             else:
                 device=Device.objects.get(User=instance.wallet.user)    
             notification_data={
                 'notification_title':f"" + instance.action + " has been made SuccessFully",
                 'notification_body':f'Dear '+instance.wallet.user.username+ 'Your' + instance.action + 'of '+ str(instance.amount)+' has been processed',
-                'type': 'App',
+                'type': 'Self',
                 'User': instance.wallet.user.id
             }
             if instance.action=='Transfer':
                 notification_receiver_data={
                 'notification_title':f" " + instance.action + " has been made SuccessFully",
-                'notification_text':f'Dear '+ instance.reciever.user.username + ' Your' + instance.action + 'of '+ str(instance.amount) +' has been processed',
-                'type': 'App',
-                'User': instance.reciever.id
+                'notification_body':f'Dear '+ instance.reciever.user.username + ' Your' + instance.action + 'of '+ str(instance.amount) +' has been processed',
+                'type': 'Self',
+                'User': instance.reciever.user.id
                 }
                 notification_receiver_save=NotificationSerializer(data=notification_receiver_data)
                 if notification_receiver_save.is_valid():
                     notification_receiver_save.save()
-                    send_push_notification(reciever_device.token,f'You Have Received ' +str(instance.amount) + ' on Your Kaz ni kaz Wallet',f'Dear ' + instance.reciever.username + 'You have Received' + str(instance.amount) + 'From' + instance.wallet.user.username)
+                    try:
+                        send_push_notification(reciever_device.token,f'You Have Received ' +str(instance.amount) + ' on Your Kaz ni kaz Wallet',f'Dear ' + instance.reciever.username + 'You have Received' + str(instance.amount) + 'From' + instance.wallet.user.username)
+                    except Exception as e:
+                        print("failed to send notification to reciever",e)    
                 else:
                     print(notification_receiver_save.errors)    
             notification=NotificationSerializer(data=notification_data)
             if notification.is_valid():
                 notification.save()
-                send_push_notification(device.token,f'Dear '+instance.wallet.user.username + ' You have Successfully ' +instance.action ,' Explore the World ')
+                try:
+                    send_push_notification(device.token,f'Dear '+instance.wallet.user.username + ' You have Successfully ' +instance.action ,' Explore the World ')
+                except Exception as e:
+                    print("failed to send notification to user",e)
             else:
                 print(notification.errors)    
         except Device.DoesNotExist:

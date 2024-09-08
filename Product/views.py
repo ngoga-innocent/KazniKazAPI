@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -7,6 +7,7 @@ from .serializers import ProductImageSerializer,ProductSerializer,ShopSerializer
 from Wallet.models import MyWallet,WalletHistory
 from Wallet.Serializer import MyWalletSerializer,WalletHistorySerializer
 from django.core.paginator import Paginator
+from django.http import HttpResponseForbidden
 # Product  views here.
 class ProductView(APIView):
     def get_permissions(self):
@@ -20,7 +21,14 @@ class ProductView(APIView):
         else:
             self.permission_classes = [AllowAny,]  # Allow any access for other methods
         return [permission() for permission in self.permission_classes]
+    def dispatch(self, request, *args, **kwargs):
+        # Restrict GET requests from browsers based on User-Agent
+        if request.method == 'GET' and 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
+        return super().dispatch(request, *args, **kwargs)
     def get(self,request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         product=ProductModel.objects.all().prefetch_related('product_images')
         page_number = request.GET.get('page', 1) 
         page_size=3
@@ -46,7 +54,7 @@ class ProductView(APIView):
                 wallet=MyWallet.objects.get(user=request.user.id)
                 # print(wallet)
                 if request.data['currency']=='USD':
-                    price=int(request.data['price'])*1000
+                    price=int(request.data['price'])*1200
                 else:    
                     price=int(request.data['price'])
                 # print(type(price))
@@ -105,6 +113,8 @@ class ProductView(APIView):
             return Response({"detail":"Product Does not exist"},status=401)
 class filter_products(APIView):
     def get(self, request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         category_id = request.GET.get('category', None)
         min_price = request.GET.get('min_price', None)
         max_price = request.GET.get('max_price', None)
@@ -135,12 +145,16 @@ class filter_products(APIView):
         return Response({'products':serializer.data},status=200)       
 class VipProduct(APIView):
     def get(self,request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         products=ProductModel.objects.filter(place='Vip')
         serializer=ProductSerializer(products,many=True,context={"request":request}) 
         return Response({"products":serializer.data},status=200) 
 #Category Class
 class CategoryView(APIView):
     def get(self,request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         category=Category.objects.all()
         serializer=CategorySerializer(category,many=True,context={"request":request})
         return Response({"category":serializer.data},status=200)
@@ -155,6 +169,8 @@ class CategoryView(APIView):
         
 class ColorViews(APIView):
     def get(self,request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         colors=Colors.objects.all()
         serializer=ColorsSerializer(colors,many=True)
         return Response({"colors":serializer.data},status=200)
@@ -176,6 +192,8 @@ class ShopView(APIView):
             self.permission_classes = [AllowAny,]  # Allow any access for other methods
         return [permission() for permission in self.permission_classes]
     def get(self,request,shop_id=None): 
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         if shop_id is None:
             shop=ShopModel.objects.all()
             serializer=ShopSerializer(shop,many=True,context={"request":request})
@@ -221,6 +239,8 @@ class ShopView(APIView):
 class UserShops(APIView):
     permission_classes=[IsAuthenticated]           
     def get(self, request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         shops=ShopModel.objects.filter(owner=request.user.id)
         serializer=ShopSerializer(shops,many=True,context={"request":request})
         return Response({"shops":serializer.data},status=200)
@@ -245,7 +265,8 @@ class UserShops(APIView):
 
 class FeatureView(APIView):
     def get(self,request,category_id=None):
-        
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         if category_id:
             try:
                 category=Category.objects.get(id=category_id)
@@ -265,8 +286,9 @@ class FeatureView(APIView):
             return Response(serializer.data)   
 class OurAdsView(APIView):
     def get(self, request):
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         ads=OurAds.objects.all()
         serializer=OurdsSerializer(ads,many=True)
         return Response({"oursAds":serializer.data},status=200)
-    def post(self,request):
-        pass         
+         

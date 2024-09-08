@@ -1,0 +1,82 @@
+{% if all_rooms %} 
+<div class="mb-2 md:hidden">
+  <h1 class="text-xl font-bold text-textColor">Chats</h1>
+
+</div>
+{% for room in all_rooms %} {% if request.user.id == room.user1.id %}
+<button data-roomId="{{room.id}}" class="room_button max-w-[100%] md:max-w-[100%] md:w-[100%] ">
+  <div
+    class="flex flex-row items-center  justify-center gap-x-2 w-[100%] py-2 hover:bg-gray-100 hover:bg-opacity-10 hover:rounded-lg transition-all duration-5000"
+  >
+    <div
+      class="w-7 h-7 max-w-7 max-h-7 md:w-12 md:h-12 md:max-w-12 md:max-h-12 overflow-hidden border border-textColor flex flex-col items-center justify-center rounded-full"
+    >
+      {% if room.user2.profile %}
+      <img
+        src="{{room.user1.profile.url}}"
+        class="w-7 h-7 object-cover"
+      />
+      {% else %}
+      <h2>{{room.user2.username | slice:":2"}}</h2>
+      {% endif %}
+    </div>
+    <div class="w-[90%] md:text-start">
+      <p class="text-xs md:text-sm">{{room.user2}}</p>
+      {% if room.last_message %}
+          <p class="hidden md:flex w-[80%] text-ellipsis overflow-hidden ...">{{ room.last_message  }}</p>
+      {% endif %}
+    </div>
+  </div>
+  <hr
+    style="
+      height: 1px;
+      border-width: 0;
+      color: white;
+      background-color: gray;
+      width: 80%;
+      text-align: left;
+      margin-left: 0;
+    "
+  />
+</button>
+{% else %}
+<button data-roomId="{{room.id}}" class="room_button max-w-[100%] md:max-w-[100%] md:w-[100%] ">
+  <div
+    class="flex flex-row items-center  md:justify-center gap-x-2 w-[100%] py-2 hover:bg-gray-100 hover:bg-opacity-10 hover:rounded-lg transition-all duration-5000"
+  >
+    <div
+      class="w-7 h-7 max-w-7 max-h-7 md:w-12 md:h-12 md:max-w-12 md:max-h-12 overflow-hidden border border-textColor flex flex-col items-center justify-center rounded-full"
+    >
+      {% if room.user1.profile %}
+      <img
+        src="{{room.user1.profile.url}}"
+        class="w-7 h-7 object-cover"
+      />
+      {% else %}
+      <h2>{{room.user1.username | slice:":2"}}</h2>
+      {% endif %}
+    </div>
+    <div class="w-[90%] text-start">
+      <p class="text-xs md:text-sm">{{room.user1}}</p>
+      {% if room.last_message %}
+          <p class=" text-xs md:text-sm w-[80%] text-ellipsis overflow-hidden ...">{{ room.last_message  }}</p>
+      {% endif %}
+    </div>
+  </div>
+  <hr
+    style="
+      height: 1px;
+      border-width: 0;
+      color: white;
+      background-color: gray;
+      width: 80%;
+      text-align: left;
+      margin-left: 0;
+    "
+  />
+</button>
+{% endif %} {% endfor %} {% else %}
+<h2 class="text-white text-[1.7rem] text-center py-5">
+  No Chats Available
+</h2>
+{% endif %}

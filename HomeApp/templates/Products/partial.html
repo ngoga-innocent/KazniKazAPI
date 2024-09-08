@@ -1,0 +1,85 @@
+{% if products %}
+    
+        {% for product in products %}
+        <div
+        style="background-color: rgba(0, 0, 0, 0.1);"
+        class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 transition-all duration-5000"
+      >
+        <a href="{% url 'single_product' product.id %}">
+          {% if product.thumbnail %}
+          <img
+            src="{{product.thumbnail.url}}"
+            class="w-[100%] h-[20vh] object-cover hover:scale-110 transition-all duration-5000"
+            alt=""
+          />
+          {% else %}
+          <div
+            class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+          >
+            {{product.name}}
+          </div>
+          {% endif %}
+          <div
+            class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+            style="background-color: rgba(0, 0, 0, 0.4);"
+          >
+            <p class="text-white font-semibold">
+              {{product.category.name}}
+            </p>
+          </div>
+          <p class="text-lg italic mt-3">{{product.name}}</p>
+          <div class="flex flex-row items-center mb-3">
+            <ion-icon name="clock"></ion-icon>
+            <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+          </div>
+          <hr
+            class="w-[80%]"
+            style="color: gray; background-color: gray; height: 3px;"
+          />
+          <div
+            class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+          >
+            <div class="flex flex-row items-center gap-x-2">
+              <ion-icon
+                name="pricetags"
+                style="font-size: 23px;"
+              ></ion-icon>
+              <p class="text-gray-500 text-md font-bold">
+                {{ product.price }} {{ product.currency }}
+              </p>
+            </div>
+            <div class="flex gap-x-2 flex-row">
+              <a
+                href="https://wa.me/{{product.uploader.phone_number}}"
+                target="_blank"
+                class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+              >
+                <ion-icon
+                  style="color: white; font-size: 17px;"
+                  name="logo-whatsapp"
+                ></ion-icon>
+              </a>
+              <a
+                href="tel:{{ product.uploader.phone_number }}"
+                target="_blank"
+                class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+              >
+                <ion-icon
+                  style="color: white; font-size: 17px;"
+                  name="call"
+                ></ion-icon>
+              </a>
+            </div>
+          </div>
+        </a>
+        {% if product.discount %}
+        <div class="absolute top-3 left-3 z-50 text-primary font-bold px-4 rounded-md flex flex-col items-center" style="background-color: rgba(0, 0, 0, 0.7);">
+            {{product.discount}} %
+          </div>
+          {% endif %}
+      </div>
+    {% endfor %}
+    
+{% else %}
+<p>No filtered Products</p>
+{% endif %}

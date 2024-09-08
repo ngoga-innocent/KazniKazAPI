@@ -23,32 +23,133 @@
             </div>
             {% endfor %}
         </div>
+        <div class="category_features mx-2">
+            <input type="hidden" id="choosen_category" value={{category.id}} />
+            {% if features %}
+                {% for feature in features %}
+                    <div class="text-primary font-bold">
+                        {{feature.name}}
+                    </div>
+                    {% if feature.featureOptions %}
+                    <ul class="ml-4">
+                        <div>
+                            <input type="radio" name="{{feature.id}}" value=""  class="feature-option" />
+                            <label class="text-sm font-normal text-textColor">Clear</label>
+                        </div>
+                        {% for option in feature.featureOptions %}
+                        <li>
+
+                            <input type="radio" name="{{feature.id}}" value="{{option.id}}" class="feature-option" />
+                            <label class="text-sm font-normal text-textColor">{{option.name}}</label>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+                {% endfor %}            
+            {% endif %}
+        </div>
     </div>
     {% endif %}
     <div class="flex-1">
         {% if products %}
-        <div class="flex-1 grid grid-cols-5 gap-2">
-            {% for product in products %}
-            <a href="{%  url 'single_product' product.id %}"  class="h-[23vh] hover:scale-110 hover:z-20 hover:bg-white transition-all duration-1000 ease-in-out">
-                <div class="relative flex flex-col shadow-sm shadow-black rounded-md my-2 items-start p-2">
-                    <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}"
-                        class="w-[100%] h-[100px] object-cover rounded-md object-top" />
-                    {% if product.discount > 0 %}
-                    <div class="absolute top-0 bg-primary text-white font-bold rounded-br-lg px-3 left-0">
-                        {{product.discount}} %
+        <div class="flex flex-row gap-x-4 items-center">
+            <ion-icon name="funnel" style="font-size: 30px;"></ion-icon>
+            <div class="flex flex-col gap-y-2">
+                <div class="flex items-center gap-x-3">
+                    <div>Currency</div>
+                    <select name="Currency" id="" class="currency py-2 px-3 rounded-md bg-slate-200">
+                        <option value="RWF">RWF</option>
+                        <option value="USD">USD</option>
+                    </select>
+
+                    <div>
+                        <input type="number" name="min" placeholder="Min" class="min py-2 px-2 min-w-7 rounded-md bg-slate-200">
+                        <input type="number" name="max" placeholder="Max" class="max py-2 px-2 min-w-7 rounded-md bg-slate-200">
                     </div>
-                    {% endif %}
+                </div>
+            </div>
 
-                    <!-- Ensure the h2 has the correct classes for ellipsis -->
-                    <h2 class="w-32 whitespace-nowrap overflow-hidden text-ellipsis">
-                        {{ product.name }}
-                    </h2>
-
-                    <p class="text-primary font-bold">
-                        {{ product.price }} {{product.currency}}
+            <hr class="h-3 w-[70%] bg-slate-200" style="width: max-content;height: 2px; background-color: red; " />
+        </div>
+        <div class="product_view flex-1 grid grid-cols-5 gap-2">
+            {% for product in products %}
+                    <div
+                style="background-color: rgba(0, 0, 0, 0.1);"
+                class="flex flex-col relative rounded-lg max-w-[100%] h-fit overflow-hidden px-2 transition-all duration-5000"
+            >
+                <a href="{% url 'single_product' product.id %}">
+                {% if product.thumbnail %}
+                <img
+                    src="{{product.thumbnail.url}}"
+                    class="w-[100%] h-[20vh] object-cover hover:scale-110 transition-all duration-5000"
+                    alt=""
+                />
+                {% else %}
+                <div
+                    class="w-[100%] h-[20vh] flex flex-col items-center justify-center"
+                >
+                    {{product.name}}
+                </div>
+                {% endif %}
+                <div
+                    class="absolute z-50 top-3 right-3 px-3 py-2 rounded-md"
+                    style="background-color: rgba(0, 0, 0, 0.4);"
+                >
+                    <p class="text-white font-semibold">
+                    {{product.category.name}}
                     </p>
                 </div>
-            </a>
+                <p class="text-lg italic mt-3">{{product.name}}</p>
+                <div class="flex flex-row items-center mb-3">
+                    <ion-icon name="clock"></ion-icon>
+                    <p class="text-gray-500 text-sm">{{ product.created_at }}</p>
+                </div>
+                <hr
+                    class="w-[80%]"
+                    style="color: gray; background-color: gray; height: 3px;"
+                />
+                <div
+                    class="my-2 mt-3 py-3 flex flex-row items-center w-[100%] justify-evenly px-2 gap-y-2"
+                >
+                    <div class="flex flex-row items-center gap-x-2">
+                    <ion-icon
+                        name="pricetags"
+                        style="font-size: 23px;"
+                    ></ion-icon>
+                    <p class="text-gray-500 text-md font-bold">
+                        {{ product.price }} {{ product.currency }}
+                    </p>
+                    </div>
+                    <div class="flex gap-x-2 flex-row">
+                    <a
+                        href="https://wa.me/{{product.uploader.phone_number}}"
+                        target="_blank"
+                        class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#25D366]"
+                    >
+                        <ion-icon
+                        style="color: white; font-size: 17px;"
+                        name="logo-whatsapp"
+                        ></ion-icon>
+                    </a>
+                    <a
+                        href="tel:{{ product.uploader.phone_number }}"
+                        target="_blank"
+                        class="py-1 px-6 flex flex-col items-center justify-center rounded-lg bg-[#212d5e]"
+                    >
+                        <ion-icon
+                        style="color: white; font-size: 17px;"
+                        name="call"
+                        ></ion-icon>
+                    </a>
+                    </div>
+                </div>
+                </a>
+                {% if product.discount %}
+                <div class="absolute top-3 left-3 z-50 text-primary font-bold px-4 rounded-md flex flex-col items-center" style="background-color: rgba(0, 0, 0, 0.7);">
+                    {{product.discount}} %
+                </div>
+                {% endif %}
+            </div>
             {% endfor %}
 
         </div>
@@ -81,3 +182,59 @@
 </div>
 
 {% endblock Content %}
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            const category_id=$("#choosen_category").val();
+            $(document).on('change','.feature-option',function(e) {
+                e.preventDefault();
+                const optionId = $(this).val();
+                var data;
+                if(!optionId) {
+                    data={category_id:category_id};
+                }
+                else {
+                    data = {option_id: optionId,category_id:category_id};
+                }
+                $('.product_view').html(`<p>Loading ...</p>`);
+                $.ajax({
+                    url: "{% url 'filter_product' %}",
+                    type: "GET",
+                    data:data,
+                    success: function(response){
+                        
+                        $('.product_view').html(response);
+                    },
+                    error: function(error){
+                        //console.log(error);
+                    }
+                });
+            });
+            $(document).on('keyup','.max','.min',function(e){
+                e.preventDefault();
+                var max=$(this).val();
+                var min=$('.min').val();
+                var currency=$('.currency').val();
+                
+                var data={min:min,max:max,category_id:category_id,currency:currency};
+                if(min > 0  ){
+                    $('.product_view').html(`<p>Loading ...</p>`);
+                    $.ajax({
+                    url: "{% url 'minmax_filter' %}",
+                    type: "GET",
+                    data:data,
+                    success: function(response){
+                        //console.log(response);
+                        $('.product_view').html(response);
+                    },
+                    error: function(error){
+                        //console.log(error);
+                    }
+                });
+                }
+                
+            })
+
+        });
+    </script>
+{% endblock script %}

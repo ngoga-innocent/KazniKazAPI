@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -16,7 +16,8 @@ class RoomView(APIView):
          # Allow any access for other methods
         return [permission() for permission in self.permission_classes]
     def get(self,request):
-        
+        if 'Mozilla' in request.META.get('HTTP_USER_AGENT', ''):
+            return redirect('web_products')
         rooms=Room.objects.filter(Q(user2=request.user)|Q(user1=request.user)).order_by('-timestamp')
         serializer=RoomSerializer(rooms,many=True,context={"request":request})
         return Response({"rooms":serializer.data},status=200)

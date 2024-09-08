@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {% block title %} {% endblock title %}
+      {% block title %} Kaz ni Kaz {% endblock title %}
     </title>
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,6 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
      <link rel="icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
      
      {% block in_page_styles %}
@@ -23,7 +24,8 @@
       
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
-  <body class="">
+  <body class="min-h-screen max-h-screen md:max-h-auto overflow-y-auto relative scrollbar-hidden flex flex-col">
+    {% comment %} large Device Nav Bar {% endcomment %}
     <div class="nav hidden w-full md:flex flex-row justify-between items-center px-24">
       <div class="flex flex-row items-center gap-x-3">
         <img
@@ -42,7 +44,7 @@
         </a>
         <div class="flex flex-row flex-1 mx-4 items-center bg-slate-200 py-2 px-3 rounded-md">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" class="bg-transparent w-[90%]" placeholder="Search" >
+          <input type="text" class="overall_products bg-transparent w-[90%]" placeholder="Search a product" />
         </div>
         <!-- <div class="relative h-12 w-12 rounded-full flex flex-col items-center justify-center bg-orange-300">
           <i class="fa-regular fa-bell text-white font-bold"></i>
@@ -52,6 +54,18 @@
           <i class="fa-solid fa-plus text-white font-bold"></i>
           <p class="text-white font-bold">Post Product</p>
         </a>
+
+        <button class="notification_button flex flex-col justify-center items-center relative border rounded-full">
+          <ion-icon name="notifications" style="color:#da9f21;font-size:30px;"></ion-icon>
+          <div class="absolute h-10 w-10 max-w-5 flex flex-col max-h-5 overflow-hidden items-center justify-center  -top-2 -right-2 rounded-full text-md text-blue-700  p-1 notification"></div>
+        </button>
+
+        <a href="{% url 'chatss' %}" class="w-13 h-13 mx-5 text-primary"><i class="fa fa-comments" style="font-size:24px;color:bluee" aria-hidden="true"></i></a>
+
+       </div>
+
+       <div class="notification_body hidden md:w-[30%] flex flex-col h-[100%] px-2  max-h-screen overflow-scroll  absolute z-50 bg-gray-300 shadow-sm shadow-black top-0 right-0">
+          <h1 class="font-bold">NOTIFICATIONS</h1>
        </div>
       <div>
         <ul class="flex flex-row gap-x-4 items-center">
@@ -59,39 +73,97 @@
               <a href="{% url 'homepage' %}">Home</a>
             </li>
             <li>
-              <a href="{% url 'about_us' %}">About</a>
+              <a href="{% url 'web_products' %}">Products</a>
             </li>
             <li>
-              <a href="#">News</a>
+              <a href="{% url 'kaz_news' %}">News</a>
             </li>
             
             <li>
-              <a href="#">Jobs</a>
+              <a href="{% url 'jobs'  %}">Jobs</a>
             </li>
+            {% if request.user.is_authenticated %}
+            <li>
+              <a href="{% url 'mywallet'  %}">Wallet</a>
+            </li>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+            <li>
+              <a href="{% url 'web_logout' %}">Logout</a>
+            </li>
+            {% endif %}
            
           </ul>
         </ul>
       </div>
     </div>
-    <div class="flex-1 ">
-     
-     {% block Content %}
-        
-     {% endblock Content %}
-        
-    </div>
+       {% comment %} Small Device Header {% endcomment %}
+       <div class="md:hidden flex flex-row items-center justify-between bg-white fixed top-0 inset-x-0 px-1 py-2 shadow-sm shadow-black z-50">
+        <div class="w-10 h-10 max-w-10 max-h-10 rounded-full overflow-hidden border ">
+            <img src="{% static 'images/icon.png' %}" class="w-10 h-10" />
+        </div>
+        <div>
+          <h1 class="text-textColor font-bold text-[1.2rem]">Kaz ni kaz</h1>
+        </div>
+        <div>
+          {% if request.user.is_authenticated %}
+          <a href="{% url 'web_logout' %}" class="w-9 h-9 rounded-full  overflow-hidden max-w-9 max-h-9">
+            <ion-icon name="log-out" style="font-size:24px"></ion-icon>
+          </a>
+          {% else %}
+          <a href="{% url 'login' %}" class="w-9 h-9 rounded-full  overflow-hidden max-w-9 max-h-9">
+            <ion-icon name="log-in" style="font-size:24px"></ion-icon>
+          </a>
+          {% endif %}
+        </div>
+       </div>
+       {% comment %} Mobile End  Head Bar {% endcomment %}
+      {% comment %} Mobile View {% endcomment %}
+      <div class="z-30 bg-white shadow-md w-full md:hidden inset-x-0 bottom-0 fixed mt-32" >
+        <ul class="flex flex-1 just-evenly flex-row gap-x-4 items-center">
+          
+          <li class="flex-1 flex flex-col items-center py-2 justify-center">
+            <ion-icon name="wallet"></ion-icon>
+            <a class="text-sm font-bold" href="{% url 'mywallet' %}">Wallet</a>
+          </li>
+          <li class="flex-1 flex flex-col items-center justify-center">
+            <ion-icon name="logo-designernews"></ion-icon>
+            <a class="text-sm font-bold" href="{% url 'kaz_news' %}">News</a>
+          </li>
+          <li class="flex-1 flex flex-col items-center justify-center">
+            <ion-icon name="home"></ion-icon>
+            <a class="text-sm font-bold" href="{% url 'homepage' %}">Home</a>
+          </li>
+          <li class="flex-1 flex flex-col items-center justify-center">
+            <ion-icon name="git-network"></ion-icon>
+            <a class="text-sm font-bold" href="{% url 'jobs'  %}">Jobs</a>
+          </li>
+          <li class="flex-1 flex flex-col items-center justify-center">
+            <ion-icon name="apps"></ion-icon>
+            <a class="text-sm font-bold" href="{% url 'web_shops' %}">Shops</a>
+          </li>
+        </ul>
+      </div>
+      {% comment %} end Of Mobile View {% endcomment %}
+      <div class="hidden bg-white search_result_overall top-24 py-2  grid grid-cols-4 right-auto left-auto z-50 "></div>
+      <div class="flex-1 md:flex md:flex-col md:overflow-visible scrollbar-hidden overflow-y-scroll "> 
+        {% block Content %}
+            
+        {% endblock Content %}
+          
+      </div>
     <!-- Footer Menu -->
-    <div class="hidden md:flex flex-row gap-x-3 w-full bg-slate-200 py-14 px-24">
+    <div class="hidden footer md:flex flex-row gap-x-3 w-full  py-14 px-24">
       <div class="w-[30%]">
         <h1 class="font-bold text-xl">Stay Connected</h1>
         <button class="flex flex-row gap-x-2 items-center bg-blue-600 py-2 px-4 rounded-md">
           <i class="fa-solid fa-headphones text-white font-bold text-2xl" ></i>
           <p class="text-white font-bold">Live Chat</p>
         </button>
-        <div class="flex flex-row items-center  rounded-md bg-white my-2">
-          <input type="text" name="" id="" placeholder="enter Your Email" class="bg-transparent py-2 w-[80%] px-2">
-          <button class="bg-primary py-2 rounded-md px-4 text-white">Subscribe</button>
-        </div>
+        <form class="subscribe_form flex flex-row items-center px-2 rounded-md bg-white my-2 justify-between py-1">
+          <input type="text" name="" id="" placeholder="enter Your Email" class="bg-transparent py-2 px-2">
+          <button type="submit" class="bg-primary py-2 rounded-md px-4 text-white">Subscribe</button>
+        </form>
       </div>
       <div class="flex flex-col flex-1">
         <h2 class="text-xl font-bold">About Kaz ni Kaz</h2>
@@ -110,7 +182,7 @@
         <h2 class="text-xl font-bold">Contact Us</h2>
         <div class="flex flex-row items-center gap-x-2  px-3 ">
           <i class="fa-solid fa-phone"></i>
-          <p>0782214360</p>
+          <p>+250788886530/+250782214360</p>
         </div>
          <div class="flex flex-row items-center gap-x-2  px-3 ">
           <i class="fa-solid fa-envelope"></i>
@@ -118,17 +190,109 @@
         </div>
         <div class="flex flex-row items-center gap-x-2  px-3 ">
           <i class="fa-solid fa-location-crosshairs"></i>
-          <p>kigali, Rwanda Kimisagara</p>
+          <p>kigali, Rwanda</p>
         </div>
         
       </div>
     </div>
-    <div class="w-full items-center bg-slate-200">
+    <div class="w-full items-center foooter_last ">
       <p class="text-center text-sm text-gray-600">
         &copy; 2023 KazniKaz. All rights reserved.
       </p>
     </div>
       <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+      <script>
+        $(document).ready(function(e) {
+            //Get notifications
+            $.ajax({
+              url: "{% url 'get_notification' %}",
+              type: "GET",
+              success: function(response) {
+                $(".notification").html(response.count);
+               
+              }
+            })
+            $(document).on("click", ".notification_button",function(e){
+                e.preventDefault();
+                const notification_body=$(".notification_body");
+                if(notification_body.hasClass('hidden')){
+                  $(".notification_body").css("right", "-100%");
+                  $(".notification_body").animate({
+                    right: "0" // animate left to 0
+                }, 500);
+                  notification_body.removeClass("hidden");
+                  
+                }
+                else{
+                  
+                
+
+                  $(".notification_body").animate({
+                    right: "-100%" // animate left to -100%
+                }, 500, function(){ // animation complete callback
+                    $(".notification_body").addClass("hidden");
+                });
+                  
+                }
+                
+                
+                //$(".notification_body").addClass("translate-x-0");
+                
+                $.ajax({
+                  url:"{% url 'get_notifications' %}",
+                  type: "GET",
+                  success: function(response) {
+
+                    $(".notification_body").html(response);
+                   
+                  },
+                  error: function(xhr, status, error) {
+                    
+                  }
+                })
+
+            })
+            $(document).on('keyup','.overall_products',function(e){
+              e.preventDefault()
+              var query = $(this).val();
+              if(query.length > 1){
+                $.ajax({
+                  url: "{% url 'search_product' %}",
+                  type: "GET",
+                  data: {query:query},
+                  success: function(response) {
+                    $(".search_result_overall").slideDown(500)
+                    $(".search_result_overall").css("display","grid")
+                    $(".search_result_overall").removeClass('hidden')
+                    
+                    $(".search_result_overall").html(response);
+                  },
+                  error: function(xhr, status, error) {
+                    
+                  }
+                })
+              }
+              else{
+                $(".search_result_overall").slideUp(500)
+                $(".search_result_overall").empty();
+                
+                $(".search_result_overall").removeClass('md:flex');
+                $(".search_result_overall").addClass('hidden');
+              }
+
+            }); 
+            $(".subscribe_form").on("submit",function(e){
+              
+              e.preventDefault();
+              $(this).empty();
+              $(this).html(`<p class="text-green-600 font-bold">Thanks for subscribing on Kaz ni Kaz</p>`)
+            })  
+
+        });
+        
+        
+
+      </script>
     {% block script %}
       
     {% endblock script %}

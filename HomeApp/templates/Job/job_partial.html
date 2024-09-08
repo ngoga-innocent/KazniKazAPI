@@ -1,0 +1,66 @@
+{% for job in jobs %}
+            <a href="{% url 'jobs_details' job.id %}" class="flex flex-col hover:bg-slate-100 hover:border-2 bg-white px-4 py-2 items-center justify-center rounded-md w-[100%] gap-y-2">
+                <div class="flex flex-row justify-between w-[90%] items-center gap-x-2">
+                   
+
+                    {% if job.job_thumbnail %}
+                    <div class="w-12 h-12 rounded-full max-w-12 max-h-12 overflow-hidden border border-textColor">
+                        <img src="{{job.job_thumbnail.url}}" alt="job thumbnail" class="w-full h-full object-cover" />
+                    </div>
+                    {% else %}
+                    <div class="w-7 h-7 rounded-full max-w-7 max-h-7 flex flex-col items-center justify-center overflow-hidden border border-textColor">
+                        {{job.job_title | slice:":1"}}
+                    </div>
+                    {% endif %}
+                    <h2 class="font-bold text-textColor">{{job.job_title}}</h2>
+                    <div class="flex flex-end items-center gap-x-2">
+                        <p class="text-gray-500 text-xs">posted by: {{job.job_provider}}</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-row items-center gap-x-2">
+                    
+                    {% if job.job_location %}
+                    <p class="text-gray-500 text-sm">{{job.job_location}}</p>
+                    {% endif %}
+                    <div class="flex items-center gap-x-1 ">
+                        <p class="text-textColor text-xs">{{job.currency}}</p>
+                        <p class="text-textColor text-sm"> {{job.job_min_salary}} - </p>
+                        <p class="text-textColor text-sm"> {{job.job_max_salary}} - </p>
+                        <p class="text-textColor text-xs"> / Month</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <p class="text-gray-500 text-xs">created: {{job.created_at}}</p>
+                    <p class="text-gray-500 text-xs">deadline: {{job.job_deadline}}</p>
+                </div>
+                <div class="my-4">
+                    <p class="text-gray-800 text-xs  text-wrap mx-auto text-center">{{job.job_slug}}</p>
+                    
+                </div>
+                
+                <button class="py-1 rounded-lg border border-textColor transition-all duration-5000 w-[90%] mx-auto hover:bg-primary hover:text-white text-textColor font-bold">View More</button>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="pagination my-4 self-center">
+            <span class="step-links">
+                {% if jobs.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ jobs.previous_page_number }}">previous</a>
+                {% endif %}
+
+                {% for num in jobs.paginator.page_range %}
+                    {% if jobs.number == num %}
+                        <strong class="text-primary">{{ num }}</strong> <!-- Current page highlighted -->
+                    {% else %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if jobs.has_next %}
+                <a href="?page={{ jobs.next_page_number }}">next</a>
+                <a href="?page={{ jobs.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
